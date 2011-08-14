@@ -7,10 +7,11 @@
 #include <iostream>
 using namespace std;
 
+#include "constants.h"
 
 int main(int argc, char* argv[])
 {
-	cout << "Guns! dedicated server, v. 0.01. © 2011 narc0tiq." << endl;
+	cout << "Guns! dedicated server, v. " << VERSION << ". © 2011 narc0tiq." << endl;
 
 	cout << "Doesn't do anything yet, sorry!" << endl;
 
