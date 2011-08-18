@@ -31,7 +31,7 @@ ifneq (,$(findstring MINGW,$(UNAME)))
 endif
 
 ifneq (,$(findstring Linux,$(UNAME)))
-	LDFLAGS += -static
+	LDFLAGS += #-static
 endif
 
 ifneq (,$(findstring Darwin,$(UNAME)))
@@ -45,13 +45,13 @@ endif
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project (order is important)
 #---------------------------------------------------------------------------------
-LIBS 		:=
+LIBS 		:= -ludt -lstdc++ -lpthread
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS		:=
+LIBDIRS		:= udt
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
@@ -109,7 +109,7 @@ $(BUILD):
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(TARGET)
+	@rm -fr $(BUILD)/*.d $(BUILD)/*.o $(TARGET)
 
 #---------------------------------------------------------------------------------
 install:

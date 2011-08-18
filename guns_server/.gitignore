@@ -5,3 +5,5 @@ guns_server
 
 .*
 !.git*
+
+bin/udt
