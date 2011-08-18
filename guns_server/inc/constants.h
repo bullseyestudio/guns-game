@@ -3,7 +3,6 @@
  Defines some global constants of interest
 
 */
-
 #ifndef GUNS_SERVER_CONSTANTS_H
 #define GUNS_SERVER_CONSTANTS_H
 

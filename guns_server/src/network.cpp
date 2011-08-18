@@ -11,7 +11,7 @@
 using namespace std;
 
 #include "constants.h"
-
+#include "client.h"
 
 
 int InitNetwork()
@@ -40,13 +40,9 @@ int InitNetwork()
 	char ip[16];
 	cout << "new connection: " << inet_ntoa(their_addr.sin_addr) << ":" << ntohs(their_addr.sin_port) << endl;
 
-	char data[100];
+	tClient* cli = new tClient(recver);
 
-	if (UDT::ERROR == UDT::recv(recver, data, 100, 0))
-	{
-		cout << "recv:" << UDT::getlasterror().getErrorMessage() << endl;
-		return 0;
-	}
+	string data = cli->ReceiveMessage();
 
 	cout << data << endl;
 
