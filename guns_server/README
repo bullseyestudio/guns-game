@@ -1,3 +1,1 @@
-This is the main build directory for the guns_server. Contains the makefile that
-will compile the server, as well as being the output path for the final
-executable.
+This is the main build directory for the guns_server.
