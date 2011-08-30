@@ -1,55 +1,80 @@
 #!/usr/bin/env python
 
-import socket
-import select
+import asyncore, asynchat
+import socket # for socket.AF_*, socket.SOCK_*
 
-LISTEN_HOST = '0.0.0.0'
-LISTEN_PORT = 45005
+all_players = []
 
-BUFFER_SIZE = 1024
+def global_chat(message):
+	for p in all_players:
+		p.push(message)
 
-socks = []
+def global_shutdown():
+	for p in all_players:
+		p.push('Server is shutting down now!\r\n')
+		p.close_when_done()
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((LISTEN_HOST, LISTEN_PORT))
-s.listen(5)
+	server.close()
 
-socks.append(s)
+class LobbyPlayerHandler(asynchat.async_chat):
+	def __init__(self, sock, addr):
+		self.recv_buffer = []
+		asynchat.async_chat.__init__(self, sock)
+		self.set_terminator('\n')
+		self.username = ''
+		return
 
-while True:
-	to_send = ""
+	def collect_incoming_data(self, data):
+		self.recv_buffer.append(data)
 
-	socks_to_read, socks_to_write, socks_to_err = select.select(socks, [], socks, 0.1)
+	def found_terminator(self):
+		self.process_command()
 
-	socks_to_write = socks
+	def process_command(self):
+		line = ''.join(self.recv_buffer)
+		line_parts = line.strip().split(None, 1)
 
-	if len(socks_to_read) < 1:
-		continue
+		if len(line_parts) == 1:
+			verb = line_parts[0].upper()
+			arg = ''
+		else:
+			verb = line_parts[0].upper()
+			arg = line_parts[1]
 
-	if s in socks_to_read:
-		conn, addr = s.accept()
-		print 'Accepted connection from:', addr
-		socks.append(conn)
-		socks_to_read.remove(s)
+		if 'USER'.startswith(verb):
+			self.username = arg
+			self.push('+OK Your username set to: ' + self.username + '\r\n')
+		elif 'WHOAMI'.startswith(verb):
+			self.push('+OK You are: ' + self.username + '\r\n')
+		elif 'QUIT'.startswith(verb):
+			self.push('+OK Goodbye now.\r\n')
+			self.close_when_done()
+		elif 'SHUTDOWN'.startswith(verb):
+			if self.username == 'narc':
+				global_shutdown()
+			else:
+				self.push('-ERR You are not narc!\r\n')
+		else:
+			global_chat(self.username + ': ' + line.strip() + '\r\n')
 
-	for sock in socks_to_read:
-		data = sock.recv(BUFFER_SIZE)
-		if not data:
-			print 'Connection closed. I dunno which.'
-			socks_to_write.remove(sock)
-			socks.remove(sock)
-			sock.close()
-			continue
+		self.recv_buffer = []
 
-		print 'Received:', data
 
-		to_send += data
+class GunsServer(asyncore.dispatcher):
+	def __init__(self, address):
+		asyncore.dispatcher.__init__(self)
+		self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.bind(address)
+		self.address = self.socket.getsockname()
+		self.listen(5)
+		return
 
-	for sock in socks_to_write:
-		if sock == s:
-			continue
-		sock.send(to_send)
+	def handle_accept(self):
+		sock, addr = self.accept()
+		np = LobbyPlayerHandler(sock, addr)
+		all_players.append(np)
 
-# cleanup
-for sock in socks:
-	sock.close()
+address = ('0.0.0.0', 45005)
+server = GunsServer(address)
+
+asyncore.loop()
