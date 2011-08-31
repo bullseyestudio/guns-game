@@ -85,6 +85,8 @@ def get_player_updates():
 
 			players[user] = p
 
+sock.send('{0} 0 0\r\n'.format(username))
+
 # Event loop
 while 1:
 	for event in pygame.event.get():
