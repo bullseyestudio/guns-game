@@ -92,14 +92,12 @@ sock.send('{0} 0 0\r\n'.format(username))
 while 1:
 	for event in pygame.event.get():
 		if event.type == USEREVENT+1:
-			print 'something something'
 			get_player_updates()
 
 			for user, p in players.iteritems():
 				p.redraw(screen)
 				print 'drawing', user
 		elif event.type == KEYDOWN:
-			print 'something else'
 
 			if event.key == K_s:
 				velocity[1] = 5
