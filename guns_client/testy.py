@@ -99,14 +99,19 @@ while 1:
 			print 'something else'
 
 			if event.key == K_s:
-				velocity[1] += 1
+				velocity[1] = 5
 			elif event.key == K_w:
-				velocity[1] -= 1
+				velocity[1] = -5
 			elif event.key == K_a:
-				velocity[0] -= 1
+				velocity[0] = -5
 			elif event.key == K_d:
-				velocity[0] += 1
+				velocity[0] = 5
 			elif event.key == K_z:
+				velocity = [0, 0]
+
+			sock.send('{0} {1[0]} {1[1]}\r\n'.format(username, velocity))
+		elif event.type == KEYUP:
+			if event.key in [K_s, K_w, K_a, K_d]:
 				velocity = [0, 0]
 
 			sock.send('{0} {1[0]} {1[1]}\r\n'.format(username, velocity))
