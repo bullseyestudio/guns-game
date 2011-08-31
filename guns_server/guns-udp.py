@@ -28,7 +28,13 @@ def check_for_playerinput():
 	data = data.strip()
 	print 'got data: ', data, 'from', addr
 
-	user, xvel, yvel = data.split(' ')
+	data_parts = data.split(' ')
+	if len(data_parts) == 2:
+		user, command = data_parts
+		if user in players: del players[user]
+		return
+	elif len(data_parts) == 3:
+		user, xvel, yvel = data_parts
 
 	if user in players:
 		p = players[user]
