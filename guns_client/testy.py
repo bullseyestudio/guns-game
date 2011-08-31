@@ -3,11 +3,12 @@
 import sys
 import socket, select
 
-if len(sys.argv) < 2:
-	sys.stderr.write('Usage: testy.py username\r\n')
+if len(sys.argv) < 3:
+	sys.stderr.write('Usage: testy.py username server\r\n')
 	sys.exit(2)
 
 username = sys.argv[1]
+host = sys.argv[2]
 
 try:
 	import pygame
@@ -22,7 +23,7 @@ screen = pygame.display.set_mode((1024, 576))
 pygame.display.set_caption('Basic Pygame program')
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.connect(('hermes', 45005))
+sock.connect((host, 45005))
 
 class Player:
 	font = pygame.font.Font(None, 36)
