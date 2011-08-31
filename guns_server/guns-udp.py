@@ -43,6 +43,7 @@ def check_for_playerinput():
 
 		p.velocity[0] = int(xvel)
 		p.velocity[1] = int(yvel)
+		p.addr = addr
 	else:
 		p = Player()
 		p.velocity[0] = int(xvel)
