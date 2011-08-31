@@ -25,15 +25,13 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.connect(('hermes', 45005))
 
 class Player:
-	position = [0,0]
-	name = ''
+	font = pygame.font.Font(None, 36)
 
 	def __init__(self, newname):
 		self.name = newname
-		font = pygame.font.Font(None, 36)
-		self.text = font.render(username, 1, (10, 10, 10))
+		self.position = [0,0]
+		self.text = self.font.render(self.name, 1, (10, 10, 10))
 		self.textpos = self.text.get_rect()
-
 
 	def redraw(self, screen):
 		screen.blit(background, self.textpos, self.textpos)
@@ -91,12 +89,14 @@ def get_player_updates():
 while 1:
 	for event in pygame.event.get():
 		if event.type == USEREVENT+1:
+			print 'something something'
 			get_player_updates()
 
 			for user, p in players.iteritems():
 				p.redraw(screen)
 				print 'drawing', user
 		elif event.type == KEYDOWN:
+			print 'something else'
 
 			if event.key == K_s:
 				velocity[1] += 1

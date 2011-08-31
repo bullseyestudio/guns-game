@@ -10,10 +10,11 @@ width = 1024
 height = 576
 
 class Player:
-	velocity = [0,0]
-	position = [0,0]
-	addr = None
-	name = ''
+	def __init__(self):
+		self.velocity = [0,0]
+		self.position = [0,0]
+		self.addr = None
+		self.name = ''
 
 players = {}
 
@@ -31,6 +32,8 @@ def check_for_playerinput():
 
 	if user in players:
 		p = players[user]
+
+		print 'updating velocity for', p
 
 		p.velocity[0] = int(xvel)
 		p.velocity[1] = int(yvel)
