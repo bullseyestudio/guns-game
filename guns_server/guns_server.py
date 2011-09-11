@@ -9,7 +9,7 @@ except ImportError:
 	try:
 		import readline
 	except ImportError:
-		sys.stderr.write('Cannot import libreadline. You\'ll have a pretty crippled command line. Sorry.\n')
+		sys.stderr.write('Cannot import readline. You\'ll have a pretty crippled command line. Sorry.\n')
 
 
 sys.path.append('./modules')
