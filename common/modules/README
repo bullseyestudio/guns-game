@@ -1,0 +1,15 @@
+Python modules common to server and client go here.
+
+This is going to be used only in the dev versions --releases of the game will
+have copies of common/* embedded in their main working directories, to keep
+from using an external reference.
+
+As such, client and server should prefer using python modules and other
+resources from their personal directories rather than from this common one, to
+prevent surprise overrides in strange end-user environments.
+
+What I mean is:
+  sys.path.append('./modules')
+THEN
+  sys.path.append('../common/modules')
+rather than the other way around.
