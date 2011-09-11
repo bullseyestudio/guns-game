@@ -1,9 +1,0 @@
-*.d
-*.o
-
-guns_server
-
-.*
-!.git*
-
-bin/udt
