@@ -47,7 +47,10 @@ def decode(what):
 				parsed_parts.append(parsed)
 				parsed = ''
 
-		new_parts.append(parsed_parts)
+		if len(parsed_parts) == 1:
+			new_parts.append(parsed_parts[0])
+		else:
+			new_parts.append(parsed_parts)
 
 	return new_parts
 
@@ -59,4 +62,23 @@ def encode(stuff):
 	Which should create the EDIComm string:
 		"TLA parameter list,parameter another\ parameter"
 	"""
-	pass
+
+	ret = ''
+
+	for i in stuff:
+		if isinstance(i, basestring):
+			i = i.replace(',', '\\,')
+			ret += i.replace(' ', '\\ ') + ' '
+		else:
+			lstr = ''
+
+			for x in i:
+				x = x.replace(',', '\\,')
+				lstr += x.replace(' ', '\\ ') + ','
+
+			lstr = lstr.rstrip(',')
+			ret += lstr + ' '
+
+	ret = ret.rstrip(' ')
+
+	return ret
