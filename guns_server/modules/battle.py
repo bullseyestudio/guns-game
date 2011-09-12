@@ -59,7 +59,8 @@ def act_on_edidata(ediparts, addr):
 
 		p.name = ediparts[1]
 
-		to_all.append('USN {0} {1}'.format(p.id, p.name))
+
+		to_all.append(edicomm.encode(['USN', str(p.id), p.name]))
 
 
 def check_for_playerinput():
@@ -75,7 +76,7 @@ def check_for_playerinput():
 	try:
 		act_on_edidata(edicomm.decode(data), addr)
 	except EDIException as e:
-		sock.sendto('ERR {0} {1}'.format(e.id, e.msg), addr)
+		sock.sendto(edicomm.encode(['ERR', str(e.id), e.msg]), addr)
 
 def move_players():
 	return
