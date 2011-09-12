@@ -46,7 +46,7 @@ def act_on_edidata(ediparts, addr):
 		p = Player(len(players) + 1, ediparts[1])
 		p.addr = addr
 		players[p.id] = p
-		sock.sendto('UID {0}'.format(p.id), addr)
+		sock.sendto(edicomm.encode(['UID', str(p.id)]), addr)
 		return
 	elif ediparts[0] == 'USN':
 		if len(ediparts) != 2:
