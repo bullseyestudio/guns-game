@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys
+import sys, os
 
 sys.path.append('./modules')
 sys.path.append('../common/modules')
@@ -12,17 +12,21 @@ import lobby
 import battle
 import auth
 
+os.environ["SDL_VIDEODRIVER"] = "dummy"
+import pygame
+from pygame.locals import *
+
+pygame.display.init()
+screen = pygame.display.set_mode((1,1))
+
 import cmdline
 
 cl = cmdline.cmdline()
 
-class QuitException(Exception):
-	pass
-
 print 'Server init begins.'
 
 def quit_handler(str):
-	raise QuitException()
+	pygame.event.post(pygame.event.Event(QUIT))
 
 cl.add_command('quit', quit_handler)
 
@@ -44,11 +48,16 @@ def help_handler(str):
 
 cl.add_command('help', help_handler)
 
-cl.start_listener()
 print 'Waiting for commands, type "quit" to stop the server.'
+cl.start_listener()
+
+pygame.time.set_timer(USEREVENT+1, 1000)
+
 while True:
-	try:
-		cl.handle_command()
-	except QuitException:
-		print 'Server shutting down.'
-		break
+	for event in pygame.event.get():
+		if event.type == USEREVENT+1:
+			battle.timer_tick()
+			cl.handle_command()
+		elif (event.type == QUIT):
+			sys.exit(0)
+

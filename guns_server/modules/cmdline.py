@@ -48,6 +48,9 @@ class cmdline:
 		self.t.start()
 
 	def handle_command(self):
+		if(self.q.empty()):
+			return
+
 		cmd = self.q.get()
 
 		for str in self.commands.keys():
