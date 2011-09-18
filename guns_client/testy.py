@@ -26,6 +26,9 @@ pygame.display.set_caption('Basic Pygame program')
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.connect((host, 45005))
 
+tank_shapes = pygame.image.load("data//modules.png").convert()
+tank_shapes.set_colorkey([255,0,255])
+
 class Player:
 	font = pygame.font.Font(None, 36)
 
@@ -35,14 +38,17 @@ class Player:
 		self.textcolor = ( 10, 10, 10 )
 		self.text = self.font.render( self.name, 1, self.textcolor )
 		self.textpos = self.text.get_rect()
+		self.tankshape = [0,0,64,48]
 
 	def redraw(self, screen):
-		screen.blit(background, self.textpos, self.textpos)
+		screen.blit( background, self.textpos, self.tankshape)
+#		screen.blit(background, self.textpos, self.textpos)
 
 		self.textpos.centerx = self.position[0]
 		self.textpos.centery = self.position[1]
 
-		screen.blit(self.text, self.textpos)
+		screen.blit( tank_shapes, self.textpos, self.tankshape )
+		screen.blit( self.text, self.textpos )
 
 
 # Fill background
