@@ -16,6 +16,7 @@ import edicomm
 import network_comms
 import global_
 from global_ import *
+import test_rot
 
 def init():
 	global_.background = pygame.Surface( global_.screen.get_size() )
@@ -29,13 +30,18 @@ def tick():
 	# this is what the testy code did:
 	get_player_updates()
 
+	global_.screen.blit( global_.background, (0, 0) )
+
 	for user, p in global_.players.iteritems():
 		if not p == None:
 			p.redraw( global_.screen )
 #			print 'drawing', user
 		else:
 			print "Error with ", user
-	pass
+	
+	test_rot.draw_rot()
+
+	pygame.display.flip()	
 
 def get_player_updates():
 	data, addr = network_comms.read()

@@ -61,5 +61,3 @@ def event_loop():
 			global_.done = True
 			close_display()
 			sys.exit(0)
-	
-	pygame.display.flip()

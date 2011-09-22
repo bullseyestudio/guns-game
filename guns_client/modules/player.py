@@ -26,7 +26,7 @@ class Player:
 
 	def redraw(self, screen):
 #		global_.screen.blit( global_.background, self.textpos, self.tankshape)
-		global_.screen.blit( global_.background, self.textpos, self.textpos)
+#		global_.screen.blit( global_.background, self.textpos, self.textpos)
 
 		self.textpos.centerx = self.position[0]
 		self.textpos.centery = self.position[1]
