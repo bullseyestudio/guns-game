@@ -49,7 +49,7 @@ def keyboard( event ):
 	network_comms.send( edicomm.encode( 'USV', global_.velocity ) )
 
 def joystick( event ):
-	print "Joy event :)"
+	#print "Joy event :)"
 	global_.velocity[0] = int( global_.my_joystick.get_axis( 0 ) * 5 )
 	global_.velocity[1] = int( global_.my_joystick.get_axis( 1 ) * 5 )
 	network_comms.send( edicomm.encode( 'USV', global_.velocity ) )

@@ -98,11 +98,14 @@ def EDIDecoder( EDI, addr ):
 		p.id = int( EDIargs[ 1 ] )
 		global_.players[ int( EDIargs[1] ) ] = p
 	elif EDIargs[0] == 'USP':
-		p = global_.players[ int( EDIargs[1] ) ]
-		if not p == None:
-			p.position[0] = int( EDIargs[2][0] )
-			p.position[1] = int( EDIargs[2][1] )
-			p.rotation = EDIargs[3]
+		try:
+			p = global_.players[ int( EDIargs[1] ) ]
+			if not p == None:
+				p.position[0] = int( EDIargs[2][0] )
+				p.position[1] = int( EDIargs[2][1] )
+				p.rotation = EDIargs[3]
+		except:
+			pass
 	else:
 		pass
 #		print 'Errrr...'
