@@ -7,7 +7,6 @@ sys.path.append('./modules')
 sys.path.append('../common/modules')
 
 import global_
-from global_ import *
 import edicomm
 import os_gui
 import network_comms
@@ -35,7 +34,7 @@ input_handler.init_joy( 0 )
 
 battle.init()
 
-network_comms.send( edicomm.encode(('USA', global_.username)) )
+network_comms.send( edicomm.encode( 'UST', 'token_{0}'.format( global_.username ) ) )
 
 while not os_gui.done:
 	os_gui.event_loop()

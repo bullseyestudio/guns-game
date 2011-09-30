@@ -6,7 +6,7 @@ sys.path.append('./modules')
 sys.path.append('../common/modules')
 
 import global_
-from global_ import *
+import edicomm
 
 sock = None;
 
@@ -47,7 +47,7 @@ def read( ):
 def close():
 	global sock
 	if not sock is None:
-		send( "USD {0}".format( global_.plr.id ))
+		send( edicomm.encode( "USD", "Client closed" ) )
 		sock.close()
 		sock = None
 	else:

@@ -11,11 +11,9 @@ sys.path.append('./modules')
 sys.path.append('../common/modules')
 
 import player
-from player import *
 import edicomm
 import network_comms
 import global_
-from global_ import *
 import test_rot
 
 def init():
@@ -57,8 +55,11 @@ def EDIDecoder( EDI, addr ):
 	EDIargs = EDI
 	
 #	print EDIargs
-	
-	if   EDIargs[0] == 'LAG':
+	if   EDIargs[0] == 'ERR':
+		#TODO: put in some error handling
+#		print "We got an error code from the server"
+		pass
+	elif EDIargs[0] == 'LAG':
 		pass
 #		print 'Ping test, please.'
 	elif EDIargs[0] == 'MSG':
@@ -70,18 +71,20 @@ def EDIDecoder( EDI, addr ):
 	elif EDIargs[0] == 'USC':
 		pass
 #		print 'Hey I should be a different colour'
-	elif EDIargs[0] == 'USI':
+	elif EDIargs[0] == 'UID':
 		print EDIargs
-		p = findPlayerByName( global_.username )
+		p = global_.findPlayerByName( global_.username )
 		if not p == None:
 			print 'WTF, we got 2 ID\'s'
 			p.id = int( EDIargs[1] )
 		else:
-			global_.plr = Player( global_.username )
+			global_.plr = player.Player( global_.username )
 			global_.plr.position[0] = 0
 			global_.plr.position[1] = 0
 			global_.plr.id = EDIargs[ 1 ]
-			global_.players[ EDIargs[ 1 ] ] = plr
+			global_.players[ EDIargs[ 1 ] ] = global_.plr
+			
+		network_comms.send( edicomm.encode( 'USN', global_.username ) )
 	elif EDIargs[0] == 'USJ':
 		p = findPlayerByName( EDIargs[ 1 ] )
 		if not p == None:
@@ -91,11 +94,11 @@ def EDIDecoder( EDI, addr ):
 		p.position[1] = 0
 		p.id = EDIargs[2]
 		global_.players[ EDIargs[2] ] = p
-	elif EDIargs[0] == 'USM':
+	elif EDIargs[0] == 'USP':
 		p = global_.players[ EDIargs[1] ]
 		if not p == None:
-			p.position[0] = int( EDIargs[2] )
-			p.position[1] = int( EDIargs[3] )
+			p.position = EDIargs[2]
+			p.rotation = EDIargs[3]
 	else:
 		pass
 #		print 'Errrr...'

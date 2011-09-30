@@ -5,7 +5,6 @@ sys.path.append('./modules')
 sys.path.append('../common/modules')
 
 import global_
-from global_ import *
 
 try:
 	import pygame

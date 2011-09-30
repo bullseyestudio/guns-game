@@ -6,7 +6,7 @@ sys.path.append('../common/modules')
 
 import network_comms
 import global_
-from global_ import *
+import edicomm
 
 try:
 	import pygame
@@ -46,11 +46,11 @@ def keyboard( event ):
 		if event.key in [K_s, K_w, K_a, K_d]:
 			global_.velocity = [0, 0]
 			
-	network_comms.send( 'USP {0} {1[0]} {1[1]}'.format( global_.plr.id, global_.velocity ) )
+	network_comms.send( edicomm.encode( 'USV', global_.velocity ) )
 
 def joystick( event ):
 	print "Joy event :)"
 	global_.velocity[0] = int( global_.my_joystick.get_axis( 0 ) * 5 )
 	global_.velocity[1] = int( global_.my_joystick.get_axis( 1 ) * 5 )
-	network_comms.send( 'USP {0} {1[0]} {1[1]}'.format( global_.plr.id, global_.velocity ) )
+	network_comms.send( edicomm.encode( 'USV', global_.velocity ) )
 

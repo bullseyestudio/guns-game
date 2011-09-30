@@ -7,7 +7,6 @@ sys.path.append('../common/modules')
 import battle
 import network_comms
 import global_
-from global_ import *
 import input_handler
 
 try:
@@ -42,14 +41,14 @@ def init_display( ):
 	global_.font = pygame.font.Font(None, 36)
 	global_.screen = pygame.display.set_mode( ( width, height ) )
 	pygame.display.set_caption( "Client App" )
-	pygame.time.set_timer( PGE_GAMETICK, 20 )
+	pygame.time.set_timer( global_.PGE_GAMETICK, 20 )
 	
 def close_display():
 	pygame.quit()
 
 def event_loop():
 	for event in pygame.event.get():
-		if event.type == PGE_GAMETICK:
+		if event.type == global_.PGE_GAMETICK:
 			battle.tick()
 		elif event.type in ( JOYAXISMOTION, JOYBALLMOTION, JOYHATMOTION, JOYBUTTONUP, JOYBUTTONDOWN ):
 			input_handler.joystick( event )
@@ -57,7 +56,7 @@ def event_loop():
 			input_handler.keyboard( event )
 		elif event.type == QUIT:
 			network_comms.close()
-			pygame.time.set_timer( PGE_GAMETICK, 0 )
+			pygame.time.set_timer( global_.PGE_GAMETICK, 0 )
 			global_.done = True
 			close_display()
 			sys.exit(0)
