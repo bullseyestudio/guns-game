@@ -28,6 +28,10 @@ class GunsCommandLine(threading.Thread):
 		self.condition.acquire()
 		while not self.finished:
 			s = raw_input('')
+
+			if self.finished: #in the middle of the raw_input()
+				return
+
 			self.queue.put(s)
 			self.condition.wait()
 

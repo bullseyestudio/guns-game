@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os
+import sys, os, signal
 
 sys.path.append('./modules')
 sys.path.append('../common/modules')
@@ -38,6 +38,19 @@ print 'Waiting for commands, type "quit" to stop the server.'
 cl.start_listener()
 
 pygame.time.set_timer(USEREVENT+1, 100)
+
+def ctrlc_handler(*args):
+	print 'Ctrl+C recognized. Hit Enter to quit.'
+
+	pygame.event.post(pygame.event.Event(QUIT))
+
+	global cl
+	cl.post_quit()
+
+	exit(0)
+
+signal.signal(signal.SIGINT, ctrlc_handler)
+
 
 while True:
 	for event in pygame.event.get():
