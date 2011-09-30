@@ -69,7 +69,7 @@ def encode(*stuff):
 		if isinstance(i, basestring):
 			i = i.replace(',', '\\,')
 			ret += i.replace(' ', '\\ ') + ' '
-		else:
+		elif hasattr(i, '__iter__'):
 			lstr = ''
 
 			for x in i:
@@ -81,6 +81,8 @@ def encode(*stuff):
 
 			lstr = lstr.rstrip(',')
 			ret += lstr + ' '
+		else:
+			ret += str(i)
 
 	ret = ret.rstrip(' ')
 
