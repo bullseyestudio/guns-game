@@ -47,7 +47,9 @@ def get_player_updates():
 	if len( data ) == 0:
 		return
 	
-	EDIDecoder( edicomm.decode( data ), addr )
+	dlines = data.split( "\n" )
+	for i in dlines:
+		EDIDecoder( edicomm.decode( i ), addr )
 	return
 
 def EDIDecoder( EDI, addr ):
@@ -85,15 +87,16 @@ def EDIDecoder( EDI, addr ):
 			global_.players[ int( EDIargs[ 1 ] ) ] = global_.plr
 			
 		network_comms.send( edicomm.encode( 'USN', global_.username ) )
-	elif EDIargs[0] == 'USJ':
-		p = findPlayerByName( EDIargs[ 1 ] )
+	elif EDIargs[0] == 'USN':
+		p = global_.findPlayerByName( EDIargs[ 2 ] )
 		if not p == None:
-			del players[ p.id ]
-		p = Player( EDIargs[1] )
+			del global_.players[ p.id ]
+		p = player.Player( EDIargs[ 2 ] )
 		p.position[0] = 0
 		p.position[1] = 0
-		p.id = int( EDIargs[2] )
-		global_.players[ int( EDIargs[2] ) ] = p
+		p.rotation = 0
+		p.id = int( EDIargs[ 1 ] )
+		global_.players[ int( EDIargs[1] ) ] = p
 	elif EDIargs[0] == 'USP':
 		p = global_.players[ int( EDIargs[1] ) ]
 		if not p == None:
