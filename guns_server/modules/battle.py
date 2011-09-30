@@ -78,19 +78,20 @@ def act_on_edidata(ediparts, addr):
 		to_all.append(edicomm.encode(('USD', str(p.id))))
 
 def check_for_playerinput():
-	socks = select.select([sock], [], [], 0)
+	while True:
+		socks = select.select([sock], [], [], 0)
 
-	if len(socks[0]) == 0:
-		return
+		if len(socks[0]) == 0:
+			return
 
-	data, addr = sock.recvfrom(1500)
-	data = data.strip()
-	print 'got data: ', data, 'from', addr
+		data, addr = sock.recvfrom(1500)
+		data = data.strip()
+		print 'got data: ', data, 'from', addr
 
-	try:
-		act_on_edidata(edicomm.decode(data), addr)
-	except EDIException as e:
-		sock.sendto(edicomm.encode(['ERR', str(e.id), e.msg]), addr)
+		try:
+			act_on_edidata(edicomm.decode(data), addr)
+		except EDIException as e:
+			sock.sendto(edicomm.encode(['ERR', str(e.id), e.msg]), addr)
 
 def move_players():
 	return
