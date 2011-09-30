@@ -73,8 +73,11 @@ def encode(*stuff):
 			lstr = ''
 
 			for x in i:
-				x = x.replace(',', '\\,')
-				lstr += x.replace(' ', '\\ ') + ','
+				if isinstance(x, basestring):
+					x = x.replace(',', '\\,')
+					x = x.replace(' ', '\\ ')
+
+				lstr += str(x) + ','
 
 			lstr = lstr.rstrip(',')
 			ret += lstr + ' '
