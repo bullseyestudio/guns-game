@@ -1,7 +1,6 @@
 
 try:
-	import pygame
-	from pygame.locals import *
+	import pygame.locals
 except ImportError, err:
 	sys.stderr.write('This application absolutely requires pygame. Sorry.\r\n')
 	sys.exit(1)
@@ -17,7 +16,7 @@ font = None
 joystick_count = 0
 my_joystick = 0
 
-PGE_GAMETICK = USEREVENT + 1
+PGE_GAMETICK = pygame.locals.USEREVENT + 1
 
 def findPlayerByName( name ):
 	ret = None

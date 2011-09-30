@@ -35,7 +35,7 @@ input_handler.init_joy( 0 )
 
 battle.init()
 
-network_comms.send( 'USA {0}'.format( global_.username ) )
+network_comms.send( edicomm.encode(('USA', global_.username)) )
 
 while not os_gui.done:
 	os_gui.event_loop()
