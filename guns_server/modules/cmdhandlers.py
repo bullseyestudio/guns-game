@@ -61,6 +61,10 @@ def forget_handler(str, cl):
 
 	# TODO: Shouldn't be poking around other modules' internals like this
 	# TODO: Should notify player of being kicked
+	if found_id == None:
+		print 'Couldn\'t find player with prefix', parts[1]
+		return
+
 	print 'Forgetting player', players[found_id].name
 	del players[found_id]
 
