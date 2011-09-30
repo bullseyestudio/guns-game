@@ -82,7 +82,7 @@ def encode(*stuff):
 			lstr = lstr.rstrip(',')
 			ret += lstr + ' '
 		else:
-			ret += str(i)
+			ret += str(i) + ' '
 
 	ret = ret.rstrip(' ')
 
