@@ -76,6 +76,19 @@ def act_on_edidata(ediparts, addr):
 
 		del players[p.id]
 		to_all.append(edicomm.encode('USD', str(p.id)))
+	elif ediparts[0] == 'USV':
+		p = player_by_addr(addr)
+
+		if p == None:
+			raise EDIException(100, 'Please re-authenticate')
+
+		if len(ediparts) != 2:
+			raise EDIException(99, 'Wrong argument count!')
+
+		p.velocity = [int(x) for x in ediparts[1]]
+
+		print 'Player', p.name, 'velocity change:', p.velocity
+
 
 def check_for_playerinput():
 	while True:
@@ -94,15 +107,26 @@ def check_for_playerinput():
 			sock.sendto(edicomm.encode('ERR', str(e.id), e.msg), addr)
 
 def move_players():
-	return
-	#for user, p in players.iteritems():
-	#	p.position[0] += int(p.velocity[0])
-	#	p.position[1] += int(p.velocity[1])
-	#
-	#	if p.position[0] < 0 or p.position[0] > width:
-	#		p.velocity[0] = -p.velocity[0]
-	#	if p.position[1] < 0 or p.position[1] > height:
-	#		p.velocity[1] = -p.velocity[1]
+	global to_all
+
+	for p in players.itervalues():
+		print 'Processing', p.name, 'id:', p.id
+
+		newpos = [vel + pos for(vel, pos) in zip(p.velocity, p.position)]
+
+		if newpos[0] < 0 or newpos[0] > width:
+			p.velocity[0] = 0
+			newpos[0] = p.position[0]
+		if newpos[1] < 0 or newpos[1] > height:
+			p.velocity[1] = 0
+			newpos[1] = p.position[1]
+
+		p.position = newpos
+
+		print 'id:',p.id,'position',p.position
+
+		print 'Edicomm send:', edicomm.encode('USP', p.id, p.position, 0)
+		to_all.append(edicomm.encode('USP', p.id, p.position, 0))
 
 def tell_players():
 	global to_all
