@@ -43,7 +43,7 @@ def read( ):
 		if len( socks[0] ) == 0:
 			break
 
-		data, addr = sock.recvfrom( 1500 )
+		data = sock.recvfrom( 1500 )
 
 		print 'Got', data, 'from', addr
 

@@ -42,17 +42,17 @@ def tick():
 	pygame.display.flip()	
 
 def get_player_updates():
-	data, addr = network_comms.read()
+	data = network_comms.read()
 
 	if len( data ) == 0:
 		return
 	
 	dlines = data.split( "\n" )
 	for i in dlines:
-		EDIDecoder( edicomm.decode( i ), addr )
+		EDIDecoder( edicomm.decode( i ) )
 	return
 
-def EDIDecoder( EDI, addr ):
+def EDIDecoder( EDI ):
 	
 	EDIargs = EDI
 	
