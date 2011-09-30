@@ -43,9 +43,13 @@ def act_on_edidata(ediparts, addr):
 		if len(ediparts) != 2:
 			raise EDIException(99, 'Wrong argument count!')
 
+		print 'Got new player with token', ediparts[1]
+
 		p = Player(len(players) + 1, ediparts[1])
 		p.addr = addr
 		players[p.id] = p
+
+		print 'Player (token:', ediparts[1], ') got id', p.id
 		sock.sendto(edicomm.encode(['UID', str(p.id)]), addr)
 		return
 	elif ediparts[0] == 'USN':
@@ -57,11 +61,21 @@ def act_on_edidata(ediparts, addr):
 		if p == None:
 			raise EDIException(100, 'Please re-authenticate')
 
+		print 'Player', p.id, 'sets name to', ediparts[1], 'from', p.name
+
 		p.name = ediparts[1]
 
+		to_all.append(edicomm.encode(('USN', str(p.id), p.name)))
+	elif ediparts[0] == 'USD':
+		p = player_by_addr(addr)
 
-		to_all.append(edicomm.encode(['USN', str(p.id), p.name]))
+		if p == None:
+			raise EDIException(100, 'Please re-authenticate')
 
+		print 'Player', p.name, 'disconnects'
+
+		del players[p.id]
+		to_all.append(edicomm.encode(('USD', str(p.id))))
 
 def check_for_playerinput():
 	socks = select.select([sock], [], [], 0)
