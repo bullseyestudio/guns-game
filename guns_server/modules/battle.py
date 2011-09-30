@@ -66,6 +66,10 @@ def act_on_edidata(ediparts, addr):
 		p.name = ediparts[1]
 
 		to_all.append(edicomm.encode('USN', str(p.id), p.name))
+
+		lines = [edicomm.encode('USN', pl.id, pl.name) for pl in players.itervalues() if pl.id != p.id and p.name != '']
+		sock.sendto('\n'.join(lines), addr)
+
 	elif ediparts[0] == 'USD':
 		p = player_by_addr(addr)
 
@@ -136,8 +140,9 @@ def tell_players():
 	data = '\n'.join(to_all)
 	to_all = []
 
-	for uid, p in players.iteritems():
-		sock.sendto(data, p.addr)
+	for p in players.itervalues():
+		if p.name != '':
+			sock.sendto(data, p.addr)
 
 
 def timer_tick():
