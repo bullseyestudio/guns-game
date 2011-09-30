@@ -16,12 +16,12 @@ def open():
 	sock.connect((global_.host, 45005))
 	if sock is None:
 		raise RuntimeError( "Unable to connect to the remote host" )
-	
+
 def send( what ):
 	global sock
 	if not sock is None:
 		sent = sock.send( what )
-		
+
 		if sent == 0:
 			raise RuntimeError( "Socket connection fail" )
 	else:
@@ -30,19 +30,21 @@ def send( what ):
 def read( ):
 	global sock
 	readlen = 0;
-	
+
 	if not sock is None:
 		socks = select.select( [sock], [], [], 0 )
-		
+
 		if len( socks[0] ) == 0:
 			return [ "", 0 ]
-		
+
 		data, addr = sock.recvfrom( 1500 )
-		
+
+		print 'Got', data, 'from', addr
+
 		return [ data, addr ]
 	else:
 			raise RuntimeError( "Network error in reading data" )
-		
+
 
 def close():
 	global sock
