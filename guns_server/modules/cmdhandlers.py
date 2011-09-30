@@ -3,10 +3,12 @@ from pygame.locals import *
 
 from battle import players # /list needs this
 
-def quit_handler(str):
+def quit_handler(str, cl):
 	pygame.event.post(pygame.event.Event(QUIT))
 
-def help_handler(str):
+	cl.post_quit()
+
+def help_handler(str, cl):
 	parts = str.split(' ', 2)
 
 	if len(parts) == 1:
@@ -31,12 +33,12 @@ def help_handler(str):
 			print 'Usage: quit\n'
 			print 'Stops the server immediately.'
 
-def list_handler(str):
+def list_handler(str, cl):
 	print 'ID\tusername\taddress info'
 	for p in players.itervalues():
 		print p.id, '\t', p.name, '\t', p.addr
 
-def forget_handler(str):
+def forget_handler(str, cl):
 	parts = str.split(' ', 2)
 
 	if len(parts) == 1:

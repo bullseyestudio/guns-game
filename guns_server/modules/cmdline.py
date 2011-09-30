@@ -22,10 +22,11 @@ class GunsCommandLine(threading.Thread):
 		threading.Thread.__init__(self)
 		self.queue = queue
 		self.condition = condition
+		self.finished = False
 
 	def run(self):
 		self.condition.acquire()
-		while True:
+		while not self.finished:
 			s = raw_input('')
 			self.queue.put(s)
 			self.condition.wait()
@@ -37,9 +38,11 @@ class cmdline:
 		self.c = threading.Condition()
 
 		self.t = GunsCommandLine(self.q, self.c)
-		self.t.setDaemon(True)
 
 		self.commands = {}
+
+	def post_quit(self):
+		self.t.finished = True
 
 	def add_command(self, str, fn):
 		self.commands[str] = fn
@@ -71,7 +74,7 @@ class cmdline:
 		if found_cmd == None:
 			print 'Couldn\'t find a command with that prefix. Try "help"'
 		else:
-			found_cmd(cline)
+			found_cmd(cline, self)
 
 		self.c.acquire()
 		self.c.notify_all()
