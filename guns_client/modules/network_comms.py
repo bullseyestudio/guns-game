@@ -27,23 +27,29 @@ def send( what ):
 	else:
 			raise RuntimeError( "Network error in sending data" )
 
+
 def read( ):
 	global sock
-	readlen = 0;
 
-	if not sock is None:
+	if sock is None:
+		raise RuntimeError( "Network error in reading data" )
+
+	lines = []
+	addr = 0
+
+	while True:
 		socks = select.select( [sock], [], [], 0 )
 
 		if len( socks[0] ) == 0:
-			return [ "", 0 ]
+			break
 
 		data, addr = sock.recvfrom( 1500 )
 
 		print 'Got', data, 'from', addr
 
-		return [ data, addr ]
-	else:
-			raise RuntimeError( "Network error in reading data" )
+		lines.extend(data.split('\n'))
+
+	return [ '\n'.join(lines), addr ]
 
 
 def close():
