@@ -49,7 +49,7 @@ def read( ):
 
 		lines.extend(data.split('\n'))
 
-	return [ '\n'.join(lines), addr ]
+	return '\n'.join(lines)
 
 
 def close():
