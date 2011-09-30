@@ -81,8 +81,8 @@ def EDIDecoder( EDI, addr ):
 			global_.plr = player.Player( global_.username )
 			global_.plr.position[0] = 0
 			global_.plr.position[1] = 0
-			global_.plr.id = EDIargs[ 1 ]
-			global_.players[ EDIargs[ 1 ] ] = global_.plr
+			global_.plr.id = int( EDIargs[ 1 ] )
+			global_.players[ int( EDIargs[ 1 ] ) ] = global_.plr
 			
 		network_comms.send( edicomm.encode( 'USN', global_.username ) )
 	elif EDIargs[0] == 'USJ':
@@ -92,12 +92,13 @@ def EDIDecoder( EDI, addr ):
 		p = Player( EDIargs[1] )
 		p.position[0] = 0
 		p.position[1] = 0
-		p.id = EDIargs[2]
-		global_.players[ EDIargs[2] ] = p
+		p.id = int( EDIargs[2] )
+		global_.players[ int( EDIargs[2] ) ] = p
 	elif EDIargs[0] == 'USP':
-		p = global_.players[ EDIargs[1] ]
+		p = global_.players[ int( EDIargs[1] ) ]
 		if not p == None:
-			p.position = EDIargs[2]
+			p.position[0] = int( EDIargs[2][0] )
+			p.position[1] = int( EDIargs[2][1] )
 			p.rotation = EDIargs[3]
 	else:
 		pass

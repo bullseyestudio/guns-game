@@ -22,6 +22,7 @@ class Player:
 		self.text = global_.font.render( self.name, 1, self.textcolor )
 		self.textpos = self.text.get_rect()
 		self.tankshape = [0,0,64,48]
+		self.rotation = 0
 
 	def redraw(self, screen):
 #		global_.screen.blit( global_.background, self.textpos, self.tankshape)
