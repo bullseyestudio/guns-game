@@ -13,45 +13,31 @@ import battle
 import auth
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
-import pygame
-from pygame.locals import *
+
+try:
+	import pygame
+	from pygame.locals import *
+except ImportError:
+	sys.stderr.write("Sorry, you absolutely MUST have pygame.\nTry sudo apt-get install python-pygame, if you're on a deb-system.\n")
+	sys.exit(1)
 
 pygame.display.init()
 screen = pygame.display.set_mode((1,1))
 
-import cmdline
-
-cl = cmdline.cmdline()
-
 print 'Server init begins.'
 
-def quit_handler(str):
-	pygame.event.post(pygame.event.Event(QUIT))
+## Command-line init stuff
+import cmdline
+cl = cmdline.cmdline()
 
-cl.add_command('quit', quit_handler)
-
-def help_handler(str):
-	parts = str.split(' ', 2)
-
-	if len(parts) == 1:
-		print 'help\t\tThis help text.'
-		print 'quit\t\tStops the server.'
-		print 'Try "help command" for more info on "command".'
-	else:
-		if parts[1].lower() == 'help':
-			print 'Usage: help [command]\n'
-			print 'Provides a list of commands, or help on a specific command.'
-			print 'The [command] argument is optional.'
-		elif parts[1].lower() == 'quit':
-			print 'Usage: quit\n'
-			print 'Stops the server immediately.'
-
-cl.add_command('help', help_handler)
+import cmdhandlers
+for k, h in cmdhandlers.handlers.iteritems():
+	cl.add_command(k, h)
 
 print 'Waiting for commands, type "quit" to stop the server.'
 cl.start_listener()
 
-pygame.time.set_timer(USEREVENT+1, 1000)
+pygame.time.set_timer(USEREVENT+1, 100)
 
 while True:
 	for event in pygame.event.get():
@@ -60,4 +46,3 @@ while True:
 			cl.handle_command()
 		elif (event.type == QUIT):
 			sys.exit(0)
-
