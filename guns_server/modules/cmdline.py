@@ -26,7 +26,7 @@ class GunsCommandLine(threading.Thread):
 	def run(self):
 		self.condition.acquire()
 		while True:
-			s = raw_input('> ')
+			s = raw_input('')
 			self.queue.put(s)
 			self.condition.wait()
 
@@ -51,11 +51,27 @@ class cmdline:
 		if(self.q.empty()):
 			return
 
-		cmd = self.q.get()
+		cline = self.q.get()
+		cmd = cline.split(' ', 1)[0]
 
-		for str in self.commands.keys():
-			if cmd[0:len(str)].lower() == str.lower():
-				self.commands[str](cmd)
+		found_cmd = None
+
+		for k in self.commands.keys():
+			if cmd.lower() == k.lower(): #exact match!
+				found_cmd = self.commands[k]
+				break
+			elif k.lower().startswith(cmd.lower()): #partial match
+				if found_cmd != None:
+					print 'Ambiguous command! Try a few more letters.'
+					found_cmd = None
+					break
+				else:
+					found_cmd = self.commands[k]
+
+		if found_cmd == None:
+			print 'Couldn\'t find a command with that prefix. Try "help"'
+		else:
+			found_cmd(cline)
 
 		self.c.acquire()
 		self.c.notify_all()
