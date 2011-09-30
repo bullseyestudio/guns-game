@@ -54,13 +54,13 @@ def decode(what):
 
 	return new_parts
 
-def encode(stuff):
+def encode(*stuff):
 	"""Encode components into a proper EDIComm string.
 
-	The proper look for the "stuff" parameter is:
-		["TLA", "parameter", ["list", "parameter"], "another parameter"]
+	The proper look for the parameters is:
+		edicomm.encode("TLA", "parameter", ["list", "parameter"], ('tuples are', 'also okay'))
 	Which should create the EDIComm string:
-		"TLA parameter list,parameter another\ parameter"
+		"TLA parameter list,parameter tuples\ are,also\ okay"
 	"""
 
 	ret = ''

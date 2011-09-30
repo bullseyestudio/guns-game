@@ -50,7 +50,7 @@ def act_on_edidata(ediparts, addr):
 		players[p.id] = p
 
 		print 'Player (token:', ediparts[1], ') got id', p.id
-		sock.sendto(edicomm.encode(['UID', str(p.id)]), addr)
+		sock.sendto(edicomm.encode('UID', str(p.id)), addr)
 		return
 	elif ediparts[0] == 'USN':
 		if len(ediparts) != 2:
@@ -65,7 +65,7 @@ def act_on_edidata(ediparts, addr):
 
 		p.name = ediparts[1]
 
-		to_all.append(edicomm.encode(('USN', str(p.id), p.name)))
+		to_all.append(edicomm.encode('USN', str(p.id), p.name))
 	elif ediparts[0] == 'USD':
 		p = player_by_addr(addr)
 
@@ -75,7 +75,7 @@ def act_on_edidata(ediparts, addr):
 		print 'Player', p.name, 'disconnects'
 
 		del players[p.id]
-		to_all.append(edicomm.encode(('USD', str(p.id))))
+		to_all.append(edicomm.encode('USD', str(p.id)))
 
 def check_for_playerinput():
 	while True:
@@ -91,7 +91,7 @@ def check_for_playerinput():
 		try:
 			act_on_edidata(edicomm.decode(data), addr)
 		except EDIException as e:
-			sock.sendto(edicomm.encode(['ERR', str(e.id), e.msg]), addr)
+			sock.sendto(edicomm.encode('ERR', str(e.id), e.msg), addr)
 
 def move_players():
 	return
