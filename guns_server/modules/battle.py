@@ -127,19 +127,19 @@ def move_players():
 
 		if p.velocity[0] > 0:
 			newrot = 90
-			if p.velocity[1] > 0:
+			if p.velocity[1] < 0:
 				newrot = 45
-			elif p.velocity[0] < 0:
+			elif p.velocity[1] > 0:
 				newrot = 105
 		elif p.velocity[0] < 0:
 			newrot = 270
-			if p.velocity[1] > 0:
+			if p.velocity[1] < 0:
 				newrot = 315
-			elif p.velocity[1] < 0:
+			elif p.velocity[1] > 0:
 				newrot = 225
 		else:
 			newrot = 0
-			if p.velocity[1] < 0:
+			if p.velocity[1] > 0:
 				newrot = 180
 
 		p.position = newpos
