@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 
-from battle import players # /list needs this
+from battle import players, tokens # /list needs this
 
 def quit_handler(str, cl):
 	pygame.event.post(pygame.event.Event(QUIT))
@@ -34,9 +34,11 @@ def help_handler(str, cl):
 			print 'Stops the server immediately.'
 
 def list_handler(str, cl):
-	print 'ID\tusername\taddress info'
-	for p in players.itervalues():
-		print p.id, '\t', p.name, '\t', p.addr
+	print 'ID\tusername\taddress info\ttoken'
+	for p in players:
+		print p.id, '\t', p.name, '\t', p.addr, '\t', p.token
+
+	print 'Known tokens: ', ", ".join(tokens)
 
 def forget_handler(str, cl):
 	parts = str.split(' ', 2)
