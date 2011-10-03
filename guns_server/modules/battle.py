@@ -23,6 +23,7 @@ class Player:
 		self.id = id
 		self.token = token
 
+known_tokens = []
 players = {}
 to_all = []
 
@@ -47,7 +48,13 @@ def act_on_edidata(ediparts, addr):
 
 		print 'Got new player with token', ediparts[1]
 
-		p = Player(len(players) + 1, ediparts[1])
+		newid = 0
+		if ediparts[1] not in known_tokens:
+			known_tokens.append(ediparts[1])
+
+		newid = known_tokens.index(ediparts[1])
+
+		p = Player(newid + 1, ediparts[1])
 		p.addr = addr
 		players[p.id] = p
 
