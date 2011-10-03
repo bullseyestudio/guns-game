@@ -48,7 +48,7 @@ class Player:
 		srect.centery = self.position[1]
 		
 #		global_.screen.blit( tank_shapes, self.textpos, self.tankshape )
-		global_.screen.blit( srf2, srect )
+		global_.screen.blit( srf2, ( self.position[0], self.position[1] ) )
 
 global_.players = {}
 global_.cid = 0
