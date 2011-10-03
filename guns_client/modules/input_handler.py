@@ -43,8 +43,10 @@ def keyboard( event ):
 		elif event.key == K_x:
 			print global_.players.items()
 	elif event.type == KEYUP:
-		if event.key in [K_s, K_w, K_a, K_d]:
-			global_.velocity = [0, 0]
+		if event.key in [K_s, K_w]:
+			global_.velocity[1] = 0
+		if event.key in [K_a, K_d]:
+			global_.velocity[0] = 0
 			
 	network_comms.send( edicomm.encode( 'USV', global_.velocity ) )
 
