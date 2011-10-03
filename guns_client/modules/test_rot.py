@@ -24,7 +24,7 @@ def draw_rot():
 	srf = pygame.Surface( ( 288, 288 ) )
 	srf.fill( (255, 0, 255 ) )
 	srf.set_colorkey( (255, 0, 255 ) )
-	pygame.draw.rect( srf, (255, 0, 0), (144-32, 144-32, 64, 64), 1 )
+	pygame.draw.rect( srf, (255, 0, 0), (144-32, 144-32, 64, 64), 3 )
 	srf2 = pygame.transform.rotate( srf, rang )
 	rang = rang + 0.1
 	global_.screen.blit( srf,  (100, 100) )
