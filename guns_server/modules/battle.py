@@ -5,6 +5,7 @@
 
 import socket, select
 import edicomm
+from math import atan2, degrees
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(('0.0.0.0', 45005))
@@ -115,7 +116,7 @@ def move_players():
 	global to_all
 
 	for p in players.itervalues():
-		newpos = [vel + pos for(vel, pos) in zip(p.velocity, p.position)]
+		newpos = [(vel / 10) + pos for(vel, pos) in zip(p.velocity, p.position)]
 
 		if newpos[0] < 0 or newpos[0] > width:
 			p.velocity[0] = 0
@@ -126,23 +127,8 @@ def move_players():
 
 		newrot = p.rotation
 
-		if p.velocity[0] > 0:
-			newrot = 90
-			if p.velocity[1] > 0:
-				newrot = 45
-			elif p.velocity[1] < 0:
-				newrot = 135
-		elif p.velocity[0] < 0:
-			newrot = 270
-			if p.velocity[1] > 0:
-				newrot = 315
-			elif p.velocity[1] < 0:
-				newrot = 225
-		else:
-			if p.velocity[1] > 0:
-				newrot = 0
-			elif p.velocity[1] < 0:
-				newrot = 180
+		if p.velocity != [0,0]:
+			newrot = degrees(atan2(p.velocity[0], p.velocity[1]))
 
 		p.position = newpos
 		p.rotation = newrot
