@@ -16,6 +16,7 @@ class Player:
 	def __init__(self, id, token):
 		self.velocity = [0,0]
 		self.position = [512,384]
+		self.rotation = 0
 		self.addr = None
 		self.name = ''
 		self.id = id
@@ -123,28 +124,30 @@ def move_players():
 			p.velocity[1] = 0
 			newpos[1] = p.position[1]
 
-		newrot = 0
+		newrot = p.rotation
 
 		if p.velocity[0] > 0:
 			newrot = 90
-			if p.velocity[1] < 0:
+			if p.velocity[1] > 0:
 				newrot = 45
-			elif p.velocity[1] > 0:
+			elif p.velocity[1] < 0:
 				newrot = 135
 		elif p.velocity[0] < 0:
 			newrot = 270
-			if p.velocity[1] < 0:
+			if p.velocity[1] > 0:
 				newrot = 315
-			elif p.velocity[1] > 0:
+			elif p.velocity[1] < 0:
 				newrot = 225
 		else:
-			newrot = 0
 			if p.velocity[1] > 0:
+				newrot = 0
+			elif p.velocity[1] < 0:
 				newrot = 180
 
 		p.position = newpos
+		p.rotation = newrot
 
-		to_all.append(edicomm.encode('USP', p.id, p.position, newrot))
+		to_all.append(edicomm.encode('USP', p.id, p.position, p.rotation))
 
 def tell_players():
 	global to_all
