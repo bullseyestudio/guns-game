@@ -19,20 +19,35 @@ class Player:
 		self.name = newname
 		self.position = [ 0, 0 ]
 		self.textcolor = ( 10, 10, 10 )
-		self.text = global_.font.render( self.name, 1, self.textcolor )
-		self.textpos = self.text.get_rect()
-		self.tankshape = [0,0,64,48]
-		self.rotation = 0
+		self.tankshape = [0,0,48,64]
+		self.srf = pygame.Surface( ( self.tankshape[2], self.tankshape[3] ) ) # global_.font.render( self.name, 1, self.textcolor )
+		self.srf.fill( ( 255, 0, 255 ) )
+		self.srf.set_colorkey( ( 255, 0, 255 ) )
+#		self.textpos = self.text.get_rect()
+		pygame.draw.rect( self.srf, self.textcolor, self.tankshape, 3 )
+		self.rotation = float( 0.0 )
+		
 
 	def redraw(self, screen):
 #		global_.screen.blit( global_.background, self.textpos, self.tankshape)
 #		global_.screen.blit( global_.background, self.textpos, self.textpos)
-
-		self.textpos.centerx = self.position[0]
-		self.textpos.centery = self.position[1]
-
+		
+		srf2 = pygame.transform.rotate( self.srf, self.rotation )
+		srf = global_.font.render( self.name, 1, self.textcolor )
+		
+		srect = srf.get_rect()
+		
+		srect.centerx = self.tankshape[2] / 2
+		srect.centery = self.tankshape[2] / 3
+		
+		srf2.blit( srf, srect )
+		
+		srect = srf.get_rect()
+		srect.centerx = self.position[0]
+		srect.centery = self.position[1]
+		
 #		global_.screen.blit( tank_shapes, self.textpos, self.tankshape )
-		global_.screen.blit( self.text, self.textpos )
+		global_.screen.blit( srf2, srect )
 
 global_.players = {}
 global_.cid = 0

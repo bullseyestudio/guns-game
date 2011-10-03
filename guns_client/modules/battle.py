@@ -103,7 +103,7 @@ def EDIDecoder( EDI ):
 			if not p == None:
 				p.position[0] = int( EDIargs[2][0] )
 				p.position[1] = int( EDIargs[2][1] )
-				p.rotation = EDIargs[3]
+				p.rotation = float( EDIargs[3] )
 		except:
 			pass
 	else:
