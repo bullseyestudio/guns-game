@@ -114,8 +114,6 @@ def move_players():
 	global to_all
 
 	for p in players.itervalues():
-		print 'Processing', p.name, 'id:', p.id
-
 		newpos = [vel + pos for(vel, pos) in zip(p.velocity, p.position)]
 
 		if newpos[0] < 0 or newpos[0] > width:
@@ -125,12 +123,28 @@ def move_players():
 			p.velocity[1] = 0
 			newpos[1] = p.position[1]
 
+		newrot = 0
+
+		if p.velocity[0] > 0:
+			newrot = 90
+			if p.velocity[1] > 0:
+				newrot = 45
+			elif p.velocity[0] < 0:
+				newrot = 105
+		elif p.velocity[0] < 0:
+			newrot = 270
+			if p.velocity[1] > 0:
+				newrot = 315
+			elif p.velocity[1] < 0:
+				newrot = 225
+		else:
+			newrot = 0
+			if p.velocity[1] < 0:
+				newrot = 180
+
 		p.position = newpos
 
-		print 'id:',p.id,'position',p.position
-
-		print 'Edicomm send:', edicomm.encode('USP', p.id, p.position, 0)
-		to_all.append(edicomm.encode('USP', p.id, p.position, 0))
+		to_all.append(edicomm.encode('USP', p.id, p.position, newrot))
 
 def tell_players():
 	global to_all
