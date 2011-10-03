@@ -31,13 +31,13 @@ def keyboard( event ):
 	
 	if event.type == KEYDOWN:
 		if event.key == K_s:
-			global_.velocity[1] = 5
+			global_.velocity[1] = 50
 		elif event.key == K_w:
-			global_.velocity[1] = -5
+			global_.velocity[1] = -50
 		elif event.key == K_a:
-			global_.velocity[0] = -5
+			global_.velocity[0] = -50
 		elif event.key == K_d:
-			global_.velocity[0] = 5
+			global_.velocity[0] = 50
 		elif event.key == K_z:
 			global_.velocity = [0, 0]
 		elif event.key == K_x:
@@ -50,7 +50,7 @@ def keyboard( event ):
 
 def joystick( event ):
 	#print "Joy event :)"
-	global_.velocity[0] = int( global_.my_joystick.get_axis( 0 ) * 5 )
-	global_.velocity[1] = int( global_.my_joystick.get_axis( 1 ) * 5 )
+	global_.velocity[0] = int( global_.my_joystick.get_axis( 0 ) * 50 )
+	global_.velocity[1] = int( global_.my_joystick.get_axis( 1 ) * 50 )
 	network_comms.send( edicomm.encode( 'USV', global_.velocity ) )
 
