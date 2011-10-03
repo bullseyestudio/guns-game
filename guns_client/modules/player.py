@@ -37,15 +37,12 @@ class Player:
 		srf = global_.font.render( self.name, 1, self.textcolor )
 		
 		srect = srf.get_rect()
+		srect2 = srf2.get_rect()
 		
 		srect.centerx = self.tankshape[2] / 2
 		srect.centery = self.tankshape[2] / 3
 		
-		srf2.blit( srf, srect )
-		
-		srect = srf.get_rect()
-		srect.centerx = self.position[0]
-		srect.centery = self.position[1]
+		global_.screen.blit( srf, ( self.position[0] + ( ( srect2.width - srect.width ) / 2 ), self.position[1] - 15 ) )
 		
 #		global_.screen.blit( tank_shapes, self.textpos, self.tankshape )
 		global_.screen.blit( srf2, ( self.position[0], self.position[1] ) )

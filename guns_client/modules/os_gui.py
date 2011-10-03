@@ -38,7 +38,7 @@ def init_display( ):
 		height = 576
 		print "No configuration file found, using the defaults"
 	
-	global_.font = pygame.font.Font(None, 36)
+	global_.font = pygame.font.Font(None, 18)
 	global_.screen = pygame.display.set_mode( ( width, height ) )
 	pygame.display.set_caption( "Client App" )
 	pygame.time.set_timer( global_.PGE_GAMETICK, 20 )

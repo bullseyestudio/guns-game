@@ -37,7 +37,7 @@ def tick():
 		else:
 			print "Error with ", user
 	
-	test_rot.draw_rot()
+#	test_rot.draw_rot()
 
 	pygame.display.flip()	
 
