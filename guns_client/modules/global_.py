@@ -15,6 +15,7 @@ velocity = [0, 0]
 font = None
 joystick_count = 0
 my_joystick = 0
+debug_ = False
 
 PGE_GAMETICK = pygame.locals.USEREVENT + 1
 
