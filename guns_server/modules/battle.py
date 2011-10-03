@@ -23,8 +23,8 @@ class Player:
 		self.id = id
 		self.token = token
 
-known_tokens = []
-players = {}
+tokens = []
+players = []
 to_all = []
 
 class EDIException(Exception):
@@ -34,7 +34,7 @@ class EDIException(Exception):
 		self.msg = msg
 
 def player_by_addr(addr):
-	for i, p in players.iteritems():
+	for p in players:
 		if p.addr == addr:
 			return p
 
@@ -49,14 +49,14 @@ def act_on_edidata(ediparts, addr):
 		print 'Got new player with token', ediparts[1]
 
 		newid = 0
-		if ediparts[1] not in known_tokens:
-			known_tokens.append(ediparts[1])
+		if ediparts[1] not in tokens:
+			tokens.append(ediparts[1])
 
-		newid = known_tokens.index(ediparts[1])
+		newid = tokens.index(ediparts[1])
 
 		p = Player(newid + 1, ediparts[1])
 		p.addr = addr
-		players[p.id] = p
+		players.append(p)
 
 		print 'Player (token:', ediparts[1], ') got id', p.id
 		sock.sendto(edicomm.encode('UID', str(p.id)), addr)
@@ -76,7 +76,7 @@ def act_on_edidata(ediparts, addr):
 
 		to_all.append(edicomm.encode('USN', str(p.id), p.name))
 
-		lines = [edicomm.encode('USN', pl.id, pl.name) for pl in players.itervalues() if pl.id != p.id and p.name != '']
+		lines = [edicomm.encode('USN', pl.id, pl.name) for pl in players if pl.id != p.id and p.name != '']
 		sock.sendto('\n'.join(lines), addr)
 
 	elif ediparts[0] == 'USD':
@@ -87,7 +87,7 @@ def act_on_edidata(ediparts, addr):
 
 		print 'Player', p.name, 'disconnects'
 
-		del players[p.id]
+		players.remove(p)
 		to_all.append(edicomm.encode('USD', str(p.id)))
 	elif ediparts[0] == 'USV':
 		p = player_by_addr(addr)
@@ -122,7 +122,7 @@ def check_for_playerinput():
 def move_players():
 	global to_all
 
-	for p in players.itervalues():
+	for p in players:
 		newpos = [(vel / 10) + pos for(vel, pos) in zip(p.velocity, p.position)]
 
 		if newpos[0] < 0 or newpos[0] > width:
@@ -150,7 +150,7 @@ def tell_players():
 	data = '\n'.join(to_all)
 	to_all = []
 
-	for p in players.itervalues():
+	for p in players:
 		if p.name != '':
 			sock.sendto(data, p.addr)
 
