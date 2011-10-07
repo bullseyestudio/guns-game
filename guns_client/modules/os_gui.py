@@ -54,6 +54,8 @@ def event_loop():
 			input_handler.joystick( event )
 		elif event.type in ( KEYDOWN, KEYUP ):
 			input_handler.keyboard( event )
+		elif event.type == MOUSEBUTTONDOWN:
+			input_handler.mouse( event )
 		elif event.type == QUIT:
 			network_comms.close()
 			pygame.time.set_timer( global_.PGE_GAMETICK, 0 )

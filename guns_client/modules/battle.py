@@ -15,6 +15,7 @@ import edicomm
 import network_comms
 import global_
 import test_rot
+import bullet
 
 def init():
 	global_.background = pygame.Surface( global_.screen.get_size() )
@@ -36,6 +37,13 @@ def tick():
 #			print 'drawing', user
 		else:
 			print "Error with ", user
+	
+	for b in global_.bullets:
+		if not b == None:
+			b.redraw( global_.screen )
+#			print 'drawing', user
+		else:
+			print "Error with bullet", user
 	
 #	test_rot.draw_rot()
 
@@ -73,8 +81,15 @@ def EDIDecoder( EDI ):
 	elif EDIargs[0] == 'USC':
 		pass
 #		print 'Hey I should be a different colour'
-	elif EDIargs[0] == 'UID':
+	elif EDIargs[0] == 'USF':
 		print EDIargs
+		pos = EDIargs[2]
+		b = bullet.Bullet( ( int( pos[0] ), int( pos[1] ) ) )
+		global_.bullets.append( b )
+		pass
+		# We be receving a fire pos update
+	elif EDIargs[0] == 'UID':
+		# print EDIargs
 		p = global_.findPlayerByName( global_.username )
 		if not p == None:
 			print 'WTF, we got 2 ID\'s'
