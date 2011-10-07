@@ -101,7 +101,17 @@ def act_on_edidata(ediparts, addr):
 		p.velocity = [int(x) for x in ediparts[1]]
 
 		print 'Player', p.name, 'velocity change:', p.velocity
+	elif ediparts[0] == 'USF':
+		p = player_by_addr(addr)
 
+		if p == None:
+			raise EDIException(100, 'Please re-authenticate')
+
+		if len(ediparts) != 2:
+			raise EDIException(99, 'Wrong argument count!')
+
+		desired_shot = [int(x) for x in ediparts[1]]
+		to_all.append(edicomm.encode('USF', str(p.id), desired_shot))
 
 def check_for_playerinput():
 	while True:
