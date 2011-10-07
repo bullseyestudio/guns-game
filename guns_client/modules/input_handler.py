@@ -23,6 +23,10 @@ def init_joy( joynum ):
 	else:
 		global_.my_joystick = pygame.joystick.Joystick( joynum )
 		global_.my_joystick.init()
+		print global_.my_joystick.get_numaxes() , " Axis Joystick found"
+		if global_.my_joystick.get_numaxes() < 2:
+			global_.joystick_count = 0
+			print "Joystick with less than 2 axis not supported at the moment"
 
 def keyboard( event ):
 	move = False
@@ -56,6 +60,10 @@ def keyboard( event ):
 
 def joystick( event ):
 	#print "Joy event :)"
-	global_.velocity[0] = int( global_.my_joystick.get_axis( 0 ) * 50 )
-	global_.velocity[1] = int( global_.my_joystick.get_axis( 1 ) * 50 )
-	network_comms.send( edicomm.encode( 'USV', global_.velocity ) )
+	if global_.joystick_count != 0:
+		global_.velocity[0] = int( global_.my_joystick.get_axis( 0 ) * 50 )
+		global_.velocity[1] = int( global_.my_joystick.get_axis( 1 ) * 50 )
+		
+		newrot = degrees( atan2( global_.my_joystick.get_axis( 2 ), global_.my_joystick.get_axis( 3 ) ) )
+		
+		network_comms.send( edicomm.encode( 'USV', global_.velocity ) )

@@ -45,7 +45,8 @@ def read( ):
 
 		data, addr = sock.recvfrom( 1500 )
 
-		print 'Got', data, 'from', addr
+		if global_.debug_:
+			print 'Got', data, 'from', addr
 
 		lines.extend(data.split('\n'))
 

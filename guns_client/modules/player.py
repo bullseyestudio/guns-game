@@ -26,7 +26,8 @@ class Player:
 #		self.textpos = self.text.get_rect()
 		pygame.draw.rect( self.srf, self.textcolor, self.tankshape, 3 )
 		pygame.draw.rect( self.srf, self.textcolor, ( ( self.tankshape[2] / 2 ) - 5, 5, 10, 10 ), 3 )
-		self.rotation = float( 0.0 )
+		self.rotation = 0.0
+		self.aimang = 0.0
 		
 
 	def redraw(self, screen):
