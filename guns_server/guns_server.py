@@ -37,7 +37,7 @@ for k, h in cmdhandlers.handlers.iteritems():
 print 'Waiting for commands, type "quit" to stop the server.'
 cl.start_listener()
 
-pygame.time.set_timer(USEREVENT+1, 100)
+pygame.time.set_timer(USEREVENT+1, 25)
 
 def ctrlc_handler(*args):
 	print 'Ctrl+C recognized. Hit Enter to quit.'
