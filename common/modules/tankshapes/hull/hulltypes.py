@@ -2,8 +2,8 @@
 
 from .. import constants
 
-light = constants.id_light_hull
-medium = constants.id_medium_hull
-heavy = constants.id_heavy_hull
+light = constants.id_hull_light
+medium = constants.id_hull_medium
+heavy = constants.id_hull_heavy
 
 allowed_types = (light, medium, heavy)
