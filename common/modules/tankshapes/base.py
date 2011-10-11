@@ -20,4 +20,11 @@ class base_shape(object):
 		self.position = position
 		self.size = size
 		self.layer = layer
-	
+
+	def __repr__(self):
+		return '<shape(type={self.type})>'.format(self=self)
+
+	def __str__(self):
+		return '{0}(type={self.type},position={self.position},size={self.size},layer={self.layer})'.format(
+			type(self),
+			self=self)
