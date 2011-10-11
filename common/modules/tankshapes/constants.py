@@ -1,6 +1,8 @@
 """ Shape-related constants """
 
-hull_layer = 0
+layer_hull = 0
+layer_on_hull = 1
+layer_on_turret = 2
 
 # Type IDs are defined here:
 id_hull_light = 1
