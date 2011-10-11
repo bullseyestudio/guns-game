@@ -8,4 +8,8 @@ sizes = {
 	cannon: (8,32)
 }
 
+anchors = {
+	cannon: (0,24,8,32)
+}
+
 allowed_types = sizes.keys()
