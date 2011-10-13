@@ -42,6 +42,7 @@ class cmdline:
 		self.c = threading.Condition()
 
 		self.t = GunsCommandLine(self.q, self.c)
+		self.t.daemon = True
 
 		self.commands = {}
 

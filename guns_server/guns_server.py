@@ -40,7 +40,7 @@ cl.start_listener()
 pygame.time.set_timer(USEREVENT+1, 25)
 
 def ctrlc_handler(*args):
-	print 'Ctrl+C recognized. Hit Enter to quit.'
+	print 'Ctrl+C recognized.'
 
 	pygame.event.post(pygame.event.Event(QUIT))
 
