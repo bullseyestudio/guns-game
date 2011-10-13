@@ -11,8 +11,8 @@ from math import atan2, degrees
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(constants.listen_addr)
 
-width = 1024
-height = 576
+width = 2048
+height = 1152
 
 class Player:
 	def __init__(self, id, token):
