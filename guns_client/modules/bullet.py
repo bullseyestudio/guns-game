@@ -24,7 +24,8 @@ class Bullet:
 	def redraw( self, screen ):
 		if self.size > 0:
 			srf = pygame.Surface( ( self.size * 2, self.size * 2 ) )
-			pos = [a - b for a, b in zip(self.position, (self.size, self.size))]
+			opos = [ self.position[0] - global_.cplr.position[0] + ( global_.screen.get_width() /2 ), self.position[1] - global_.cplr.position[1] + ( global_.screen.get_height() /2 ) ]
+			pos = [a - b for a, b in zip(opos, (self.size, self.size))]
 			
 			pygame.draw.rect( srf, ( 0, 0, 0 ), srf.get_rect() )
 			global_.screen.blit( srf, pos )

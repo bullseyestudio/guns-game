@@ -29,8 +29,10 @@ def init_joy( joynum ):
 			print "Joystick with less than 2 axis not supported at the moment"
 
 def mouse( event ):
-	print '{0}:{1}'.format( event.pos[0], event.pos[1] )
-	network_comms.send( edicomm.encode( 'USF', event.pos ) )
+	pos = [ global_.cplr.position[0] + event.pos[0] - ( global_.screen.get_width() /2 ), global_.cplr.position[1] + event.pos[1] - ( global_.screen.get_height() /2 ) ]
+	
+	print '{0}:{1}'.format( pos[0], pos[1] )
+	network_comms.send( edicomm.encode( 'USF', pos ) )
 
 def keyboard( event ):
 	move = False
