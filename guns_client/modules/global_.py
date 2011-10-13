@@ -17,6 +17,7 @@ joystick_count = 0
 my_joystick = 0
 debug_ = False
 bullets = []
+cplr = None
 
 PGE_GAMETICK = pygame.locals.USEREVENT + 1
 
