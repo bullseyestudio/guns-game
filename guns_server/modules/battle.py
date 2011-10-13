@@ -38,6 +38,11 @@ def player_by_addr(addr):
 		if p.addr == addr:
 			return p
 
+def player_by_token(token):
+	for p in players:
+		if p.token == token:
+			return p
+
 def act_on_edidata(ediparts, addr):
 	global to_all
 	ediparts[0] = ediparts[0].upper()
@@ -46,19 +51,26 @@ def act_on_edidata(ediparts, addr):
 		if len(ediparts) != 2:
 			raise EDIException(99, 'Wrong argument count!')
 
-		print 'Got new player with token', ediparts[1]
+		# TODO: Validation!
+		token = ediparts[1]
+
+		print 'Got new player with token', token
 
 		newid = 0
-		if ediparts[1] not in tokens:
-			tokens.append(ediparts[1])
+		if token not in tokens:
+			tokens.append(token)
 
-		newid = tokens.index(ediparts[1])
+		newid = tokens.index(token)
 
-		p = Player(newid + 1, ediparts[1])
+		p = player_by_token(token)
+
+		if not p:
+			p = Player(newid + 1, token)
+			players.append(p)
+
 		p.addr = addr
-		players.append(p)
 
-		print 'Player (token:', ediparts[1], ') got id', p.id
+		print 'Player (token:', token, ') got id', p.id
 		sock.sendto(edicomm.encode('UID', str(p.id)), addr)
 		return
 	elif ediparts[0] == 'USN':
@@ -70,13 +82,16 @@ def act_on_edidata(ediparts, addr):
 		if p == None:
 			raise EDIException(100, 'Please re-authenticate')
 
-		print 'Player', p.id, 'sets name to', ediparts[1], 'from', p.name
+		# TODO: Validation!
+		newname = ediparts[1]
 
-		p.name = ediparts[1]
+		print 'Player', p.id, 'sets name to', newname, 'from', p.name
+
+		p.name = newname
 
 		to_all.append(edicomm.encode('USN', str(p.id), p.name))
 
-		lines = [edicomm.encode('USN', pl.id, pl.name) for pl in players if pl.id != p.id and p.name != '']
+		lines = [edicomm.encode('USN', pl.id, pl.name) for pl in players if pl.id != p.id and pl.name != '']
 		sock.sendto('\n'.join(lines), addr)
 
 	elif ediparts[0] == 'USD':
