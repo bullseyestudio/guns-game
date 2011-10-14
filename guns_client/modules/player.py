@@ -1,5 +1,6 @@
 
 import sys
+import math
 
 sys.path.append('./modules')
 sys.path.append('../common/modules')
@@ -35,8 +36,10 @@ class Player:
 	def redraw(self, screen):
 #		global_.screen.blit( global_.background, self.textpos, self.tankshape)
 #		global_.screen.blit( global_.background, self.textpos, self.textpos)
-
-		srf2 = pygame.transform.rotate( self.srf, self.rotation )
+		
+		srf2 = pygame.transform.scale( self.srf, ( int( self.tankshape[2] * global_.zoom ), int( self.tankshape[3] * global_.zoom ) ) )
+		srf2 = pygame.transform.rotate( srf2, self.rotation )
+		
 		srf = global_.font.render( self.name, 1, self.textcolor )
 		
 		srect = srf.get_rect()
@@ -44,6 +47,9 @@ class Player:
 		
 		srect.centerx = self.tankshape[2] / 2
 		srect.centery = self.tankshape[2] / 3
+		
+		selfpos = ( int( self.position[0] * global_.zoom) , int( self.position[1] * global_.zoom ) )
+		plrpos = ( int( global_.cplr.position[0] * global_.zoom) , int( global_.cplr.position[1] * global_.zoom ) )
 		
 		if(global_.username == self.name):
 			crdx = global_.font.render( "x:{0}".format(self.position[0]), 1, self.textcolor )
@@ -63,8 +69,10 @@ class Player:
 			global_.screen.blit( crdy, ( 5, crectx.height+5 ) )
 		else:
 			# TODO: Check for off-screen and ignore offscreen draws to save on processing
-			offsetx = self.position[0] - global_.cplr.position[0]
-			offsety = self.position[1] - global_.cplr.position[1]
+			offsetx = selfpos[0] - plrpos[0]
+			offsety = selfpos[1] - plrpos[1]
+			#offsetx = self.position[0] - global_.cplr.position[0]
+			#offsety = self.position[1] - global_.cplr.position[1]
 			
 #			global_.screen.blit( srf, ( self.position[0] + ( ( srect2.width - srect.width ) / 2 ), self.position[1] - 15 ) )
 #			kinda stupid, I'm sure, but it works. 
