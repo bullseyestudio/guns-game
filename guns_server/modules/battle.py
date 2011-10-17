@@ -3,6 +3,9 @@
 
 """
 
+# Please note that a large part of the comments generated in this commit are just me attempting
+# to follow code and restructure as appropriate. If I forget to take some or all of them out, I apologize.
+
 import socket, select
 import edicomm
 import constants
@@ -16,9 +19,12 @@ height = 1152
 
 class Player:
 	def __init__(self, id, token):
+		self.view_offset = { 'top':10, 'left':58, 'bottom':74, 'right':10}
 		self.velocity = [0,0]
 		self.position = [512,384]
 		self.rotation = 0
+		self.zoom = 1.0
+		self.view = [1024, 576]
 		self.addr = None
 		self.name = ''
 		self.id = id
@@ -32,7 +38,31 @@ class EDIException(Exception):
 	def __init__(self, id, msg):
 		Exception.__init__(self)
 		self.id = id
-		self.msg = msg
+		self.msg = msg	
+
+class EDIData:
+	def __init__(self):
+		self.cmd = None
+		self.pos = []
+		self.id = None
+		self.other = []
+	def build(self, plr):
+		if self.cmd != None:
+			if self.cmd == 'ERR':
+				return edicomm.encode(self.cmd, *self.other)
+			else:
+				if len(self.pos) < 1:
+					return edicomm.encode(self.cmd, self.id, *self.other)
+				else:
+					# determine view size
+					max_view_radius = [ ( int(plr.view[0]) / float(plr.zoom) ) / 2,  ( int(plr.view[1]) / float(plr.zoom) ) / 2 ]
+					
+					if self.pos[0] < ( plr.position[0] + max_view_radius[0] + plr.view_offset['right'] ) and self.pos[0] > ( plr.position[0] - max_view_radius[0] - plr.view_offset['left'] ) and self.pos[1] < ( plr.position[1] + max_view_radius[1] + plr.view_offset['top'] ) and self.pos[1] > ( plr.position[1] - max_view_radius[1] - plr.view_offset['bottom'] ):
+						return edicomm.encode( self.cmd, self.id, self.pos, *self.other )
+					else:
+						return edicomm.encode( 'NPV', self.id )
+					
+					
 
 def player_by_addr(addr):
 	for p in players:
@@ -89,9 +119,16 @@ def act_on_edidata(ediparts, addr):
 		print 'Player', p.id, 'sets name to', newname, 'from', p.name
 
 		p.name = newname
-
-		to_all.append(edicomm.encode('USN', str(p.id), p.name))
-
+		
+		#//TODO: to_all edicomm encoding to tell_players
+		#to_all.append(edicomm.encode('USN', str(p.id), p.name))
+		dat = EDIData()
+		dat.cmd = 'USN'
+		dat.id = str(p.id)
+		dat.other.append( p.name )
+		
+		to_all.append(dat)
+		
 		lines = [edicomm.encode('USN', pl.id, pl.name) for pl in players if pl.id != p.id and pl.name != '']
 		sock.sendto('\n'.join(lines), addr)
 
@@ -104,7 +141,14 @@ def act_on_edidata(ediparts, addr):
 		print 'Player', p.name, 'disconnects'
 
 		players.remove(p)
-		to_all.append(edicomm.encode('USD', str(p.id)))
+		#//TODO: to_all edicomm encoding to tell_players
+		#to_all.append(edicomm.encode('USD', str(p.id)))
+		dat = EDIData()
+		dat.cmd = 'USD'
+		dat.id = str(p.id)
+		
+		to_all.append( dat )
+		
 	elif ediparts[0] == 'USV':
 		p = player_by_addr(addr)
 
@@ -127,7 +171,28 @@ def act_on_edidata(ediparts, addr):
 			raise EDIException(99, 'Wrong argument count!')
 
 		desired_shot = [int(x) for x in ediparts[1]]
-		to_all.append(edicomm.encode('USF', str(p.id), desired_shot))
+		#//TODO: to_all edicomm encoding to tell_players
+		#to_all.append(edicomm.encode('USF', str(p.id), desired_shot))
+		dat = EDIData()
+		dat.cmd = 'USF'
+		dat.id = str(p.id)
+		dat.other.append( desired_shot )
+		
+		to_all.append( dat )
+	elif ediparts[0] == 'USR':
+		p = player_by_addr(addr)
+		
+		if p == None:
+			raise EDIException(100, 'Please re-authenticate')
+		
+		p.view = ediparts[1]
+	elif ediparts[0] == 'USZ':
+		p = player_by_addr(addr)
+		
+		if p == None:
+			raise EDIException(100, 'Please re-authenticate')
+		
+		p.zoom = ediparts[1]
 
 def check_for_playerinput():
 	while True:
@@ -165,21 +230,35 @@ def move_players():
 
 		p.position = newpos
 		p.rotation = newrot
-
-		to_all.append(edicomm.encode('USP', p.id, p.position, p.rotation))
+		#//TODO: to_all edicomm encoding to tell_players
+		#to_all.append(edicomm.encode('USP', p.id, p.position, p.rotation))
+		dat = EDIData()
+		dat.cmd = 'USP'
+		dat.id = str(p.id)
+		dat.pos = p.position
+		dat.other.append(p.rotation)
+		
+		to_all.append( dat )
 
 def tell_players():
 	global to_all
 	if len(to_all) < 1:
 		return
 
-	data = '\n'.join(to_all)
-	to_all = []
+	#data = '\n'.join(to_all)
+	#to_all = []
 
 	for p in players:
 		if p.name != '':
+			data = []
+			for dat in to_all:
+				d = dat.build(p)
+				if d != None:
+					data.append( d )
+			data = '\n'.join(data)
 			sock.sendto(data, p.addr)
-
+	
+	to_all = []		
 
 def timer_tick():
 	check_for_playerinput()
