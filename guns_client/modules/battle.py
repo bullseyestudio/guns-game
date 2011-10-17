@@ -119,8 +119,17 @@ def EDIDecoder( EDI ):
 				p.position[0] = int( EDIargs[2][0] )
 				p.position[1] = int( EDIargs[2][1] )
 				p.rotation = float( EDIargs[3] )
+				p.draw = True
 		except:
 			pass
+	elif EDIargs[0] == 'USD':
+		p = global_.findPlayerById( int( EDIargs[1] ) )
+		if not p == None:
+			del global_.players[ p.id ]
+	elif EDIargs[0] == 'NPV':
+		p = global_.findPlayerById( int( EDIargs[1] ) )
+		if not p == None:
+			p.draw = False
 	else:
 		pass
 #		print 'Errrr...'

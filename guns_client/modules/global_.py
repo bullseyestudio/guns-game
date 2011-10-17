@@ -17,6 +17,8 @@ joystick_count = 0
 my_joystick = 0
 debug_ = False
 bullets = []
+cplr = None
+zoom = 1.0
 
 PGE_GAMETICK = pygame.locals.USEREVENT + 1
 
@@ -25,5 +27,13 @@ def findPlayerByName( name ):
 	for id, p in players.iteritems():
 		if not p == None:
 			if p.name == name:
+				ret = p
+	return ret
+
+def findPlayerById( uid ):
+	ret = None
+	for id, p in players.iteritems():
+		if not p == None:
+			if p.id == uid:
 				ret = p
 	return ret
