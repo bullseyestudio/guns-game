@@ -29,3 +29,11 @@ def findPlayerByName( name ):
 			if p.name == name:
 				ret = p
 	return ret
+
+def findPlayerById( uid ):
+	ret = None
+	for id, p in players.iteritems():
+		if not p == None:
+			if p.id == uid:
+				ret = p
+	return ret

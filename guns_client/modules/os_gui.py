@@ -8,6 +8,7 @@ import battle
 import network_comms
 import global_
 import input_handler
+import edicomm
 
 try:
 	import pygame
@@ -39,7 +40,7 @@ def init_display( ):
 		print "No configuration file found, using the defaults"
 	
 	global_.font = pygame.font.Font(None, 18)
-	global_.screen = pygame.display.set_mode( ( width, height ) )
+	global_.screen = pygame.display.set_mode( ( width, height ), RESIZABLE )
 	pygame.display.set_caption( "Client App" )
 	pygame.time.set_timer( global_.PGE_GAMETICK, 20 )
 	
@@ -56,6 +57,10 @@ def event_loop():
 			input_handler.keyboard( event )
 		elif event.type == MOUSEBUTTONDOWN:
 			input_handler.mouse( event )
+		elif event.type == VIDEORESIZE:
+			global_.screen = pygame.display.set_mode( event.size, RESIZABLE )
+			battle.init();
+			network_comms.send( edicomm.encode( 'USR', event.size ) )
 		elif event.type == QUIT:
 			network_comms.close()
 			pygame.time.set_timer( global_.PGE_GAMETICK, 0 )

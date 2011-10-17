@@ -55,6 +55,7 @@ def mouse( event ):
 
 def keyboard( event ):
 	move = False
+	veldelta = 50
 
 	print '{0}:{1}'.format( event.type, event.key )
 
@@ -62,16 +63,16 @@ def keyboard( event ):
 		step = 0.0625
 		# TODO: Add in keyboard shortcuts to zoom
 		if event.key == K_s:
-			global_.velocity[1] += 50
+			global_.velocity[1] += veldelta
 			move = True
 		elif event.key == K_w:
-			global_.velocity[1] += -50
+			global_.velocity[1] -= veldelta
 			move = True
 		elif event.key == K_d:
-			global_.velocity[0] += 50
+			global_.velocity[0] += veldelta
 			move = True
 		elif event.key == K_a:
-			global_.velocity[0] += -50
+			global_.velocity[0] -= veldelta
 			move = True
 		elif event.key == K_z:
 			global_.velocity = [0, 0]
@@ -92,16 +93,16 @@ def keyboard( event ):
 				return
 	elif event.type == KEYUP:
 		if event.key == K_s:
-			global_.velocity[1] += -50
+			global_.velocity[1] -= veldelta
 			move = True
 		elif event.key == K_w:
-			global_.velocity[1] += 50
+			global_.velocity[1] += veldelta
 			move = True
 		elif event.key == K_d:
-			global_.velocity[0] += -50
+			global_.velocity[0] -= veldelta
 			move = True
 		elif event.key == K_a:
-			global_.velocity[0] += 50
+			global_.velocity[0] += veldelta
 			move = True
 			
 	if(move == True):

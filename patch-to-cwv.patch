@@ -1,0 +1,463 @@
+Index: guns_client/modules/battle.py
+===================================================================
+--- guns_client/modules/battle.py	(revision 98)
++++ guns_client/modules/battle.py	(working copy)
+@@ -119,8 +119,17 @@
+ 				p.position[0] = int( EDIargs[2][0] )
+ 				p.position[1] = int( EDIargs[2][1] )
+ 				p.rotation = float( EDIargs[3] )
++				p.draw = True
+ 		except:
+ 			pass
++	elif EDIargs[0] == 'USD':
++		p = global_.findPlayerById( int( EDIargs[1] ) )
++		if not p == None:
++			del global_.players[ p.id ]
++	elif EDIargs[0] == 'NPV':
++		p = global_.findPlayerById( int( EDIargs[1] ) )
++		if not p == None:
++			p.draw = False
+ 	else:
+ 		pass
+ #		print 'Errrr...'
+Index: guns_client/modules/global_.py
+===================================================================
+--- guns_client/modules/global_.py	(revision 101)
++++ guns_client/modules/global_.py	(working copy)
+@@ -1,31 +1,39 @@
+-
+-try:
+-	import pygame.locals
+-except ImportError, err:
+-	sys.stderr.write('This application absolutely requires pygame. Sorry.\r\n')
+-	sys.exit(1)
+-
+-players = {}
+-host = ''
+-username = ''
+-plr = None
+-screen = None
+-background = None
+-velocity = [0, 0]
+-font = None
+-joystick_count = 0
+-my_joystick = 0
+-debug_ = False
+-bullets = []
+-cplr = None
+-zoom = 1.0
+-
+-PGE_GAMETICK = pygame.locals.USEREVENT + 1
+-
+-def findPlayerByName( name ):
+-	ret = None
+-	for id, p in players.iteritems():
+-		if not p == None:
+-			if p.name == name:
+-				ret = p
+-	return ret
++
++try:
++	import pygame.locals
++except ImportError, err:
++	sys.stderr.write('This application absolutely requires pygame. Sorry.\r\n')
++	sys.exit(1)
++
++players = {}
++host = ''
++username = ''
++plr = None
++screen = None
++background = None
++velocity = [0, 0]
++font = None
++joystick_count = 0
++my_joystick = 0
++debug_ = False
++bullets = []
++cplr = None
++zoom = 1.0
++
++PGE_GAMETICK = pygame.locals.USEREVENT + 1
++
++def findPlayerByName( name ):
++	ret = None
++	for id, p in players.iteritems():
++		if not p == None:
++			if p.name == name:
++				ret = p
++	return ret
++
++def findPlayerById( uid ):
++	ret = None
++	for id, p in players.iteritems():
++		if not p == None:
++			if p.id == uid:
++				ret = p
++	return ret
+\ No newline at end of file
+Index: guns_client/modules/input_handler.py
+===================================================================
+--- guns_client/modules/input_handler.py	(revision 101)
++++ guns_client/modules/input_handler.py	(working copy)
+@@ -55,6 +55,7 @@
+ 
+ def keyboard( event ):
+ 	move = False
++	veldelta = 50
+ 
+ 	print '{0}:{1}'.format( event.type, event.key )
+ 
+@@ -62,16 +63,16 @@
+ 		step = 0.0625
+ 		# TODO: Add in keyboard shortcuts to zoom
+ 		if event.key == K_s:
+-			global_.velocity[1] += 50
++			global_.velocity[1] += veldelta
+ 			move = True
+ 		elif event.key == K_w:
+-			global_.velocity[1] += -50
++			global_.velocity[1] -= veldelta
+ 			move = True
+ 		elif event.key == K_d:
+-			global_.velocity[0] += 50
++			global_.velocity[0] += veldelta
+ 			move = True
+ 		elif event.key == K_a:
+-			global_.velocity[0] += -50
++			global_.velocity[0] -= veldelta
+ 			move = True
+ 		elif event.key == K_z:
+ 			global_.velocity = [0, 0]
+@@ -92,16 +93,16 @@
+ 				return
+ 	elif event.type == KEYUP:
+ 		if event.key == K_s:
+-			global_.velocity[1] += -50
++			global_.velocity[1] -= veldelta
+ 			move = True
+ 		elif event.key == K_w:
+-			global_.velocity[1] += 50
++			global_.velocity[1] += veldelta
+ 			move = True
+ 		elif event.key == K_d:
+-			global_.velocity[0] += -50
++			global_.velocity[0] -= veldelta
+ 			move = True
+ 		elif event.key == K_a:
+-			global_.velocity[0] += 50
++			global_.velocity[0] += veldelta
+ 			move = True
+ 			
+ 	if(move == True):
+Index: guns_client/modules/os_gui.py
+===================================================================
+--- guns_client/modules/os_gui.py	(revision 98)
++++ guns_client/modules/os_gui.py	(working copy)
+@@ -8,6 +8,7 @@
+ import network_comms
+ import global_
+ import input_handler
++import edicomm
+ 
+ try:
+ 	import pygame
+@@ -39,7 +40,7 @@
+ 		print "No configuration file found, using the defaults"
+ 	
+ 	global_.font = pygame.font.Font(None, 18)
+-	global_.screen = pygame.display.set_mode( ( width, height ) )
++	global_.screen = pygame.display.set_mode( ( width, height ), RESIZABLE )
+ 	pygame.display.set_caption( "Client App" )
+ 	pygame.time.set_timer( global_.PGE_GAMETICK, 20 )
+ 	
+@@ -56,6 +57,10 @@
+ 			input_handler.keyboard( event )
+ 		elif event.type == MOUSEBUTTONDOWN:
+ 			input_handler.mouse( event )
++		elif event.type == VIDEORESIZE:
++			global_.screen = pygame.display.set_mode( event.size, RESIZABLE )
++			battle.init();
++			network_comms.send( edicomm.encode( 'USR', event.size ) )
+ 		elif event.type == QUIT:
+ 			network_comms.close()
+ 			pygame.time.set_timer( global_.PGE_GAMETICK, 0 )
+Index: guns_client/modules/player.py
+===================================================================
+--- guns_client/modules/player.py	(revision 101)
++++ guns_client/modules/player.py	(working copy)
+@@ -29,6 +29,7 @@
+ 		pygame.draw.rect( self.srf, self.textcolor, ( ( self.tankshape[2] / 2 ) - 5, 5, 10, 10 ), 3 )
+ 		self.rotation = 0.0
+ 		self.aimang = 0.0
++		self.draw = True
+ 		if(self.name == global_.username):
+ 			global_.cplr = self
+ 		
+@@ -37,50 +38,51 @@
+ #		global_.screen.blit( global_.background, self.textpos, self.tankshape)
+ #		global_.screen.blit( global_.background, self.textpos, self.textpos)
+ 		
+-		srf2 = pygame.transform.scale( self.srf, ( int( self.tankshape[2] * global_.zoom ), int( self.tankshape[3] * global_.zoom ) ) )
+-		srf2 = pygame.transform.rotate( srf2, self.rotation )
+-		
+-		srf = global_.font.render( self.name, 1, self.textcolor )
+-		
+-		srect = srf.get_rect()
+-		srect2 = srf2.get_rect()
+-		
+-		srect.centerx = self.tankshape[2] / 2
+-		srect.centery = self.tankshape[2] / 3
+-		
+-		selfpos = ( int( self.position[0] * global_.zoom) , int( self.position[1] * global_.zoom ) )
+-		plrpos = ( int( global_.cplr.position[0] * global_.zoom) , int( global_.cplr.position[1] * global_.zoom ) )
+-		
+-		if(global_.username == self.name):
+-			crdx = global_.font.render( "x:{0}".format(self.position[0]), 1, self.textcolor )
+-			crdy = global_.font.render( "y:{0}".format(self.position[1]), 1, self.textcolor )
++		if self.draw == True:
++			srf2 = pygame.transform.scale( self.srf, ( int( self.tankshape[2] * global_.zoom ), int( self.tankshape[3] * global_.zoom ) ) )
++			srf2 = pygame.transform.rotate( srf2, self.rotation )
+ 			
+-			crectx = crdx.get_rect()
+-			crecty = crdy.get_rect()
++			srf = global_.font.render( self.name, 1, self.textcolor )
+ 			
+-#			global_.screen.blit( srf, ( self.position[0] + ( ( srect2.width - srect.width ) / 2 ), self.position[1] - 15 ) )
+-			global_.screen.blit( srf, ( global_.screen.get_width() / 2, global_.screen.get_height() /2 - 15 ) )
++			srect = srf.get_rect()
++			srect2 = srf2.get_rect()
+ 			
+-#			global_.screen.blit( tank_shapes, self.textpos, self.tankshape )
+-#			global_.screen.blit( srf2, ( self.position[0], self.position[1] ) )
+-			global_.screen.blit( srf2, ( global_.screen.get_width() / 2, global_.screen.get_height() /2 ) )
+-	        
+-			global_.screen.blit( crdx, ( 5, 5 ) )
+-			global_.screen.blit( crdy, ( 5, crectx.height+5 ) )
+-		else:
+-			# TODO: Check for off-screen and ignore offscreen draws to save on processing
+-			offsetx = selfpos[0] - plrpos[0]
+-			offsety = selfpos[1] - plrpos[1]
+-			#offsetx = self.position[0] - global_.cplr.position[0]
+-			#offsety = self.position[1] - global_.cplr.position[1]
++			srect.centerx = self.tankshape[2] / 2
++			srect.centery = self.tankshape[2] / 3
+ 			
+-#			global_.screen.blit( srf, ( self.position[0] + ( ( srect2.width - srect.width ) / 2 ), self.position[1] - 15 ) )
+-#			kinda stupid, I'm sure, but it works. 
+-			global_.screen.blit( srf, ( global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 - 15 + offsety ) )
++			selfpos = ( int( self.position[0] * global_.zoom) , int( self.position[1] * global_.zoom ) )
++			plrpos = ( int( global_.cplr.position[0] * global_.zoom) , int( global_.cplr.position[1] * global_.zoom ) )
+ 			
+-#			global_.screen.blit( tank_shapes, self.textpos, self.tankshape )
+-#			global_.screen.blit( srf2, ( self.position[0], self.position[1] ) )
+-			global_.screen.blit( srf2, ( global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 + offsety ) )
++			if(global_.username == self.name):
++				crdx = global_.font.render( "x:{0}".format(self.position[0]), 1, self.textcolor )
++				crdy = global_.font.render( "y:{0}".format(self.position[1]), 1, self.textcolor )
++				
++				crectx = crdx.get_rect()
++				crecty = crdy.get_rect()
++				
++	#			global_.screen.blit( srf, ( self.position[0] + ( ( srect2.width - srect.width ) / 2 ), self.position[1] - 15 ) )
++				global_.screen.blit( srf, ( global_.screen.get_width() / 2, global_.screen.get_height() /2 - 15 ) )
++				
++	#			global_.screen.blit( tank_shapes, self.textpos, self.tankshape )
++	#			global_.screen.blit( srf2, ( self.position[0], self.position[1] ) )
++				global_.screen.blit( srf2, ( global_.screen.get_width() / 2, global_.screen.get_height() /2 ) )
++		        
++				global_.screen.blit( crdx, ( 5, 5 ) )
++				global_.screen.blit( crdy, ( 5, crectx.height+5 ) )
++			else:
++				# TODO: Check for off-screen and ignore offscreen draws to save on processing
++				offsetx = selfpos[0] - plrpos[0]
++				offsety = selfpos[1] - plrpos[1]
++				#offsetx = self.position[0] - global_.cplr.position[0]
++				#offsety = self.position[1] - global_.cplr.position[1]
++				
++	#			global_.screen.blit( srf, ( self.position[0] + ( ( srect2.width - srect.width ) / 2 ), self.position[1] - 15 ) )
++	#			kinda stupid, I'm sure, but it works. 
++				global_.screen.blit( srf, ( global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 - 15 + offsety ) )
++				
++	#			global_.screen.blit( tank_shapes, self.textpos, self.tankshape )
++	#			global_.screen.blit( srf2, ( self.position[0], self.position[1] ) )
++				global_.screen.blit( srf2, ( global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 + offsety ) )
+ 			
+ 
+ global_.players = {}
+Index: guns_server/modules/battle.py
+===================================================================
+--- guns_server/modules/battle.py	(revision 98)
++++ guns_server/modules/battle.py	(working copy)
+@@ -3,6 +3,9 @@
+ 
+ """
+ 
++# Please note that a large part of the comments generated in this commit are just me attempting
++# to follow code and restructure as appropriate. If I forget to take some or all of them out, I apologize.
++
+ import socket, select
+ import edicomm
+ import constants
+@@ -11,14 +14,17 @@
+ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+ sock.bind(constants.listen_addr)
+ 
+-width = 1024
+-height = 576
++width = 2048
++height = 1152
+ 
+ class Player:
+ 	def __init__(self, id, token):
++		self.view_offset = { 'top':10, 'left':58, 'bottom':74, 'right':10}
+ 		self.velocity = [0,0]
+ 		self.position = [512,384]
+ 		self.rotation = 0
++		self.zoom = 1.0
++		self.view = [1024, 576]
+ 		self.addr = None
+ 		self.name = ''
+ 		self.id = id
+@@ -32,8 +38,32 @@
+ 	def __init__(self, id, msg):
+ 		Exception.__init__(self)
+ 		self.id = id
+-		self.msg = msg
++		self.msg = msg	
+ 
++class EDIData:
++	def __init__(self):
++		self.cmd = None
++		self.pos = []
++		self.id = None
++		self.other = []
++	def build(self, plr):
++		if self.cmd != None:
++			if self.cmd == 'ERR':
++				return edicomm.encode(self.cmd, *self.other)
++			else:
++				if len(self.pos) < 1:
++					return edicomm.encode(self.cmd, self.id, *self.other)
++				else:
++					# determine view size
++					max_view_radius = [ ( int(plr.view[0]) / float(plr.zoom) ) / 2,  ( int(plr.view[1]) / float(plr.zoom) ) / 2 ]
++					
++					if self.pos[0] < ( plr.position[0] + max_view_radius[0] + plr.view_offset['right'] ) and self.pos[0] > ( plr.position[0] - max_view_radius[0] - plr.view_offset['left'] ) and self.pos[1] < ( plr.position[1] + max_view_radius[1] + plr.view_offset['top'] ) and self.pos[1] > ( plr.position[1] - max_view_radius[1] - plr.view_offset['bottom'] ):
++						return edicomm.encode( self.cmd, self.id, self.pos, *self.other )
++					else:
++						return edicomm.encode( 'NPV', self.id )
++					
++					
++
+ def player_by_addr(addr):
+ 	for p in players:
+ 		if p.addr == addr:
+@@ -89,9 +119,16 @@
+ 		print 'Player', p.id, 'sets name to', newname, 'from', p.name
+ 
+ 		p.name = newname
+-
+-		to_all.append(edicomm.encode('USN', str(p.id), p.name))
+-
++		
++		#//TODO: to_all edicomm encoding to tell_players
++		#to_all.append(edicomm.encode('USN', str(p.id), p.name))
++		dat = EDIData()
++		dat.cmd = 'USN'
++		dat.id = str(p.id)
++		dat.other.append( p.name )
++		
++		to_all.append(dat)
++		
+ 		lines = [edicomm.encode('USN', pl.id, pl.name) for pl in players if pl.id != p.id and pl.name != '']
+ 		sock.sendto('\n'.join(lines), addr)
+ 
+@@ -104,7 +141,14 @@
+ 		print 'Player', p.name, 'disconnects'
+ 
+ 		players.remove(p)
+-		to_all.append(edicomm.encode('USD', str(p.id)))
++		#//TODO: to_all edicomm encoding to tell_players
++		#to_all.append(edicomm.encode('USD', str(p.id)))
++		dat = EDIData()
++		dat.cmd = 'USD'
++		dat.id = str(p.id)
++		
++		to_all.append( dat )
++		
+ 	elif ediparts[0] == 'USV':
+ 		p = player_by_addr(addr)
+ 
+@@ -127,7 +171,28 @@
+ 			raise EDIException(99, 'Wrong argument count!')
+ 
+ 		desired_shot = [int(x) for x in ediparts[1]]
+-		to_all.append(edicomm.encode('USF', str(p.id), desired_shot))
++		#//TODO: to_all edicomm encoding to tell_players
++		#to_all.append(edicomm.encode('USF', str(p.id), desired_shot))
++		dat = EDIData()
++		dat.cmd = 'USF'
++		dat.id = str(p.id)
++		dat.other.append( desired_shot )
++		
++		to_all.append( dat )
++	elif ediparts[0] == 'USR':
++		p = player_by_addr(addr)
++		
++		if p == None:
++			raise EDIException(100, 'Please re-authenticate')
++		
++		p.view = ediparts[1]
++	elif ediparts[0] == 'USZ':
++		p = player_by_addr(addr)
++		
++		if p == None:
++			raise EDIException(100, 'Please re-authenticate')
++		
++		p.zoom = ediparts[1]
+ 
+ def check_for_playerinput():
+ 	while True:
+@@ -165,22 +230,36 @@
+ 
+ 		p.position = newpos
+ 		p.rotation = newrot
++		#//TODO: to_all edicomm encoding to tell_players
++		#to_all.append(edicomm.encode('USP', p.id, p.position, p.rotation))
++		dat = EDIData()
++		dat.cmd = 'USP'
++		dat.id = str(p.id)
++		dat.pos = p.position
++		dat.other.append(p.rotation)
++		
++		to_all.append( dat )
+ 
+-		to_all.append(edicomm.encode('USP', p.id, p.position, p.rotation))
+-
+ def tell_players():
+ 	global to_all
+ 	if len(to_all) < 1:
+ 		return
+ 
+-	data = '\n'.join(to_all)
+-	to_all = []
++	#data = '\n'.join(to_all)
++	#to_all = []
+ 
+ 	for p in players:
+ 		if p.name != '':
++			data = []
++			for dat in to_all:
++				d = dat.build(p)
++				if d != None:
++					data.append( d )
++			data = '\n'.join(data)
+ 			sock.sendto(data, p.addr)
++	
++	to_all = []		
+ 
+-
+ def timer_tick():
+ 	check_for_playerinput()
+ 	move_players()
