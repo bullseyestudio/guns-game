@@ -100,7 +100,7 @@ def EDIDecoder( EDIargs ):
 	elif EDIargs[0] == 'WPT':
 		if len(EDIargs) == 4: # Setting a waypoint (WPT id x,y title)
 			wpid = int(EDIargs[1])
-			wppos = [int(x) + y for x,y in zip(EDIargs[2], waypoint.offset)]
+			wppos = [int(x) for x in EDIargs[2]]
 			wptitle = EDIargs[3]
 
 			wp = waypoint.find_waypoint_by_id(wpid)

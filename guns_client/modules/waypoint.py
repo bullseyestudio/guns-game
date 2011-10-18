@@ -5,72 +5,65 @@ import constants
 import battle
 import gui
 
-offset = (-8,8) # Necessary offset to draw the waypoint centered at position,
+size = (16, 16)
+offset = (-8, -8) # Necessary offset to draw the waypoint centered at position,
                 # instead of with the position in a corner.
 
 class Waypoint:
 	def __init__(self, id, pos, name):
+		global size
 		self.id = id
 		self.name = name
-		self.position = ( int( pos[0]), int( pos[1] ) )
+		self.position = pos
 		self.textcolor = ( 10, 10, 10 )
-		self.size = [ 16, 16 ]
-		self.srf = pygame.Surface( ( self.size[0], self.size[1] ) )
-		self.view_offset = { 'top':0, 'left':0, 'bottom':0, 'right':0}
+		self.srf = pygame.Surface( size )
+		self.srf.fill( ( 0, 0, 0 ) )
+		self.text = gui.font.render( self.name, 1, self.textcolor )
+		self.text_rect = self.text.get_rect()
 
 	def redraw(self, screen):
-		max_view_radius = ( ( int( screen.get_width() ) / float(gui.zoom) ) / 2,  ( int( screen.get_height() ) / float(gui.zoom) ) / 2 )
-		selfpos = ( int( self.position[0] * gui.zoom) , int( self.position[1] * gui.zoom ) )
-		plrpos = ( int( battle.cplr.position[0] * gui.zoom) , int( battle.cplr.position[1] * gui.zoom ) )
-		srf2 = gui.font.render( self.name, 1, self.textcolor )
+		global offset
 
-		# TODO: pleasefixkthxbai
-		if(self.position[0] < ( battle.cplr.position[0] + max_view_radius[0] + self.view_offset['right'] )
-		   and self.position[0] > ( battle.cplr.position[0] - max_view_radius[0] - self.view_offset['left'] )
-		   and self.position[1] < ( battle.cplr.position[1] + max_view_radius[1] + self.view_offset['top'] )
-		   and self.position[1] > ( battle.cplr.position[1] - max_view_radius[1] - self.view_offset['bottom'] )
-		):
-			offsetx = selfpos[0] - plrpos[0]
-			offsety = selfpos[1] - plrpos[1]
-			gui.screen.blit( self.srf, ( gui.screen.get_width() / 2 + offsetx, gui.screen.get_height() /2 - 15 + offsety ) )
-			gui.screen.blit( srf2, ( gui.screen.get_width() / 2 + offsetx, gui.screen.get_height() /2 + offsety - 30 ) )
+		spos = gui.map_to_screen(self.position)
+
+		if( gui.is_onscreen(self.position) ):
+			toff = (0, -16)
+			tpos = [ a + b - c for a,b,c in zip(spos, toff, self.text_rect.center)]
+
+			spos = [a + b for a,b in zip(spos, offset)]
+
+			gui.screen.blit( self.srf, spos )
+			gui.screen.blit( self.text, tpos )
 		else:
-			# direction indicator...let's see how I do this
+			posx = spos[0]
+			posy = spos[1]
+			toffx = 0
+			toffy = 0
 
-			screen_edge = {
-				'left': 0,
-				'right': screen.get_width() - 10,
-				'top': 0,
-				'bottom': screen.get_height() - 10
-				}
+			if posx < 0:
+				posx = 0
+				toffx = 10 + self.text_rect.centerx
+			elif posx > (gui.screen_rect.width):
+				posx = gui.screen_rect.width
+				toffx = -10 - self.text_rect.centerx
 
-			offsetx = selfpos[0] - plrpos[0]
-			offsety = selfpos[1] - plrpos[1]
-			origin = [ gui.screen.get_width() / 2 + offsetx, gui.screen.get_height() /2 - 15 + offsety ]
+			if posy < 0:
+				posy = 0
+				toffy = 10 + self.text_rect.centery
+			elif posy > (gui.screen_rect.height):
+				posy = gui.screen_rect.height
+				toffy = -10 - self.text_rect.centery
 
-			toffset = [ 0, 0 ]
+			spos = (posx, posy)
+			toff = (toffx, toffy)
+			tpos = [ a + b - c for a,b,c in zip(spos, toff, self.text_rect.center)]
 
-			if origin[0] < screen_edge['left']:
-				origin[0] = screen_edge['left']
-				toffset[0] = 20
-			if origin[0] > screen_edge['right']:
-				origin[0] = screen_edge['right']
-				toffset[0] = ( srf2.get_width() + 10 ) * -1
+			spos = [ a + b for a,b in zip(spos, offset)]
 
-			if origin[1] < screen_edge['top']:
-				origin[1] = screen_edge['top']
-				toffset[1] = 20
-			if origin[1] > screen_edge['bottom']:
-				origin[1] = screen_edge['bottom']
-				toffset[1] = ( srf2.get_height() + 2 ) * -1
+			gui.screen.blit( self.srf, spos )
+			gui.screen.blit( self.text, tpos )
 
-			pointlist = [ origin, [ origin[0] + self.size[0], origin[1] ], [ origin[0] + self.size[0], origin[1] + self.size[1] ], [ origin[0], origin[1] + self.size[1] ] ]
-
-			pygame.draw.polygon( screen, [ 0, 0, 0 ], pointlist )
-
-			gui.screen.blit( srf2, [ origin[0] + toffset[0], origin[1] + toffset[1] ] )
-
-	def is_within(self, pos):
+	def contains(self, pos):
 		if pos[0] > self.position[0] and pos[0] < ( self.position[0] + self.srf.get_width() ) and pos[1] < self.position[1] and pos[1] > ( self.position[1] - self.srf.get_height() ):
 			return True
 		else:

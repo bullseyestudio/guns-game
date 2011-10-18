@@ -79,7 +79,7 @@ def draw_things():
 
 
 def event_loop():
-	global screen, screen_rect, done
+	global screen, screen_rect, font, done
 
 	for event in pygame.event.get():
 		if event.type == constants.PGE_GAMETICK:
@@ -107,9 +107,15 @@ def map_to_screen(pos):
 	global screen_rect
 
 	plrpos = battle.cplr.position
-
 	delta = [(x - y) * zoom for x,y in zip(plrpos, pos)]
-
 	screenpos = [(x - y) for x,y in zip(screen_rect.center, delta)]
 
 	return tuple(screenpos)
+
+def is_onscreen(pos):
+	""" True if the given map position is currently visible on-screen. False otherwise. """
+	global screen_rect
+
+	spos = map_to_screen(pos)
+
+	return screen_rect.collidepoint(spos)

@@ -37,7 +37,7 @@ def mouse( event ):
 
 		deleting = False
 		for wp in waypoint.all:
-			if wp.is_within(pos):
+			if wp.contains(pos):
 				deleting = True
 				break
 
