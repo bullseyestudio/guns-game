@@ -12,6 +12,8 @@ joystick_count = 0
 my_joystick = 0
 
 def init_joy( joynum ):
+	global joystick_count, my_joystick
+
 	joystick_count = pygame.joystick.get_count()
 
 	if joystick_count == 0:
@@ -57,6 +59,8 @@ def mouse( event ):
 		print 'Unhandled mouse button at ({0},{1}) btn:{2}'.format( pos[0], pos[1], event.button )
 
 def keyboard( event ):
+	global velocity
+
 	move = False
 	veldelta = 50
 
