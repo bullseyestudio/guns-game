@@ -79,7 +79,7 @@ def draw_things():
 
 
 def event_loop():
-	global screen, screen_rect, font, done
+	global screen, screen_rect, font, done, background
 
 	for event in pygame.event.get():
 		if event.type == constants.PGE_GAMETICK:
@@ -93,7 +93,7 @@ def event_loop():
 		elif event.type == VIDEORESIZE:
 			screen = pygame.display.set_mode( event.size, RESIZABLE )
 			screen_rect = screen.get_rect()
-			battle.init();
+			background = pygame.transform.scale( background, event.size)
 			network_comms.send( edicomm.encode( 'USR', event.size ) )
 		elif event.type == QUIT:
 			network_comms.close()
