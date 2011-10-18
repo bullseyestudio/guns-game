@@ -1,6 +1,8 @@
 import pygame
 from pygame.locals import *
 
+import sys
+
 import battle
 import network_comms
 import constants
