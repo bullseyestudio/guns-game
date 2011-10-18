@@ -21,6 +21,7 @@ class Player:
 		self.position = [ 0, 0 ]
 		self.textcolor = ( 10, 10, 10 )
 		self.tankshape = [0,0,48,64]
+		self.view_offset = { 'top':10, 'left':58, 'bottom':74, 'right':10}
 		self.srf = pygame.Surface( ( self.tankshape[2], self.tankshape[3] ) ) # global_.font.render( self.name, 1, self.textcolor )
 		self.srf.fill( ( 255, 0, 255 ) )
 		self.srf.set_colorkey( ( 255, 0, 255 ) )
@@ -70,20 +71,52 @@ class Player:
 				global_.screen.blit( crdx, ( 5, 5 ) )
 				global_.screen.blit( crdy, ( 5, crectx.height+5 ) )
 			else:
-				# TODO: Check for off-screen and ignore offscreen draws to save on processing
-				offsetx = selfpos[0] - plrpos[0]
-				offsety = selfpos[1] - plrpos[1]
-				#offsetx = self.position[0] - global_.cplr.position[0]
-				#offsety = self.position[1] - global_.cplr.position[1]
 				
-	#			global_.screen.blit( srf, ( self.position[0] + ( ( srect2.width - srect.width ) / 2 ), self.position[1] - 15 ) )
-	#			kinda stupid, I'm sure, but it works. 
-				global_.screen.blit( srf, ( global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 - 15 + offsety ) )
+				max_view_radius = [ ( int( screen.get_width() ) / float(global_.zoom) ) / 2,  ( int( screen.get_height() ) / float(global_.zoom) ) / 2 ]
 				
-	#			global_.screen.blit( tank_shapes, self.textpos, self.tankshape )
-	#			global_.screen.blit( srf2, ( self.position[0], self.position[1] ) )
-				global_.screen.blit( srf2, ( global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 + offsety ) )
-			
+				# Same long-ass check as was used first in guns_server/modules/battle.py modified to work with client variables
+				if self.position[0] < ( global_.cplr.position[0] + max_view_radius[0] + self.view_offset['right'] ) and self.position[0] > ( global_.cplr.position[0] - max_view_radius[0] - self.view_offset['left'] ) and self.position[1] < ( global_.cplr.position[1] + max_view_radius[1] + self.view_offset['top'] ) and self.position[1] > ( global_.cplr.position[1] - max_view_radius[1] - self.view_offset['bottom'] ):
+					offsetx = selfpos[0] - plrpos[0]
+					offsety = selfpos[1] - plrpos[1]
+					global_.screen.blit( srf, ( global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 - 15 + offsety ) )
+					global_.screen.blit( srf2, ( global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 + offsety ) )
+				else:
+					# direction indicator...let's see how I do this
+					
+					screen_edge = {
+						'left': 0,
+						'right': screen.get_width() - 10,
+						'top': 0,
+						'bottom': screen.get_height() - 10
+						}
+					
+					offsetx = selfpos[0] - plrpos[0]
+					offsety = selfpos[1] - plrpos[1]
+					origin = [ global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 - 15 + offsety ]
+					
+					srf = global_.font.render( self.name, 1, self.textcolor )
+					
+					toffset = [ 0, 0 ]
+					
+					if origin[0] < screen_edge['left']:
+						origin[0] = screen_edge['left']
+						toffset[0] = 10
+					if origin[0] > screen_edge['right']:
+						origin[0] = screen_edge['right']
+						toffset[0] = ( srf.get_width() + 10 ) * -1
+					
+					if origin[1] < screen_edge['top']:
+						origin[1] = screen_edge['top']
+						toffset[1] = 10
+					if origin[1] > screen_edge['bottom']:
+						origin[1] = screen_edge['bottom']
+						toffset[1] = ( srf.get_height() + 2 ) * -1
+					
+					pointlist = [ origin, [ origin[0] + 5, origin[1] ], [ origin[0], origin[1] + 5 ] ]
+					
+					pygame.draw.polygon( screen, [ 0, 0, 0 ], pointlist )
+					
+					global_.screen.blit( srf, [ origin[0] + toffset[0], origin[1] + toffset[1] ] )
 
 global_.players = {}
 global_.cid = 0

@@ -3,9 +3,6 @@
 
 """
 
-# Please note that a large part of the comments generated in this commit are just me attempting
-# to follow code and restructure as appropriate. If I forget to take some or all of them out, I apologize.
-
 import socket, select
 import edicomm
 import constants
@@ -53,10 +50,13 @@ class EDIData:
 			else:
 				if len(self.pos) < 1:
 					return edicomm.encode(self.cmd, self.id, *self.other)
-				else:
+				elif True: #//TODO: future team check
+					return edicomm.encode( self.cmd, self.id, self.pos, *self.other )
+				else :
 					# determine view size
 					max_view_radius = [ ( int(plr.view[0]) / float(plr.zoom) ) / 2,  ( int(plr.view[1]) / float(plr.zoom) ) / 2 ]
 					
+					# Long-ass check for if a player is within screen view
 					if self.pos[0] < ( plr.position[0] + max_view_radius[0] + plr.view_offset['right'] ) and self.pos[0] > ( plr.position[0] - max_view_radius[0] - plr.view_offset['left'] ) and self.pos[1] < ( plr.position[1] + max_view_radius[1] + plr.view_offset['top'] ) and self.pos[1] > ( plr.position[1] - max_view_radius[1] - plr.view_offset['bottom'] ):
 						return edicomm.encode( self.cmd, self.id, self.pos, *self.other )
 					else:
@@ -120,7 +120,6 @@ def act_on_edidata(ediparts, addr):
 
 		p.name = newname
 		
-		#//TODO: to_all edicomm encoding to tell_players
 		#to_all.append(edicomm.encode('USN', str(p.id), p.name))
 		dat = EDIData()
 		dat.cmd = 'USN'
@@ -141,7 +140,6 @@ def act_on_edidata(ediparts, addr):
 		print 'Player', p.name, 'disconnects'
 
 		players.remove(p)
-		#//TODO: to_all edicomm encoding to tell_players
 		#to_all.append(edicomm.encode('USD', str(p.id)))
 		dat = EDIData()
 		dat.cmd = 'USD'
@@ -171,7 +169,6 @@ def act_on_edidata(ediparts, addr):
 			raise EDIException(99, 'Wrong argument count!')
 
 		desired_shot = [int(x) for x in ediparts[1]]
-		#//TODO: to_all edicomm encoding to tell_players
 		#to_all.append(edicomm.encode('USF', str(p.id), desired_shot))
 		dat = EDIData()
 		dat.cmd = 'USF'
@@ -230,7 +227,6 @@ def move_players():
 
 		p.position = newpos
 		p.rotation = newrot
-		#//TODO: to_all edicomm encoding to tell_players
 		#to_all.append(edicomm.encode('USP', p.id, p.position, p.rotation))
 		dat = EDIData()
 		dat.cmd = 'USP'
