@@ -1,4 +1,4 @@
-import global_
+import constants
 
 import pygame
 from pygame.locals import *
@@ -14,21 +14,21 @@ class Waypoint:
 		self.view_offset = { 'top':0, 'left':0, 'bottom':0, 'right':0}
 
 	def redraw(self, screen):
-		max_view_radius = ( ( int( screen.get_width() ) / float(global_.zoom) ) / 2,  ( int( screen.get_height() ) / float(global_.zoom) ) / 2 )
-		selfpos = ( int( self.position[0] * global_.zoom) , int( self.position[1] * global_.zoom ) )
-		plrpos = ( int( global_.cplr.position[0] * global_.zoom) , int( global_.cplr.position[1] * global_.zoom ) )
-		srf2 = global_.font.render( self.name, 1, self.textcolor )
+		max_view_radius = ( ( int( screen.get_width() ) / float(constants.zoom) ) / 2,  ( int( screen.get_height() ) / float(constants.zoom) ) / 2 )
+		selfpos = ( int( self.position[0] * constants.zoom) , int( self.position[1] * constants.zoom ) )
+		plrpos = ( int( constants.cplr.position[0] * constants.zoom) , int( constants.cplr.position[1] * constants.zoom ) )
+		srf2 = constants.font.render( self.name, 1, self.textcolor )
 
 		# TODO: pleasefixkthxbai
-		if(self.position[0] < ( global_.cplr.position[0] + max_view_radius[0] + self.view_offset['right'] )
-		   and self.position[0] > ( global_.cplr.position[0] - max_view_radius[0] - self.view_offset['left'] )
-		   and self.position[1] < ( global_.cplr.position[1] + max_view_radius[1] + self.view_offset['top'] )
-		   and self.position[1] > ( global_.cplr.position[1] - max_view_radius[1] - self.view_offset['bottom'] )
+		if(self.position[0] < ( constants.cplr.position[0] + max_view_radius[0] + self.view_offset['right'] )
+		   and self.position[0] > ( constants.cplr.position[0] - max_view_radius[0] - self.view_offset['left'] )
+		   and self.position[1] < ( constants.cplr.position[1] + max_view_radius[1] + self.view_offset['top'] )
+		   and self.position[1] > ( constants.cplr.position[1] - max_view_radius[1] - self.view_offset['bottom'] )
 		):
 			offsetx = selfpos[0] - plrpos[0]
 			offsety = selfpos[1] - plrpos[1]
-			global_.screen.blit( self.srf, ( global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 - 15 + offsety ) )
-			global_.screen.blit( srf2, ( global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 + offsety - 30 ) )
+			constants.screen.blit( self.srf, ( constants.screen.get_width() / 2 + offsetx, constants.screen.get_height() /2 - 15 + offsety ) )
+			constants.screen.blit( srf2, ( constants.screen.get_width() / 2 + offsetx, constants.screen.get_height() /2 + offsety - 30 ) )
 		else:
 			# direction indicator...let's see how I do this
 
@@ -41,7 +41,7 @@ class Waypoint:
 
 			offsetx = selfpos[0] - plrpos[0]
 			offsety = selfpos[1] - plrpos[1]
-			origin = [ global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 - 15 + offsety ]
+			origin = [ constants.screen.get_width() / 2 + offsetx, constants.screen.get_height() /2 - 15 + offsety ]
 
 			toffset = [ 0, 0 ]
 
@@ -63,7 +63,7 @@ class Waypoint:
 
 			pygame.draw.polygon( screen, [ 0, 0, 0 ], pointlist )
 
-			global_.screen.blit( srf2, [ origin[0] + toffset[0], origin[1] + toffset[1] ] )
+			constants.screen.blit( srf2, [ origin[0] + toffset[0], origin[1] + toffset[1] ] )
 
 	def is_within(self, pos):
 		if pos[0] > self.position[0] and pos[0] < ( self.position[0] + self.srf.get_width() ) and pos[1] < self.position[1] and pos[1] > ( self.position[1] - self.srf.get_height() ):

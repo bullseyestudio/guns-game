@@ -6,7 +6,7 @@ sys.path.append('../common/modules')
 
 import battle
 import network_comms
-import global_
+import constants
 import input_handler
 import edicomm
 
@@ -16,7 +16,7 @@ try:
 except ImportError, err:
 	sys.stderr.write('This application absolutely requires pygame. Sorry.\r\n')
 	sys.exit(1)
-	
+
 width = 1024
 height = 576
 done = False
@@ -38,18 +38,18 @@ def init_display( ):
 		width = 1024
 		height = 576
 		print "No configuration file found, using the defaults"
-	
-	global_.font = pygame.font.Font(None, 18)
-	global_.screen = pygame.display.set_mode( ( width, height ), RESIZABLE )
+
+	constants.font = pygame.font.Font(None, 18)
+	constants.screen = pygame.display.set_mode( ( width, height ), RESIZABLE )
 	pygame.display.set_caption( "Client App" )
-	pygame.time.set_timer( global_.PGE_GAMETICK, 20 )
-	
+	pygame.time.set_timer( constants.PGE_GAMETICK, 20 )
+
 def close_display():
 	pygame.quit()
 
 def event_loop():
 	for event in pygame.event.get():
-		if event.type == global_.PGE_GAMETICK:
+		if event.type == constants.PGE_GAMETICK:
 			battle.tick()
 		elif event.type in ( JOYAXISMOTION, JOYBALLMOTION, JOYHATMOTION, JOYBUTTONUP, JOYBUTTONDOWN ):
 			input_handler.joystick( event )
@@ -58,12 +58,12 @@ def event_loop():
 		elif event.type == MOUSEBUTTONDOWN:
 			input_handler.mouse( event )
 		elif event.type == VIDEORESIZE:
-			global_.screen = pygame.display.set_mode( event.size, RESIZABLE )
+			constants.screen = pygame.display.set_mode( event.size, RESIZABLE )
 			battle.init();
 			network_comms.send( edicomm.encode( 'USR', event.size ) )
 		elif event.type == QUIT:
 			network_comms.close()
-			pygame.time.set_timer( global_.PGE_GAMETICK, 0 )
-			global_.done = True
+			pygame.time.set_timer( constants.PGE_GAMETICK, 0 )
+			constants.done = True
 			close_display()
 			sys.exit(0)

@@ -6,8 +6,8 @@ sys.path.append('../common/modules')
 
 import battle
 import network_comms
-import global_
-from global_ import *
+import constants
+from constants import *
 import input_handler
 
 try:
@@ -27,8 +27,8 @@ def draw_rot():
 	pygame.draw.rect( srf, (255, 0, 0), (144-32, 144-32, 64, 64), 3 )
 	srf2 = pygame.transform.rotate( srf, rang )
 	rang = rang + 0.1
-	global_.screen.blit( srf,  (100, 100) )
+	constants.screen.blit( srf,  (100, 100) )
 	xp = 400 - ( srf2.get_width() / 2 )
 	yp = 100 - ( srf2.get_height() / 2 )
-#	global_.screen.blit( global_.background, (xp, yp), (xp, yp, srf2.get_width(), srf2.get_height()))
-	global_.screen.blit( srf2, (xp, yp) )
+#	constants.screen.blit( constants.background, (xp, yp), (xp, yp, srf2.get_width(), srf2.get_height()))
+	constants.screen.blit( srf2, (xp, yp) )

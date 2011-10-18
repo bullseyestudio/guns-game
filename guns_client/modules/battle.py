@@ -14,32 +14,32 @@ import player
 import waypoint
 import edicomm
 import network_comms
-import global_
+import constants
 import test_rot
 import bullet
 
 def init():
-	global_.background = pygame.Surface( global_.screen.get_size() )
-	global_.background = global_.background.convert()
-	global_.background.fill( ( 250, 250, 250 ) )
+	constants.background = pygame.Surface( constants.screen.get_size() )
+	constants.background = constants.background.convert()
+	constants.background.fill( ( 250, 250, 250 ) )
 
-	global_.screen.blit( global_.background, (0, 0) )
+	constants.screen.blit( constants.background, (0, 0) )
 	pygame.display.flip()
 
 def tick():
 	# this is what the testy code did:
 	get_player_updates()
 
-	global_.screen.blit( global_.background, (0, 0) )
+	constants.screen.blit( constants.background, (0, 0) )
 
-	for p in global_.players.itervalues():
-		p.redraw( global_.screen )
+	for p in constants.players.itervalues():
+		p.redraw( constants.screen )
 
-	for b in global_.bullets:
-		b.redraw( global_.screen )
+	for b in constants.bullets:
+		b.redraw( constants.screen )
 
 	for wp in waypoint.all:
-		wp.redraw( global_.screen )
+		wp.redraw( constants.screen )
 
 #	test_rot.draw_rot()
 
@@ -81,36 +81,36 @@ def EDIDecoder( EDI ):
 		print EDIargs
 		pos = EDIargs[2]
 		b = bullet.Bullet( ( int( pos[0] ), int( pos[1] ) ) )
-		global_.bullets.append( b )
+		constants.bullets.append( b )
 		pass
 		# We be receving a fire pos update
 	elif EDIargs[0] == 'UID':
 		# print EDIargs
-		p = global_.findPlayerByName( global_.username )
+		p = constants.findPlayerByName( constants.username )
 		if not p == None:
 			print 'WTF, we got 2 ID\'s'
 			p.id = int( EDIargs[1] )
 		else:
-			global_.plr = player.Player( global_.username )
-			global_.plr.position[0] = 0
-			global_.plr.position[1] = 0
-			global_.plr.id = int( EDIargs[ 1 ] )
-			global_.players[ int( EDIargs[ 1 ] ) ] = global_.plr
+			constants.plr = player.Player( constants.username )
+			constants.plr.position[0] = 0
+			constants.plr.position[1] = 0
+			constants.plr.id = int( EDIargs[ 1 ] )
+			constants.players[ int( EDIargs[ 1 ] ) ] = constants.plr
 
-		network_comms.send( edicomm.encode( 'USN', global_.username ) )
+		network_comms.send( edicomm.encode( 'USN', constants.username ) )
 	elif EDIargs[0] == 'USN':
-		p = global_.findPlayerByName( EDIargs[ 2 ] )
+		p = constants.findPlayerByName( EDIargs[ 2 ] )
 		if not p == None:
-			del global_.players[ p.id ]
+			del constants.players[ p.id ]
 		p = player.Player( EDIargs[ 2 ] )
 		p.position[0] = 0
 		p.position[1] = 0
 		p.rotation = 0
 		p.id = int( EDIargs[ 1 ] )
-		global_.players[ int( EDIargs[1] ) ] = p
+		constants.players[ int( EDIargs[1] ) ] = p
 	elif EDIargs[0] == 'USP':
 		try:
-			p = global_.players[ int( EDIargs[1] ) ]
+			p = constants.players[ int( EDIargs[1] ) ]
 			if not p == None:
 				p.position[0] = int( EDIargs[2][0] )
 				p.position[1] = int( EDIargs[2][1] )
@@ -119,11 +119,11 @@ def EDIDecoder( EDI ):
 		except:
 			pass
 	elif EDIargs[0] == 'USD':
-		p = global_.findPlayerById( int( EDIargs[1] ) )
+		p = constants.findPlayerById( int( EDIargs[1] ) )
 		if not p == None:
-			del global_.players[ p.id ]
+			del constants.players[ p.id ]
 	elif EDIargs[0] == 'NPV':
-		p = global_.findPlayerById( int( EDIargs[1] ) )
+		p = constants.findPlayerById( int( EDIargs[1] ) )
 		if not p == None:
 			p.draw = False
 	elif EDIargs[0] == 'WPT':

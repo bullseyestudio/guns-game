@@ -5,7 +5,7 @@ sys.path.append('./modules')
 sys.path.append('../common/modules')
 
 import network_comms
-import global_
+import constants
 import edicomm
 import waypoint
 
@@ -17,24 +17,24 @@ except ImportError, err:
 	sys.exit(1)
 
 def init_joy( joynum ):
-	global_.joystick_count = pygame.joystick.get_count()
+	constants.joystick_count = pygame.joystick.get_count()
 
-	if global_.joystick_count == 0:
+	if constants.joystick_count == 0:
 		print "No joysticks detected, joystick support not enabled."
 	else:
-		global_.my_joystick = pygame.joystick.Joystick( joynum )
-		global_.my_joystick.init()
-		print global_.my_joystick.get_numaxes() , " Axis Joystick found"
-		if global_.my_joystick.get_numaxes() < 2:
-			global_.joystick_count = 0
+		constants.my_joystick = pygame.joystick.Joystick( joynum )
+		constants.my_joystick.init()
+		print constants.my_joystick.get_numaxes() , " Axis Joystick found"
+		if constants.my_joystick.get_numaxes() < 2:
+			constants.joystick_count = 0
 			print "Joystick with less than 2 axis not supported at the moment"
 
 def mouse( event ):
 	if(event.button == 1): # left click
-		pos = ( global_.cplr.position[0] + int( ( event.pos[0] - ( global_.screen.get_width() /2 ) ) / global_.zoom ), global_.cplr.position[1] + int( ( event.pos[1] - ( global_.screen.get_height() /2 ) ) / global_.zoom ) )
+		pos = ( constants.cplr.position[0] + int( ( event.pos[0] - ( constants.screen.get_width() /2 ) ) / constants.zoom ), constants.cplr.position[1] + int( ( event.pos[1] - ( constants.screen.get_height() /2 ) ) / constants.zoom ) )
 		network_comms.send( edicomm.encode( 'USF', pos ) )
 	elif event.button == 3: # right click
-		pos = ( global_.cplr.position[0] + int( ( event.pos[0] - ( global_.screen.get_width() /2 ) ) / global_.zoom ), global_.cplr.position[1] + int( ( event.pos[1] - ( global_.screen.get_height() /2 ) ) / global_.zoom ) )
+		pos = ( constants.cplr.position[0] + int( ( event.pos[0] - ( constants.screen.get_width() /2 ) ) / constants.zoom ), constants.cplr.position[1] + int( ( event.pos[1] - ( constants.screen.get_height() /2 ) ) / constants.zoom ) )
 
 		deleting = False
 		for wp in waypoint.all:
@@ -47,17 +47,17 @@ def mouse( event ):
 		else:
 			network_comms.send( edicomm.encode( 'WPT', pos ) )
 	elif(event.button == 4): # mouse wheel down
-		global_.zoom += global_.zoom_step
-		if(global_.zoom > 1):
-			global_.zoom = 1
+		constants.zoom += constants.zoom_step
+		if(constants.zoom > 1):
+			constants.zoom = 1
 		else:
-			network_comms.send( edicomm.encode( 'USZ', global_.zoom ) )
+			network_comms.send( edicomm.encode( 'USZ', constants.zoom ) )
 	elif(event.button == 5): # mouse wheel up
-		global_.zoom -= global_.zoom_step
-		if(global_.zoom < global_.min_zoom):
-			global_.zoom = global_.min_zoom
+		constants.zoom -= constants.zoom_step
+		if(constants.zoom < constants.min_zoom):
+			constants.zoom = constants.min_zoom
 		else:
-			network_comms.send( edicomm.encode( 'USZ', global_.zoom ) )
+			network_comms.send( edicomm.encode( 'USZ', constants.zoom ) )
 	else:
 		print 'Unhandled mouse button at ({0},{1}) btn:{2}'.format( pos[0], pos[1], event.button )
 
@@ -71,57 +71,57 @@ def keyboard( event ):
 		step = 0.0625
 		# TODO: Add in keyboard shortcuts to zoom
 		if event.key == K_s:
-			global_.velocity[1] += veldelta
+			constants.velocity[1] += veldelta
 			move = True
 		elif event.key == K_w:
-			global_.velocity[1] -= veldelta
+			constants.velocity[1] -= veldelta
 			move = True
 		elif event.key == K_d:
-			global_.velocity[0] += veldelta
+			constants.velocity[0] += veldelta
 			move = True
 		elif event.key == K_a:
-			global_.velocity[0] -= veldelta
+			constants.velocity[0] -= veldelta
 			move = True
 		elif event.key == K_z:
-			global_.velocity = [0, 0]
+			constants.velocity = [0, 0]
 			move = True
 		elif event.key == K_KP_PLUS:
-			global_.zoom += step
-			if(global_.zoom > 1):
-				global_.zoom = 1
+			constants.zoom += step
+			if(constants.zoom > 1):
+				constants.zoom = 1
 			else:
-				network_comms.send( edicomm.encode( 'USZ', global_.zoom ) )
+				network_comms.send( edicomm.encode( 'USZ', constants.zoom ) )
 				return
 		elif event.key == K_KP_MINUS:
-			global_.zoom -= step
-			if(global_.zoom < step):
-				global_.zoom = step
+			constants.zoom -= step
+			if(constants.zoom < step):
+				constants.zoom = step
 			else:
-				network_comms.send( edicomm.encode( 'USZ', global_.zoom ) )
+				network_comms.send( edicomm.encode( 'USZ', constants.zoom ) )
 				return
 	elif event.type == KEYUP:
 		if event.key == K_s:
-			global_.velocity[1] -= veldelta
+			constants.velocity[1] -= veldelta
 			move = True
 		elif event.key == K_w:
-			global_.velocity[1] += veldelta
+			constants.velocity[1] += veldelta
 			move = True
 		elif event.key == K_d:
-			global_.velocity[0] -= veldelta
+			constants.velocity[0] -= veldelta
 			move = True
 		elif event.key == K_a:
-			global_.velocity[0] += veldelta
+			constants.velocity[0] += veldelta
 			move = True
 
 	if(move == True):
-		network_comms.send( edicomm.encode( 'USV', global_.velocity ) )
+		network_comms.send( edicomm.encode( 'USV', constants.velocity ) )
 
 def joystick( event ):
 	#print "Joy event :)"
-	if global_.joystick_count != 0:
-		global_.velocity[0] = int( global_.my_joystick.get_axis( 0 ) * 50 )
-		global_.velocity[1] = int( global_.my_joystick.get_axis( 1 ) * 50 )
+	if constants.joystick_count != 0:
+		constants.velocity[0] = int( constants.my_joystick.get_axis( 0 ) * 50 )
+		constants.velocity[1] = int( constants.my_joystick.get_axis( 1 ) * 50 )
 
-		newrot = degrees( atan2( global_.my_joystick.get_axis( 2 ), global_.my_joystick.get_axis( 3 ) ) )
+		newrot = degrees( atan2( constants.my_joystick.get_axis( 2 ), constants.my_joystick.get_axis( 3 ) ) )
 
-		network_comms.send( edicomm.encode( 'USV', global_.velocity ) )
+		network_comms.send( edicomm.encode( 'USV', constants.velocity ) )

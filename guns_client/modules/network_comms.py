@@ -5,7 +5,7 @@ import socket, sys
 sys.path.append('./modules')
 sys.path.append('../common/modules')
 
-import global_
+import constants
 import edicomm
 
 sock = None;
@@ -13,7 +13,7 @@ sock = None;
 def open():
 	global sock
 	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	sock.connect((global_.host, 45005))
+	sock.connect((constants.host, 45005))
 	if sock is None:
 		raise RuntimeError( "Unable to connect to the remote host" )
 
