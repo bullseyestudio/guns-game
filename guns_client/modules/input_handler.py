@@ -7,6 +7,7 @@ sys.path.append('../common/modules')
 import network_comms
 import global_
 import edicomm
+import waypoint
 
 try:
 	import pygame
@@ -34,11 +35,17 @@ def mouse( event ):
 		network_comms.send( edicomm.encode( 'USF', pos ) )
 	elif event.button == 3: # right click
 		pos = ( global_.cplr.position[0] + int( ( event.pos[0] - ( global_.screen.get_width() /2 ) ) / global_.zoom ), global_.cplr.position[1] + int( ( event.pos[1] - ( global_.screen.get_height() /2 ) ) / global_.zoom ) )
-		
-		if not global_.cplr.waypoint == None and global_.cplr.waypoint.is_within(pos):
-			network_comms.send( edicomm.encode( 'WPT', 'UNSET' ) )
+
+		deleting = False
+		for wp in waypoint.all:
+			if wp.is_within(pos):
+				deleting = True
+				break
+
+		if deleting:
+			network_comms.send( edicomm.encode( 'WPT' ) )
 		else:
-			network_comms.send( edicomm.encode( 'WPT', 'SET', pos ) )
+			network_comms.send( edicomm.encode( 'WPT', pos ) )
 	elif(event.button == 4): # mouse wheel down
 		global_.zoom += global_.zoom_step
 		if(global_.zoom > 1):
@@ -58,7 +65,7 @@ def keyboard( event ):
 	move = False
 	veldelta = 50
 
-	print '{0}:{1}'.format( event.type, event.key )
+	#print '{0}:{1}'.format( event.type, event.key )
 
 	if event.type == KEYDOWN:
 		step = 0.0625

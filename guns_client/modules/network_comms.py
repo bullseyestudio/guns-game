@@ -45,7 +45,7 @@ def read( ):
 
 		data, addr = sock.recvfrom( 1500 )
 
-		if global_.debug_:
+		if not data.startswith('USP'):
 			print 'Got', data, 'from', addr
 
 		lines.extend(data.split('\n'))
@@ -60,4 +60,4 @@ def close():
 		sock.close()
 		sock = None
 	else:
-			raise RuntimeError( "Network error while closing sockets" )
+		raise RuntimeError( "Network error while closing sockets" )

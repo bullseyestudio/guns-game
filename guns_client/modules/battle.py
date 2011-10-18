@@ -32,39 +32,34 @@ def tick():
 
 	global_.screen.blit( global_.background, (0, 0) )
 
-	for user, p in global_.players.iteritems():
-		if not p == None:
-			p.redraw( global_.screen )
-#			print 'drawing', user
-		else:
-			print "Error with ", user
-	
+	for p in global_.players.itervalues():
+		p.redraw( global_.screen )
+
 	for b in global_.bullets:
-		if not b == None:
-			b.redraw( global_.screen )
-#			print 'drawing', user
-		else:
-			print "Error with bullet", user
-	
+		b.redraw( global_.screen )
+
+	for wp in waypoint.all:
+		wp.redraw( global_.screen )
+
 #	test_rot.draw_rot()
 
-	pygame.display.flip()	
+	pygame.display.flip()
 
 def get_player_updates():
 	data = network_comms.read()
 
 	if len( data ) == 0:
 		return
-	
+
 	dlines = data.split( "\n" )
 	for i in dlines:
 		EDIDecoder( edicomm.decode( i ) )
 	return
 
 def EDIDecoder( EDI ):
-	
+
 	EDIargs = EDI
-	
+
 #	print EDIargs
 	if   EDIargs[0] == 'ERR':
 		#TODO: put in some error handling
@@ -101,7 +96,7 @@ def EDIDecoder( EDI ):
 			global_.plr.position[1] = 0
 			global_.plr.id = int( EDIargs[ 1 ] )
 			global_.players[ int( EDIargs[ 1 ] ) ] = global_.plr
-			
+
 		network_comms.send( edicomm.encode( 'USN', global_.username ) )
 	elif EDIargs[0] == 'USN':
 		p = global_.findPlayerByName( EDIargs[ 2 ] )
@@ -132,14 +127,27 @@ def EDIDecoder( EDI ):
 		if not p == None:
 			p.draw = False
 	elif EDIargs[0] == 'WPT':
-		#try:
-			p = global_.players[ int( EDIargs[2] ) ]
-			if EDIargs[1] == 'SET':
-				p.waypoint = waypoint.Waypoint( 'WP_{0}'.format( p.name ), EDIargs[3] )
-			elif EDIargs[1] == 'UNSET':
-				p.waypoint = None
-		#except:
-		#	print 'No player specified for WPT'
+		if len(EDIargs) == 4: # Setting a waypoint (WPT id x,y title)
+			wpid = int(EDIargs[1])
+			wppos = [int(x) + y for x,y in zip(EDIargs[2], (-8,8))]
+			wptitle = EDIargs[3]
+
+			wp = waypoint.find_waypoint_by_id(wpid)
+
+			if wp:
+				wp.name = wptitle
+				wp.position = wppos
+			else:
+				waypoint.all.append(waypoint.Waypoint(wpid, wppos, wptitle))
+		elif len(EDIargs) == 2: # Removing a waypoint (WPT id)
+			wpid = int(EDIargs[1])
+			wp = waypoint.find_waypoint_by_id(wpid)
+
+			if wp:
+				waypoint.all.remove(wp)
+		else:
+			print 'Weird shit happened and we got a malformed WPT: {0}'.format(edicomm.encode(EDIargs))
+
 	else:
 		pass
 #		print 'Errrr...'
