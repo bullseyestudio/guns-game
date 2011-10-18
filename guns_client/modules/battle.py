@@ -8,34 +8,15 @@ import network_comms
 import constants
 import test_rot
 import bullet
+import gui # A sign of: we do screen fuckery here!
 
-players = {}
+cplr = None
 
 def init():
-	constants.background = pygame.Surface( constants.screen.get_size() )
-	constants.background = constants.background.convert()
-	constants.background.fill( ( 250, 250, 250 ) )
-
-	constants.screen.blit( constants.background, (0, 0) )
-	pygame.display.flip()
+	pass
 
 def tick():
 	get_player_updates()
-
-	constants.screen.blit( constants.background, (0, 0) )
-
-	for p in players.itervalues():
-		p.redraw( constants.screen )
-
-	for b in bullet.all:
-		b.redraw( constants.screen )
-
-	for wp in waypoint.all:
-		wp.redraw( constants.screen )
-
-#	test_rot.draw_rot()
-
-	pygame.display.flip()
 
 def get_player_updates():
 	data = network_comms.read()
@@ -78,7 +59,7 @@ def EDIDecoder( EDI ):
 		# We be receving a fire pos update
 	elif EDIargs[0] == 'UID':
 		# print EDIargs
-		p = constants.findPlayerByName( constants.username )
+		p = player.find_by_name( constants.username )
 		if not p == None:
 			print 'WTF, we got 2 ID\'s'
 			p.id = int( EDIargs[1] )
@@ -87,22 +68,22 @@ def EDIDecoder( EDI ):
 			plr.position[0] = 0
 			plr.position[1] = 0
 			plr.id = int( EDIargs[ 1 ] )
-			players[ int( EDIargs[ 1 ] ) ] = plr
+			player.all[ int( EDIargs[ 1 ] ) ] = plr
 
 		network_comms.send( edicomm.encode( 'USN', constants.username ) )
 	elif EDIargs[0] == 'USN':
-		p = constants.findPlayerByName( EDIargs[ 2 ] )
+		p = player.find_by_name( EDIargs[ 2 ] )
 		if not p == None:
-			del players[ p.id ]
+			del player.all[ p.id ]
 		p = player.Player( EDIargs[ 2 ] )
 		p.position[0] = 0
 		p.position[1] = 0
 		p.rotation = 0
 		p.id = int( EDIargs[ 1 ] )
-		players[ int( EDIargs[1] ) ] = p
+		player.all[ int( EDIargs[1] ) ] = p
 	elif EDIargs[0] == 'USP':
 		try:
-			p = players[ int( EDIargs[1] ) ]
+			p = player.all[ int( EDIargs[1] ) ]
 			if not p == None:
 				p.position[0] = int( EDIargs[2][0] )
 				p.position[1] = int( EDIargs[2][1] )
@@ -111,11 +92,11 @@ def EDIDecoder( EDI ):
 		except:
 			pass
 	elif EDIargs[0] == 'USD':
-		p = constants.findPlayerById( int( EDIargs[1] ) )
+		p = player.find_by_id( int( EDIargs[1] ) )
 		if not p == None:
-			del players[ p.id ]
+			del player.all[ p.id ]
 	elif EDIargs[0] == 'NPV':
-		p = constants.findPlayerById( int( EDIargs[1] ) )
+		p = player.find_by_id( int( EDIargs[1] ) )
 		if not p == None:
 			p.draw = False
 	elif EDIargs[0] == 'WPT':

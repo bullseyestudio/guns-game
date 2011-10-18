@@ -8,7 +8,7 @@ sys.path.append('../common/modules')
 
 import constants
 import edicomm
-import os_gui
+import gui
 import network_comms
 import input_handler
 import battle
@@ -28,7 +28,7 @@ except ImportError, err:
 	sys.stderr.write('This application absolutely requires pygame. Sorry.\r\n')
 	sys.exit(1)
 
-os_gui.init_display()
+gui.init_display()
 network_comms.open()
 input_handler.init_joy( 0 )
 
@@ -36,5 +36,5 @@ battle.init()
 
 network_comms.send( edicomm.encode( 'UST', 'token_{0}'.format( constants.username ) ) )
 
-while not os_gui.done:
-	os_gui.event_loop()
+while not gui.done:
+	gui.event_loop()

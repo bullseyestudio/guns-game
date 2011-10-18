@@ -5,6 +5,8 @@ import network_comms
 import constants
 import edicomm
 import waypoint
+import gui
+import battle
 
 velocity = [0, 0]
 
@@ -28,10 +30,10 @@ def init_joy( joynum ):
 
 def mouse( event ):
 	if(event.button == 1): # left click
-		pos = ( constants.cplr.position[0] + int( ( event.pos[0] - ( constants.screen.get_width() /2 ) ) / constants.zoom ), constants.cplr.position[1] + int( ( event.pos[1] - ( constants.screen.get_height() /2 ) ) / constants.zoom ) )
+		pos = ( battle.cplr.position[0] + int( ( event.pos[0] - ( gui.screen.get_width() /2 ) ) / gui.zoom ), battle.cplr.position[1] + int( ( event.pos[1] - ( gui.screen.get_height() /2 ) ) / gui.zoom ) )
 		network_comms.send( edicomm.encode( 'USF', pos ) )
 	elif event.button == 3: # right click
-		pos = ( constants.cplr.position[0] + int( ( event.pos[0] - ( constants.screen.get_width() /2 ) ) / constants.zoom ), constants.cplr.position[1] + int( ( event.pos[1] - ( constants.screen.get_height() /2 ) ) / constants.zoom ) )
+		pos = ( battle.cplr.position[0] + int( ( event.pos[0] - ( gui.screen.get_width() /2 ) ) / gui.zoom ), battle.cplr.position[1] + int( ( event.pos[1] - ( gui.screen.get_height() /2 ) ) / gui.zoom ) )
 
 		deleting = False
 		for wp in waypoint.all:
@@ -44,17 +46,17 @@ def mouse( event ):
 		else:
 			network_comms.send( edicomm.encode( 'WPT', pos ) )
 	elif(event.button == 4): # mouse wheel down
-		constants.zoom += constants.zoom_step
-		if(constants.zoom > 1):
-			constants.zoom = 1
+		gui.zoom += gui.zoom_step
+		if(gui.zoom > 1):
+			gui.zoom = 1
 		else:
-			network_comms.send( edicomm.encode( 'USZ', constants.zoom ) )
+			network_comms.send( edicomm.encode( 'USZ', gui.zoom ) )
 	elif(event.button == 5): # mouse wheel up
-		constants.zoom -= constants.zoom_step
-		if(constants.zoom < constants.min_zoom):
-			constants.zoom = constants.min_zoom
+		gui.zoom -= gui.zoom_step
+		if(gui.zoom < constants.min_zoom):
+			gui.zoom = constants.min_zoom
 		else:
-			network_comms.send( edicomm.encode( 'USZ', constants.zoom ) )
+			network_comms.send( edicomm.encode( 'USZ', gui.zoom ) )
 	else:
 		print 'Unhandled mouse button at ({0},{1}) btn:{2}'.format( pos[0], pos[1], event.button )
 
@@ -85,18 +87,18 @@ def keyboard( event ):
 			velocity = [0, 0]
 			move = True
 		elif event.key == K_KP_PLUS:
-			constants.zoom += step
-			if(constants.zoom > 1):
-				constants.zoom = 1
+			gui.zoom += step
+			if(gui.zoom > 1):
+				gui.zoom = 1
 			else:
-				network_comms.send( edicomm.encode( 'USZ', constants.zoom ) )
+				network_comms.send( edicomm.encode( 'USZ', gui.zoom ) )
 				return
 		elif event.key == K_KP_MINUS:
-			constants.zoom -= step
-			if(constants.zoom < step):
-				constants.zoom = step
+			gui.zoom -= step
+			if(gui.zoom < step):
+				gui.zoom = step
 			else:
-				network_comms.send( edicomm.encode( 'USZ', constants.zoom ) )
+				network_comms.send( edicomm.encode( 'USZ', gui.zoom ) )
 				return
 	elif event.type == KEYUP:
 		if event.key == K_s:
