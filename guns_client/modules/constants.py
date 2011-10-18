@@ -5,8 +5,8 @@ username = ''
 
 screen = None
 background = None
-velocity = [0, 0]
 font = None
+
 joystick_count = 0
 my_joystick = 0
 debug_ = False

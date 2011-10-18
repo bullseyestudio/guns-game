@@ -6,6 +6,8 @@ import constants
 import edicomm
 import waypoint
 
+velocity = [0, 0]
+
 def init_joy( joynum ):
 	constants.joystick_count = pygame.joystick.get_count()
 
@@ -61,19 +63,19 @@ def keyboard( event ):
 		step = 0.0625
 		# TODO: Add in keyboard shortcuts to zoom
 		if event.key == K_s:
-			constants.velocity[1] += veldelta
+			velocity[1] += veldelta
 			move = True
 		elif event.key == K_w:
-			constants.velocity[1] -= veldelta
+			velocity[1] -= veldelta
 			move = True
 		elif event.key == K_d:
-			constants.velocity[0] += veldelta
+			velocity[0] += veldelta
 			move = True
 		elif event.key == K_a:
-			constants.velocity[0] -= veldelta
+			velocity[0] -= veldelta
 			move = True
 		elif event.key == K_z:
-			constants.velocity = [0, 0]
+			velocity = [0, 0]
 			move = True
 		elif event.key == K_KP_PLUS:
 			constants.zoom += step
@@ -91,27 +93,27 @@ def keyboard( event ):
 				return
 	elif event.type == KEYUP:
 		if event.key == K_s:
-			constants.velocity[1] -= veldelta
+			velocity[1] -= veldelta
 			move = True
 		elif event.key == K_w:
-			constants.velocity[1] += veldelta
+			velocity[1] += veldelta
 			move = True
 		elif event.key == K_d:
-			constants.velocity[0] -= veldelta
+			velocity[0] -= veldelta
 			move = True
 		elif event.key == K_a:
-			constants.velocity[0] += veldelta
+			velocity[0] += veldelta
 			move = True
 
 	if(move == True):
-		network_comms.send( edicomm.encode( 'USV', constants.velocity ) )
+		network_comms.send( edicomm.encode( 'USV', velocity ) )
 
 def joystick( event ):
 	#print "Joy event :)"
 	if constants.joystick_count != 0:
-		constants.velocity[0] = int( constants.my_joystick.get_axis( 0 ) * 50 )
-		constants.velocity[1] = int( constants.my_joystick.get_axis( 1 ) * 50 )
+		velocity[0] = int( constants.my_joystick.get_axis( 0 ) * 50 )
+		velocity[1] = int( constants.my_joystick.get_axis( 1 ) * 50 )
 
 		newrot = degrees( atan2( constants.my_joystick.get_axis( 2 ), constants.my_joystick.get_axis( 3 ) ) )
 
-		network_comms.send( edicomm.encode( 'USV', constants.velocity ) )
+		network_comms.send( edicomm.encode( 'USV', velocity ) )
