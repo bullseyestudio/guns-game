@@ -7,8 +7,6 @@ screen = None
 background = None
 font = None
 
-joystick_count = 0
-my_joystick = 0
 debug_ = False
 bullets = []
 cplr = None

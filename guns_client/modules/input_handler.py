@@ -8,17 +8,20 @@ import waypoint
 
 velocity = [0, 0]
 
-def init_joy( joynum ):
-	constants.joystick_count = pygame.joystick.get_count()
+joystick_count = 0
+my_joystick = 0
 
-	if constants.joystick_count == 0:
+def init_joy( joynum ):
+	joystick_count = pygame.joystick.get_count()
+
+	if joystick_count == 0:
 		print "No joysticks detected, joystick support not enabled."
 	else:
-		constants.my_joystick = pygame.joystick.Joystick( joynum )
-		constants.my_joystick.init()
-		print constants.my_joystick.get_numaxes() , " Axis Joystick found"
-		if constants.my_joystick.get_numaxes() < 2:
-			constants.joystick_count = 0
+		my_joystick = pygame.joystick.Joystick( joynum )
+		my_joystick.init()
+		print my_joystick.get_numaxes() , " Axis Joystick found"
+		if my_joystick.get_numaxes() < 2:
+			joystick_count = 0
 			print "Joystick with less than 2 axis not supported at the moment"
 
 def mouse( event ):
@@ -110,10 +113,10 @@ def keyboard( event ):
 
 def joystick( event ):
 	#print "Joy event :)"
-	if constants.joystick_count != 0:
-		velocity[0] = int( constants.my_joystick.get_axis( 0 ) * 50 )
-		velocity[1] = int( constants.my_joystick.get_axis( 1 ) * 50 )
+	if joystick_count != 0:
+		velocity[0] = int( my_joystick.get_axis( 0 ) * 50 )
+		velocity[1] = int( my_joystick.get_axis( 1 ) * 50 )
 
-		newrot = degrees( atan2( constants.my_joystick.get_axis( 2 ), constants.my_joystick.get_axis( 3 ) ) )
+		newrot = degrees( atan2( my_joystick.get_axis( 2 ), my_joystick.get_axis( 3 ) ) )
 
 		network_comms.send( edicomm.encode( 'USV', velocity ) )
