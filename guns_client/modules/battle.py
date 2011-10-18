@@ -84,11 +84,11 @@ def EDIDecoder( EDI ):
 			print 'WTF, we got 2 ID\'s'
 			p.id = int( EDIargs[1] )
 		else:
-			constants.plr = player.Player( constants.username )
-			constants.plr.position[0] = 0
-			constants.plr.position[1] = 0
-			constants.plr.id = int( EDIargs[ 1 ] )
-			players[ int( EDIargs[ 1 ] ) ] = constants.plr
+			plr = player.Player( constants.username )
+			plr.position[0] = 0
+			plr.position[1] = 0
+			plr.id = int( EDIargs[ 1 ] )
+			players[ int( EDIargs[ 1 ] ) ] = plr
 
 		network_comms.send( edicomm.encode( 'USN', constants.username ) )
 	elif EDIargs[0] == 'USN':

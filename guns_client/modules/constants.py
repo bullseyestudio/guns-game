@@ -2,7 +2,7 @@ import pygame.locals
 
 host = ''
 username = ''
-plr = None
+
 screen = None
 background = None
 velocity = [0, 0]
