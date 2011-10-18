@@ -9,6 +9,8 @@ import constants
 import test_rot
 import bullet
 
+players = {}
+
 def init():
 	constants.background = pygame.Surface( constants.screen.get_size() )
 	constants.background = constants.background.convert()
@@ -23,7 +25,7 @@ def tick():
 
 	constants.screen.blit( constants.background, (0, 0) )
 
-	for p in constants.players.itervalues():
+	for p in players.itervalues():
 		p.redraw( constants.screen )
 
 	for b in constants.bullets:
@@ -86,22 +88,22 @@ def EDIDecoder( EDI ):
 			constants.plr.position[0] = 0
 			constants.plr.position[1] = 0
 			constants.plr.id = int( EDIargs[ 1 ] )
-			constants.players[ int( EDIargs[ 1 ] ) ] = constants.plr
+			players[ int( EDIargs[ 1 ] ) ] = constants.plr
 
 		network_comms.send( edicomm.encode( 'USN', constants.username ) )
 	elif EDIargs[0] == 'USN':
 		p = constants.findPlayerByName( EDIargs[ 2 ] )
 		if not p == None:
-			del constants.players[ p.id ]
+			del players[ p.id ]
 		p = player.Player( EDIargs[ 2 ] )
 		p.position[0] = 0
 		p.position[1] = 0
 		p.rotation = 0
 		p.id = int( EDIargs[ 1 ] )
-		constants.players[ int( EDIargs[1] ) ] = p
+		players[ int( EDIargs[1] ) ] = p
 	elif EDIargs[0] == 'USP':
 		try:
-			p = constants.players[ int( EDIargs[1] ) ]
+			p = players[ int( EDIargs[1] ) ]
 			if not p == None:
 				p.position[0] = int( EDIargs[2][0] )
 				p.position[1] = int( EDIargs[2][1] )
@@ -112,7 +114,7 @@ def EDIDecoder( EDI ):
 	elif EDIargs[0] == 'USD':
 		p = constants.findPlayerById( int( EDIargs[1] ) )
 		if not p == None:
-			del constants.players[ p.id ]
+			del players[ p.id ]
 	elif EDIargs[0] == 'NPV':
 		p = constants.findPlayerById( int( EDIargs[1] ) )
 		if not p == None:

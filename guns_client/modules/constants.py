@@ -1,6 +1,5 @@
 import pygame.locals
 
-players = {}
 host = ''
 username = ''
 plr = None
