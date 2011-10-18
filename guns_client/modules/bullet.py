@@ -31,3 +31,5 @@ class Bullet:
 					self.sizechange = -1
 
 			self.timer = self.timer + 1
+
+all = []

@@ -20,7 +20,6 @@ def init():
 	pygame.display.flip()
 
 def tick():
-	# this is what the testy code did:
 	get_player_updates()
 
 	constants.screen.blit( constants.background, (0, 0) )
@@ -28,7 +27,7 @@ def tick():
 	for p in players.itervalues():
 		p.redraw( constants.screen )
 
-	for b in constants.bullets:
+	for b in bullet.all:
 		b.redraw( constants.screen )
 
 	for wp in waypoint.all:
@@ -74,7 +73,7 @@ def EDIDecoder( EDI ):
 		print EDIargs
 		pos = EDIargs[2]
 		b = bullet.Bullet( ( int( pos[0] ), int( pos[1] ) ) )
-		constants.bullets.append( b )
+		bullet.all.append( b )
 		pass
 		# We be receving a fire pos update
 	elif EDIargs[0] == 'UID':
