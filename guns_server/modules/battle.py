@@ -126,15 +126,9 @@ def act_on_edidata(ediparts, addr):
 		print 'Player', p.id, 'sets name to', newname, 'from', p.name
 
 		p.name = newname
-		
-		#to_all.append(edicomm.encode('USN', str(p.id), p.name))
-		dat = EDIData()
-		dat.cmd = 'USN'
-		dat.id = str(p.id)
-		dat.other.append( p.name )
-		
-		to_all.append(dat)
-		
+
+		to_all.append(edicomm.encode('USN', str(p.id), p.name))
+
 		lines = [edicomm.encode('USN', pl.id, pl.name) for pl in players if pl.id != p.id and pl.name != '']
 		sock.sendto('\n'.join(lines), addr)
 
@@ -147,13 +141,8 @@ def act_on_edidata(ediparts, addr):
 		print 'Player', p.name, 'disconnects'
 
 		players.remove(p)
-		#to_all.append(edicomm.encode('USD', str(p.id)))
-		dat = EDIData()
-		dat.cmd = 'USD'
-		dat.id = str(p.id)
-		
-		to_all.append( dat )
-		
+		to_all.append(edicomm.encode('USD', str(p.id)))
+
 	elif ediparts[0] == 'USV':
 		p = player_by_addr(addr)
 
@@ -257,14 +246,8 @@ def move_players():
 
 		p.position = newpos
 		p.rotation = newrot
-		#to_all.append(edicomm.encode('USP', p.id, p.position, p.rotation))
-		dat = EDIData()
-		dat.cmd = 'USP'
-		dat.id = str(p.id)
-		dat.pos = p.position
-		dat.other.append(p.rotation)
-		
-		to_all.append( dat )
+
+		to_all.append(edicomm.encode('USP', p.id, p.position, p.rotation))
 
 def tell_players():
 	global to_all
@@ -283,8 +266,8 @@ def tell_players():
 					data.append( d )
 			data = '\n'.join(data)
 			sock.sendto(data, p.addr)
-	
-	to_all = []		
+
+	to_all = []
 
 def timer_tick():
 	check_for_playerinput()
