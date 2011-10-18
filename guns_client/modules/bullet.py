@@ -1,17 +1,7 @@
-
-import sys
-
-sys.path.append('./modules')
-sys.path.append('../common/modules')
-
 import constants
 
-try:
-	import pygame
-	from pygame.locals import *
-except ImportError, err:
-	sys.stderr.write('This application absolutely requires pygame. Sorry.\r\n')
-	sys.exit(1)
+import pygame
+from pygame.locals import *
 
 class Bullet:
 

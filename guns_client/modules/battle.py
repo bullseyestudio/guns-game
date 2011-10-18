@@ -1,14 +1,5 @@
-import sys
-
-try:
-	import pygame
-	from pygame.locals import *
-except ImportError, err:
-	sys.stderr.write('This application absolutely requires pygame. Sorry.\r\n')
-	sys.exit(1)
-
-sys.path.append('./modules')
-sys.path.append('../common/modules')
+import pygame
+from pygame.locals import *
 
 import player
 import waypoint

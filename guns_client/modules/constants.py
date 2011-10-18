@@ -1,9 +1,4 @@
-
-try:
-	import pygame.locals
-except ImportError, err:
-	sys.stderr.write('This application absolutely requires pygame. Sorry.\r\n')
-	sys.exit(1)
+import pygame.locals
 
 players = {}
 host = ''

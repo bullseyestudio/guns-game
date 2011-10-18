@@ -1,9 +1,5 @@
 
-import select
-import socket, sys
-
-sys.path.append('./modules')
-sys.path.append('../common/modules')
+import select, socket
 
 import constants
 import edicomm
