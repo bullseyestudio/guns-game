@@ -36,40 +36,7 @@ class EDIException(Exception):
 	def __init__(self, id, msg):
 		Exception.__init__(self)
 		self.id = id
-		self.msg = msg	
-
-class EDIData:
-	def __init__(self):
-		self.cmd = None
-		self.pos = []
-		self.id = None
-		self.other = []
-	def build(self, plr):
-		if self.cmd != None:
-			if self.cmd == 'ERR':
-				return edicomm.encode(self.cmd, *self.other)
-			elif self.cmd == 'USP':
-				if True: #//TODO: future team check
-					return edicomm.encode( self.cmd, self.id, self.pos, *self.other )
-				else :
-					# determine view size
-					max_view_radius = [ ( int(plr.view[0]) / float(plr.zoom) ) / 2,  ( int(plr.view[1]) / float(plr.zoom) ) / 2 ]
-					
-					# Long-ass check for if a player is within screen view
-					if self.pos[0] < ( plr.position[0] + max_view_radius[0] + plr.view_offset['right'] ) and self.pos[0] > ( plr.position[0] - max_view_radius[0] - plr.view_offset['left'] ) and self.pos[1] < ( plr.position[1] + max_view_radius[1] + plr.view_offset['top'] ) and self.pos[1] > ( plr.position[1] - max_view_radius[1] - plr.view_offset['bottom'] ):
-						return edicomm.encode( self.cmd, self.id, self.pos, *self.other )
-					else:
-						return edicomm.encode( 'NPV', self.id )
-			elif self.cmd == 'WPT':
-				if self.other[0] == 'SET':
-					ret = edicomm.encode(self.cmd, self.other[0], self.id, self.pos)
-					return ret
-				else:
-					return edicomm.encode(self.cmd, self.other[0], self.id)
-			else:
-				return edicomm.encode(self.cmd, self.id, *self.other )
-					
-					
+		self.msg = msg
 
 def player_by_addr(addr):
 	for p in players:
@@ -246,17 +213,10 @@ def tell_players():
 	if len(to_all) < 1:
 		return
 
-	#data = '\n'.join(to_all)
-	#to_all = []
+	data = '\n'.join(to_all)
 
 	for p in players:
 		if p.name != '':
-			data = []
-			for dat in to_all:
-				d = dat.build(p)
-				if d != None:
-					data.append( d )
-			data = '\n'.join(data)
 			sock.sendto(data, p.addr)
 
 	to_all = []
