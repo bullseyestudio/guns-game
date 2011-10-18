@@ -5,6 +5,9 @@ import constants
 import battle
 import gui
 
+offset = (-8,8) # Necessary offset to draw the waypoint centered at position,
+                # instead of with the position in a corner.
+
 class Waypoint:
 	def __init__(self, id, pos, name):
 		self.id = id

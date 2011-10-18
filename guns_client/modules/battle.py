@@ -29,9 +29,7 @@ def get_player_updates():
 		EDIDecoder( edicomm.decode( i ) )
 	return
 
-def EDIDecoder( EDI ):
-
-	EDIargs = EDI
+def EDIDecoder( EDIargs ):
 
 #	print EDIargs
 	if   EDIargs[0] == 'ERR':
@@ -102,7 +100,7 @@ def EDIDecoder( EDI ):
 	elif EDIargs[0] == 'WPT':
 		if len(EDIargs) == 4: # Setting a waypoint (WPT id x,y title)
 			wpid = int(EDIargs[1])
-			wppos = [int(x) + y for x,y in zip(EDIargs[2], (-8,8))]
+			wppos = [int(x) + y for x,y in zip(EDIargs[2], waypoint.offset)]
 			wptitle = EDIargs[3]
 
 			wp = waypoint.find_waypoint_by_id(wpid)

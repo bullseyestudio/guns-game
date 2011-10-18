@@ -16,6 +16,7 @@ height = 576
 done = False
 
 screen = None
+screen_rect = None
 background = None
 font = None
 
@@ -25,8 +26,7 @@ zoom_step = 0.0625
 
 def init_display( ):
 	""" Initialize display """
-
-	global screen, font, background
+	global screen, screen_rect, background, font, width, height
 
 	pygame.init()
 	try:
@@ -38,17 +38,16 @@ def init_display( ):
 				width = int( value )
 			if key == "HEIGHT":
 				height = int( value )
-		settings.close
+		settings.close()
 	except IOError:
-		width = 1024
-		height = 576
 		print "No configuration file found, using the defaults"
 
-	font = pygame.font.Font(None, 18)
-
 	screen = pygame.display.set_mode( ( width, height ), RESIZABLE )
+	screen_rect = screen.get_rect()
 	pygame.display.set_caption( "Client App" )
 	pygame.time.set_timer( constants.PGE_GAMETICK, 20 )
+
+	font = pygame.font.Font(None, 18)
 
 	background = pygame.Surface( screen.get_size() )
 	background = background.convert()
@@ -71,7 +70,7 @@ def draw_things():
 		p.redraw( screen )
 
 	for b in bullet.all:
-		b.redraw( screen )
+		b.redraw()
 
 	for wp in waypoint.all:
 		wp.redraw( screen )
@@ -80,7 +79,7 @@ def draw_things():
 
 
 def event_loop():
-	global screen, done
+	global screen, screen_rect, done
 
 	for event in pygame.event.get():
 		if event.type == constants.PGE_GAMETICK:
@@ -93,6 +92,7 @@ def event_loop():
 			input_handler.mouse( event )
 		elif event.type == VIDEORESIZE:
 			screen = pygame.display.set_mode( event.size, RESIZABLE )
+			screen_rect = screen.get_rect()
 			battle.init();
 			network_comms.send( edicomm.encode( 'USR', event.size ) )
 		elif event.type == QUIT:
@@ -101,3 +101,15 @@ def event_loop():
 			done = True
 			close_display()
 			sys.exit(0)
+
+def map_to_screen(pos):
+	""" Translate a set of map coordinates to screen coordinates """
+	global screen_rect
+
+	plrpos = battle.cplr.position
+
+	delta = [(x - y) * zoom for x,y in zip(plrpos, pos)]
+
+	screenpos = [(x - y) for x,y in zip(screen_rect.center, delta)]
+
+	return tuple(screenpos)

@@ -19,7 +19,6 @@ if len(sys.argv) < 3:
 
 constants.username = sys.argv[1]
 constants.host = sys.argv[2]
-constants.plr = None
 
 try:
 	import pygame
