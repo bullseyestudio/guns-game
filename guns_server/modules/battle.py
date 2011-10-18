@@ -156,7 +156,7 @@ def act_on_edidata(ediparts, addr):
 
 		if len(ediparts) == 2: # Player wants waypoint set: WPT x,y
 			wpid = constants.min_player_wpid + p.id
-			wppos = [int(x) for x in ediparts[2]]
+			wppos = [int(x) for x in ediparts[1]]
 			wptitle = constants.player_wp_fmtstring.format(p=p)
 
 			to_all.append(edicomm.encode('WPT', wpid, wppos, wptitle))
