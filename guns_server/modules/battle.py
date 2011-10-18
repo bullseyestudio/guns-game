@@ -165,50 +165,42 @@ def act_on_edidata(ediparts, addr):
 			raise EDIException(99, 'Wrong argument count!')
 
 		desired_shot = [int(x) for x in ediparts[1]]
-		#to_all.append(edicomm.encode('USF', str(p.id), desired_shot))
-		dat = EDIData()
-		dat.cmd = 'USF'
-		dat.id = str(p.id)
-		dat.other.append( desired_shot )
-		
-		to_all.append( dat )
+		to_all.append(edicomm.encode('USF', str(p.id), desired_shot))
+
 	elif ediparts[0] == 'USR':
 		p = player_by_addr(addr)
-		
+
 		if p == None:
 			raise EDIException(100, 'Please re-authenticate')
-		
+
 		p.view = ediparts[1]
 	elif ediparts[0] == 'USZ':
 		p = player_by_addr(addr)
-		
+
 		if p == None:
 			raise EDIException(100, 'Please re-authenticate')
-		
+
 		p.zoom = ediparts[1]
 	elif ediparts[0] == 'WPT':
 		p = player_by_addr(addr)
-		
-		if ediparts[1] == 'SET':
-			p.waypoint = ediparts[2]
-			dat = EDIData()
-			dat.cmd = 'WPT'
-			dat.pos = ediparts[2]
-			dat.other.append( 'SET' )
-			dat.id = p.id
-			
-			to_all.append( dat )
-		elif ediparts[1] == 'UNSET':
-			p.waypoint = None
-			dat = EDIData()
-			dat.cmd = 'WPT'
-			dat.other.append( 'UNSET' )
-			dat.id = p.id
-			
-			to_all.append( dat )
+
+		if p == None:
+			raise EDIException(100, 'Please re-authenticate')
+
+		if len(ediparts) == 2: # Player wants waypoint set: WPT x,y
+			wpid = constants.min_player_wpid + p.id
+			wppos = [int(x) for x in ediparts[2]]
+			wptitle = constants.player_wp_fmtstring.format(p=p)
+
+			to_all.append(edicomm.encode('WPT', wpid, wppos, wptitle))
+		elif len(ediparts) == 1: # Player wants waypoint deleted
+			wpid = constants.min_player_wpid + p.id
+
+			to_all.append(edicomm.encode('WPT', wpid))
 		else:
-			print 'Unhandled WPT: {0}'.format( ediparts[1] )
-			
+			print 'Malformed WPT: {0}'.format( edicomm.encode(ediparts) )
+			raise EDIException(99, 'Wrong argument count!')
+
 
 def check_for_playerinput():
 	while True:
