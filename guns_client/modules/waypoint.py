@@ -20,6 +20,7 @@ class Waypoint:
 		self.srf.fill( ( 0, 0, 0 ) )
 		self.text = gui.font.render( self.name, 1, self.textcolor )
 		self.text_rect = self.text.get_rect()
+		self.screen_pos = [-16,-16] # Magic offscreen coordinates
 
 	def redraw(self, screen):
 		global offset
@@ -32,9 +33,13 @@ class Waypoint:
 
 			spos = [a + b for a,b in zip(spos, offset)]
 
+			self.screen_pos = spos
+
 			gui.screen.blit( self.srf, spos )
 			gui.screen.blit( self.text, tpos )
 		else:
+			self.screen_pos = [-16, -16]
+
 			posx = spos[0]
 			posy = spos[1]
 			toffx = 0
@@ -64,7 +69,12 @@ class Waypoint:
 			gui.screen.blit( self.text, tpos )
 
 	def contains(self, pos):
-		if pos[0] > self.position[0] and pos[0] < ( self.position[0] + self.srf.get_width() ) and pos[1] < self.position[1] and pos[1] > ( self.position[1] - self.srf.get_height() ):
+		global size
+		deltax = pos[0] - self.screen_pos[0]
+		deltay = pos[1] - self.screen_pos[1]
+
+		if( deltax > 0 and deltax < size[0]
+		and deltay > 0 and deltay < size[1]):
 			return True
 		else:
 			return False

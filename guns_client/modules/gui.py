@@ -106,11 +106,19 @@ def map_to_screen(pos):
 	""" Translate a set of map coordinates to screen coordinates """
 	global screen_rect
 
-	plrpos = battle.cplr.position
-	delta = [(x - y) * zoom for x,y in zip(plrpos, pos)]
+	delta = [(x - y) * zoom for x,y in zip(battle.cplr.position, pos)]
 	screenpos = [(x - y) for x,y in zip(screen_rect.center, delta)]
 
 	return tuple(screenpos)
+
+def screen_to_map(pos):
+	""" Translate a set of screen coordinates to map coordinates """
+	global screen_rect
+
+	delta = [int((x - y) / zoom) for x,y in zip(screen_rect.center, pos)]
+	mappos = [(x - y) for x,y in zip(battle.cplr.position, delta)]
+
+	return tuple(mappos)
 
 def is_onscreen(pos):
 	""" True if the given map position is currently visible on-screen. False otherwise. """

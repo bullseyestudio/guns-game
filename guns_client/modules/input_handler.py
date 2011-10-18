@@ -30,14 +30,13 @@ def init_joy( joynum ):
 
 def mouse( event ):
 	if(event.button == 1): # left click
-		pos = ( battle.cplr.position[0] + int( ( event.pos[0] - ( gui.screen.get_width() /2 ) ) / gui.zoom ), battle.cplr.position[1] + int( ( event.pos[1] - ( gui.screen.get_height() /2 ) ) / gui.zoom ) )
-		network_comms.send( edicomm.encode( 'USF', pos ) )
+		network_comms.send( edicomm.encode( 'USF', gui.screen_to_map(event.pos) ) )
 	elif event.button == 3: # right click
-		pos = ( battle.cplr.position[0] + int( ( event.pos[0] - ( gui.screen.get_width() /2 ) ) / gui.zoom ), battle.cplr.position[1] + int( ( event.pos[1] - ( gui.screen.get_height() /2 ) ) / gui.zoom ) )
+		pos = gui.screen_to_map(event.pos)
 
 		deleting = False
 		for wp in waypoint.all:
-			if wp.contains(pos):
+			if wp.contains(event.pos):
 				deleting = True
 				break
 
