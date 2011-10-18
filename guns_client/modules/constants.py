@@ -7,7 +7,6 @@ screen = None
 background = None
 font = None
 
-debug_ = False
 bullets = []
 cplr = None
 zoom = 1.0
