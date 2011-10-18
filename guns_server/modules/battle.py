@@ -39,8 +39,15 @@ class Player:
 		else:
 			return False
 
+class Waypoint:
+	def __init__(self, id, pos, name):
+		self.title = name
+		self.position = pos
+		self.id = id
+
 tokens = []
 players = []
+waypoints = []
 to_all = []
 
 class EDIException(Exception):
@@ -58,6 +65,16 @@ def player_by_token(token):
 	for p in players:
 		if p.token == token:
 			return p
+
+def wp_by_id( id ):
+	for w in waypoints:
+		if w.id == id:
+			return w
+
+def wp_idx_by_id( id ):
+	for w in waypoints:
+		if w.id == id:
+			return waypoints.index( w )
 
 def act_on_edidata(ediparts, addr):
 	global to_all
@@ -108,6 +125,8 @@ def act_on_edidata(ediparts, addr):
 		to_all.append(edicomm.encode('USN', str(p.id), p.name))
 
 		lines = [edicomm.encode('USN', pl.id, pl.name) for pl in players if pl.id != p.id and pl.name != '']
+		wplines = [edicomm.encode('WPT', wp.id, wp.position, wp.title) for wp in waypoints]
+		lines.extend(wplines)
 		sock.sendto('\n'.join(lines), addr)
 
 	elif ediparts[0] == 'USD':
@@ -172,10 +191,19 @@ def act_on_edidata(ediparts, addr):
 			wpid = constants.min_player_wpid + p.id
 			wppos = [int(x) for x in ediparts[1]]
 			wptitle = constants.player_wp_fmtstring.format(p=p)
-
+			
+			wpidx = wp_idx_by_id( wpid )
+			if not wpidx == None:
+				del waypoints[ wpidx ]
+			waypoints.append( Waypoint( wpid, wppos, wptitle ) )
+			
 			to_all.append(edicomm.encode('WPT', wpid, wppos, wptitle))
 		elif len(ediparts) == 1: # Player wants waypoint deleted
 			wpid = constants.min_player_wpid + p.id
+			
+			wpidx = wp_idx_by_id( wpid )
+			
+			del waypoints[ wpidx ]
 
 			to_all.append(edicomm.encode('WPT', wpid))
 		else:
