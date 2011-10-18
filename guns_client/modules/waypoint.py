@@ -1,0 +1,75 @@
+import sys
+
+sys.path.append('./modules')
+sys.path.append('../common/modules')
+
+import global_
+
+try:
+	import pygame
+	from pygame.locals import *
+except ImportError, err:
+	sys.stderr.write('This application absolutely requires pygame. Sorry.\r\n')
+	sys.exit(1)
+
+class Waypoint:
+	def __init__(self, newname, pos):
+		self.name = newname
+		self.position = ( int( pos[0] ), int( pos[1] ) )
+		self.textcolor = ( 10, 10, 10 )
+		self.size = [ 16, 16 ]
+		self.srf = pygame.Surface( ( self.size[0], self.size[1] ) )
+		self.view_offset = { 'top':0, 'left':0, 'bottom':0, 'right':0}
+		
+	def redraw(self, screen):
+		max_view_radius = [ ( int( screen.get_width() ) / float(global_.zoom) ) / 2,  ( int( screen.get_height() ) / float(global_.zoom) ) / 2 ]
+		selfpos = ( int( self.position[0] * global_.zoom) , int( self.position[1] * global_.zoom ) )
+		plrpos = ( int( global_.cplr.position[0] * global_.zoom) , int( global_.cplr.position[1] * global_.zoom ) )
+		srf2 = global_.font.render( self.name, 1, self.textcolor )
+		
+		if self.position[0] < ( global_.cplr.position[0] + max_view_radius[0] + self.view_offset['right'] ) and self.position[0] > ( global_.cplr.position[0] - max_view_radius[0] - self.view_offset['left'] ) and self.position[1] < ( global_.cplr.position[1] + max_view_radius[1] + self.view_offset['top'] ) and self.position[1] > ( global_.cplr.position[1] - max_view_radius[1] - self.view_offset['bottom'] ):
+			offsetx = selfpos[0] - plrpos[0]
+			offsety = selfpos[1] - plrpos[1]
+			global_.screen.blit( self.srf, ( global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 - 15 + offsety ) )
+			global_.screen.blit( srf2, ( global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 + offsety - 30 ) )
+		else:
+			# direction indicator...let's see how I do this
+			
+			screen_edge = {
+				'left': 0,
+				'right': screen.get_width() - 10,
+				'top': 0,
+				'bottom': screen.get_height() - 10
+				}
+			
+			offsetx = selfpos[0] - plrpos[0]
+			offsety = selfpos[1] - plrpos[1]
+			origin = [ global_.screen.get_width() / 2 + offsetx, global_.screen.get_height() /2 - 15 + offsety ]
+			
+			toffset = [ 0, 0 ]
+			
+			if origin[0] < screen_edge['left']:
+				origin[0] = screen_edge['left']
+				toffset[0] = 20
+			if origin[0] > screen_edge['right']:
+				origin[0] = screen_edge['right']
+				toffset[0] = ( srf2.get_width() + 10 ) * -1
+			
+			if origin[1] < screen_edge['top']:
+				origin[1] = screen_edge['top']
+				toffset[1] = 20
+			if origin[1] > screen_edge['bottom']:
+				origin[1] = screen_edge['bottom']
+				toffset[1] = ( srf2.get_height() + 2 ) * -1
+			
+			pointlist = [ origin, [ origin[0] + self.size[0], origin[1] ], [ origin[0] + self.size[0], origin[1] + self.size[1] ], [ origin[0], origin[1] + self.size[1] ] ]
+			
+			pygame.draw.polygon( screen, [ 0, 0, 0 ], pointlist )
+			
+			global_.screen.blit( srf2, [ origin[0] + toffset[0], origin[1] + toffset[1] ] )
+
+	def is_within(self, pos):
+		if pos[0] > self.position[0] and pos[0] < ( self.position[0] + self.srf.get_width() ) and pos[1] < self.position[1] and pos[1] > ( self.position[1] - self.srf.get_height() ):
+			return True
+		else:
+			return False

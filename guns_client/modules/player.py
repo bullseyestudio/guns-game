@@ -31,6 +31,7 @@ class Player:
 		self.rotation = 0.0
 		self.aimang = 0.0
 		self.draw = True
+		self.waypoint = None
 		if(self.name == global_.username):
 			global_.cplr = self
 		
@@ -117,6 +118,8 @@ class Player:
 					pygame.draw.polygon( screen, [ 0, 0, 0 ], pointlist )
 					
 					global_.screen.blit( srf, [ origin[0] + toffset[0], origin[1] + toffset[1] ] )
+		if not self.waypoint == None:
+			self.waypoint.redraw( screen );
 
 global_.players = {}
 global_.cid = 0

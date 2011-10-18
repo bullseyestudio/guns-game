@@ -33,26 +33,29 @@ def mouse( event ):
 	if(event.button >= 4):
 		# we are scrolling the mouse wheel. Zoom event!
 		step = 0.0625
-		print 'step: {0}'.format( step )
 		if(event.button == 5):
 			global_.zoom -= step
 			if(global_.zoom < step):
 				global_.zoom = step
 			else:
 				network_comms.send( edicomm.encode( 'USZ', global_.zoom ) )
-			print 'Scrolling positive: {0}'.format( global_.zoom )
 		if(event.button == 4):
 			global_.zoom += step
 			if(global_.zoom > 1):
 				global_.zoom = 1
 			else:
 				network_comms.send( edicomm.encode( 'USZ', global_.zoom ) )
-			print 'Scrolling negative: {0}'.format( global_.zoom )
-	else:
-		pos = [ global_.cplr.position[0] + int( ( event.pos[0] - ( global_.screen.get_width() /2 ) ) / global_.zoom ), global_.cplr.position[1] + int( ( event.pos[1] - ( global_.screen.get_height() /2 ) ) / global_.zoom ) ]
-		print '{0}:{1} -- btn:{2}'.format( pos[0], pos[1], event.button )
+	elif event.button == 1:
+		pos = ( global_.cplr.position[0] + int( ( event.pos[0] - ( global_.screen.get_width() /2 ) ) / global_.zoom ), global_.cplr.position[1] + int( ( event.pos[1] - ( global_.screen.get_height() /2 ) ) / global_.zoom ) )
 		network_comms.send( edicomm.encode( 'USF', pos ) )
-
+	elif event.button == 3:
+		pos = ( global_.cplr.position[0] + int( ( event.pos[0] - ( global_.screen.get_width() /2 ) ) / global_.zoom ), global_.cplr.position[1] + int( ( event.pos[1] - ( global_.screen.get_height() /2 ) ) / global_.zoom ) )
+		
+		if not global_.cplr.waypoint == None and global_.cplr.waypoint.is_within(pos):
+			network_comms.send( edicomm.encode( 'WPT', 'UNSET' ) )
+		else:
+			network_comms.send( edicomm.encode( 'WPT', 'SET', pos ) )
+		
 def keyboard( event ):
 	move = False
 	veldelta = 50

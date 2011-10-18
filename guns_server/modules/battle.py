@@ -26,6 +26,7 @@ class Player:
 		self.name = ''
 		self.id = id
 		self.token = token
+		self.waypoint = None
 
 tokens = []
 players = []
@@ -47,10 +48,8 @@ class EDIData:
 		if self.cmd != None:
 			if self.cmd == 'ERR':
 				return edicomm.encode(self.cmd, *self.other)
-			else:
-				if len(self.pos) < 1:
-					return edicomm.encode(self.cmd, self.id, *self.other)
-				elif True: #//TODO: future team check
+			elif self.cmd == 'USP':
+				if True: #//TODO: future team check
 					return edicomm.encode( self.cmd, self.id, self.pos, *self.other )
 				else :
 					# determine view size
@@ -61,6 +60,14 @@ class EDIData:
 						return edicomm.encode( self.cmd, self.id, self.pos, *self.other )
 					else:
 						return edicomm.encode( 'NPV', self.id )
+			elif self.cmd == 'WPT':
+				if self.other[0] == 'SET':
+					ret = edicomm.encode(self.cmd, self.other[0], self.id, self.pos)
+					return ret
+				else:
+					return edicomm.encode(self.cmd, self.other[0], self.id)
+			else:
+				return edicomm.encode(self.cmd, self.id, *self.other )
 					
 					
 
@@ -190,6 +197,29 @@ def act_on_edidata(ediparts, addr):
 			raise EDIException(100, 'Please re-authenticate')
 		
 		p.zoom = ediparts[1]
+	elif ediparts[0] == 'WPT':
+		p = player_by_addr(addr)
+		
+		if ediparts[1] == 'SET':
+			p.waypoint = ediparts[2]
+			dat = EDIData()
+			dat.cmd = 'WPT'
+			dat.pos = ediparts[2]
+			dat.other.append( 'SET' )
+			dat.id = p.id
+			
+			to_all.append( dat )
+		elif ediparts[1] == 'UNSET':
+			p.waypoint = None
+			dat = EDIData()
+			dat.cmd = 'WPT'
+			dat.other.append( 'UNSET' )
+			dat.id = p.id
+			
+			to_all.append( dat )
+		else:
+			print 'Unhandled WPT: {0}'.format( ediparts[1] )
+			
 
 def check_for_playerinput():
 	while True:

@@ -11,6 +11,7 @@ sys.path.append('./modules')
 sys.path.append('../common/modules')
 
 import player
+import waypoint
 import edicomm
 import network_comms
 import global_
@@ -130,6 +131,15 @@ def EDIDecoder( EDI ):
 		p = global_.findPlayerById( int( EDIargs[1] ) )
 		if not p == None:
 			p.draw = False
+	elif EDIargs[0] == 'WPT':
+		#try:
+			p = global_.players[ int( EDIargs[2] ) ]
+			if EDIargs[1] == 'SET':
+				p.waypoint = waypoint.Waypoint( 'WP_{0}'.format( p.name ), EDIargs[3] )
+			elif EDIargs[1] == 'UNSET':
+				p.waypoint = None
+		#except:
+		#	print 'No player specified for WPT'
 	else:
 		pass
 #		print 'Errrr...'
