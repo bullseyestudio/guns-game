@@ -58,7 +58,7 @@ def mouse( event ):
 		else:
 			network_comms.send( edicomm.encode( 'USZ', gui.zoom ) )
 	else:
-		print 'Unhandled mouse button at ({0},{1}) btn:{2}'.format( pos[0], pos[1], event.button )
+		print 'Unhandled mouse button at ({event.pos[0]},{event.pos[1]}) btn:{event.button}'.format( event=event )
 
 def keyboard( event ):
 	global velocity
