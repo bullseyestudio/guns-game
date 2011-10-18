@@ -19,6 +19,9 @@ debug_ = False
 bullets = []
 cplr = None
 zoom = 1.0
+min_zoom = 0.25
+zoom_step = 0.0625
+
 
 PGE_GAMETICK = pygame.locals.USEREVENT + 1
 

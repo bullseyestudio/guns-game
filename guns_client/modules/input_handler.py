@@ -29,33 +29,31 @@ def init_joy( joynum ):
 			print "Joystick with less than 2 axis not supported at the moment"
 
 def mouse( event ):
-	
-	if(event.button >= 4):
-		# we are scrolling the mouse wheel. Zoom event!
-		step = 0.0625
-		if(event.button == 5):
-			global_.zoom -= step
-			if(global_.zoom < step):
-				global_.zoom = step
-			else:
-				network_comms.send( edicomm.encode( 'USZ', global_.zoom ) )
-		if(event.button == 4):
-			global_.zoom += step
-			if(global_.zoom > 1):
-				global_.zoom = 1
-			else:
-				network_comms.send( edicomm.encode( 'USZ', global_.zoom ) )
-	elif event.button == 1:
+	if(event.button == 1): # left click
 		pos = ( global_.cplr.position[0] + int( ( event.pos[0] - ( global_.screen.get_width() /2 ) ) / global_.zoom ), global_.cplr.position[1] + int( ( event.pos[1] - ( global_.screen.get_height() /2 ) ) / global_.zoom ) )
 		network_comms.send( edicomm.encode( 'USF', pos ) )
-	elif event.button == 3:
+	elif event.button == 3: # right click
 		pos = ( global_.cplr.position[0] + int( ( event.pos[0] - ( global_.screen.get_width() /2 ) ) / global_.zoom ), global_.cplr.position[1] + int( ( event.pos[1] - ( global_.screen.get_height() /2 ) ) / global_.zoom ) )
 		
 		if not global_.cplr.waypoint == None and global_.cplr.waypoint.is_within(pos):
 			network_comms.send( edicomm.encode( 'WPT', 'UNSET' ) )
 		else:
 			network_comms.send( edicomm.encode( 'WPT', 'SET', pos ) )
-		
+	elif(event.button == 4): # mouse wheel down
+		global_.zoom += global_.zoom_step
+		if(global_.zoom > 1):
+			global_.zoom = 1
+		else:
+			network_comms.send( edicomm.encode( 'USZ', global_.zoom ) )
+	elif(event.button == 5): # mouse wheel up
+		global_.zoom -= global_.zoom_step
+		if(global_.zoom < global_.min_zoom):
+			global_.zoom = global_.min_zoom
+		else:
+			network_comms.send( edicomm.encode( 'USZ', global_.zoom ) )
+	else:
+		print 'Unhandled mouse button at ({0},{1}) btn:{2}'.format( pos[0], pos[1], event.button )
+
 def keyboard( event ):
 	move = False
 	veldelta = 50
@@ -107,7 +105,7 @@ def keyboard( event ):
 		elif event.key == K_a:
 			global_.velocity[0] += veldelta
 			move = True
-			
+
 	if(move == True):
 		network_comms.send( edicomm.encode( 'USV', global_.velocity ) )
 
@@ -116,7 +114,7 @@ def joystick( event ):
 	if global_.joystick_count != 0:
 		global_.velocity[0] = int( global_.my_joystick.get_axis( 0 ) * 50 )
 		global_.velocity[1] = int( global_.my_joystick.get_axis( 1 ) * 50 )
-		
+
 		newrot = degrees( atan2( global_.my_joystick.get_axis( 2 ), global_.my_joystick.get_axis( 3 ) ) )
-		
+
 		network_comms.send( edicomm.encode( 'USV', global_.velocity ) )
