@@ -81,9 +81,17 @@ def encode(*stuff):
 
 			lstr = lstr.rstrip(',')
 			ret += lstr + ' '
+		elif i == None:
+			pass # --Gandalf
 		else:
 			ret += str(i) + ' '
 
 	ret = ret.rstrip(' ')
 
 	return ret
+
+class EDIException(Exception):
+	def __init__(self, id, msg):
+		Exception.__init__(self)
+		self.id = id
+		self.msg = msg
