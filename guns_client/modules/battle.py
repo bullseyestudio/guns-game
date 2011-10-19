@@ -98,7 +98,7 @@ def EDIDecoder( EDIargs ):
 		if not p == None:
 			p.draw = False
 	elif EDIargs[0] == 'WPT':
-		if len(EDIargs) == 4: # Setting a waypoint (WPT id x,y title)
+		if len(EDIargs) >= 4: # Setting a waypoint (WPT id x,y title [owner-id])
 			wpid = int(EDIargs[1])
 			wppos = [int(x) for x in EDIargs[2]]
 			wptitle = EDIargs[3]
