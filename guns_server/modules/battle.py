@@ -13,6 +13,7 @@ sock.bind(constants.listen_addr)
 
 width = 2048
 height = 1152
+spawn = [ width/2, height/2 ]
 
 class Player:
 	def __init__(self, id, token):
@@ -20,6 +21,7 @@ class Player:
 		self.velocity = [0,0]
 		self.position = [512,384]
 		self.rotation = 0
+		self.tankshape = [0,0,48,64]
 		self.zoom = 1.0
 		self.view = [1024, 576]
 		self.addr = None
@@ -27,6 +29,15 @@ class Player:
 		self.id = id
 		self.token = token
 		self.waypoint = None
+	def contains(self, pos):
+		deltax = pos[0] - self.position[0]
+		deltay = pos[1] - self.position[1]
+
+		if( deltax > 0 and deltax < self.tankshape[2]
+		and deltay > 0 and deltay < self.tankshape[3]):
+			return True
+		else:
+			return False
 
 tokens = []
 players = []
@@ -132,6 +143,9 @@ def act_on_edidata(ediparts, addr):
 			raise EDIException(99, 'Wrong argument count!')
 
 		desired_shot = [int(x) for x in ediparts[1]]
+		for pl in players:
+			if not pl.id == p.id and pl.contains( desired_shot ):
+				pl.position = spawn
 		to_all.append(edicomm.encode('USF', str(p.id), desired_shot))
 
 	elif ediparts[0] == 'USR':
