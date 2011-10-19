@@ -4,6 +4,7 @@ class Waypoint:
 		self.title = name
 		self.position = pos
 		self.id = id
+		self.owner = None
 
 all = []
 

@@ -10,6 +10,9 @@ def process(ediparts, p):
 		wp = waypoint.by_id(wpid)
 		if not wp:
 			wp = waypoint.Waypoint(wpid, wppos, wptitle)
+			waypoint.all.append(wp)
+
+		wp.owner = p.id
 
 		network.to_ready(edicomm.encode('WPT', wpid, wppos, wptitle, p.id))
 	elif len(ediparts) == 1: # Player wants waypoint deleted

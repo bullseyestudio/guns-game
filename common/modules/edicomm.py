@@ -81,6 +81,8 @@ def encode(*stuff):
 
 			lstr = lstr.rstrip(',')
 			ret += lstr + ' '
+		elif i == None:
+			pass # --Gandalf
 		else:
 			ret += str(i) + ' '
 

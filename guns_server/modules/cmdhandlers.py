@@ -46,7 +46,7 @@ def list_handler(str, cl):
 	for p in player.all:
 		print p.id, '\t', p.name, '\t', p.addr, '\t', p.token
 
-	print 'Known tokens: ', ", ".join(tokens)
+	print 'Known tokens: ', ", ".join(player.tokens)
 
 def forget_handler(str, cl):
 	parts = str.split(' ', 2)

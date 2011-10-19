@@ -18,7 +18,7 @@ def process(ediparts, addr):
 	p = player.by_token(token)
 
 	if not p:
-		p = player.new_player(newid, token)
+		p = player.new_player(newid + 1, token)
 
 	p.addr = addr
 	p.enqueue(edicomm.encode('UID', p.id))

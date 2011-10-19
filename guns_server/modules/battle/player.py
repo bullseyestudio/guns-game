@@ -75,7 +75,7 @@ class Player:
 
 		self.tank_rect.topleft = newpos
 
-		network.to_observing(self, edicomm.encode('USP', self.position, self.rotation))
+		network.to_observing(self, edicomm.encode('USP', self.id, self.position, self.rotation))
 
 	def transmit(self):
 		if (len(self.lines) == 0) or (self.addr == None):
