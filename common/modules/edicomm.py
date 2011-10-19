@@ -87,3 +87,9 @@ def encode(*stuff):
 	ret = ret.rstrip(' ')
 
 	return ret
+
+class EDIException(Exception):
+	def __init__(self, id, msg):
+		Exception.__init__(self)
+		self.id = id
+		self.msg = msg
