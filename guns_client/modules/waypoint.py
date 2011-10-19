@@ -72,6 +72,9 @@ class Waypoint:
 		global size
 		boundBox = pygame.Rect( ( self.position[0] - ( size[0] / 2 ), self.position[1] - ( size[1] / 2 ) ), size)
 		return boundBox.collidepoint( pos )
+	def rerender_text( self, text ):
+		self.name = text
+		self.text = gui.font.render( self.name, 1, self.textcolor )
 
 def find_waypoint_by_id(id):
 	for wp in all:

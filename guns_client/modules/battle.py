@@ -106,7 +106,8 @@ def EDIDecoder( EDIargs ):
 			wp = waypoint.find_waypoint_by_id(wpid)
 
 			if wp:
-				wp.name = wptitle
+				if not wptitle == wp.name:
+					wp.rerender_text( wptitle )
 				wp.position = wppos
 			else:
 				wp = waypoint.Waypoint(wpid, wppos, wptitle)
