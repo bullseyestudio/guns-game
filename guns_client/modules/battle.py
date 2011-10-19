@@ -102,20 +102,27 @@ def EDIDecoder( EDIargs ):
 			wpid = int(EDIargs[1])
 			wppos = [int(x) for x in EDIargs[2]]
 			wptitle = EDIargs[3]
-
+			
 			wp = waypoint.find_waypoint_by_id(wpid)
 
 			if wp:
 				wp.name = wptitle
 				wp.position = wppos
 			else:
-				waypoint.all.append(waypoint.Waypoint(wpid, wppos, wptitle))
+				wp = waypoint.Waypoint(wpid, wppos, wptitle)
+				waypoint.all.append(wp)
+			
+			if len(EDIargs) > 4 and int(EDIargs[4]) == cplr.id:
+				# This is ours!
+				cplr.waypoint = wp
 		elif len(EDIargs) == 2: # Removing a waypoint (WPT id)
 			wpid = int(EDIargs[1])
 			wp = waypoint.find_waypoint_by_id(wpid)
 
 			if wp:
 				waypoint.all.remove(wp)
+				if wp == cplr.waypoint:
+					cplr.waypoint = None
 		else:
 			print 'Weird shit happened and we got a malformed WPT: {0}'.format(edicomm.encode(EDIargs))
 
