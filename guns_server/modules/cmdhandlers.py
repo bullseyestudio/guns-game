@@ -49,7 +49,7 @@ def forget_handler(str, cl):
 
 	found_id = None
 
-	for p in players.iteritems():
+	for p in players:
 		if p.name.lower() == parts[1].lower(): #exact match!
 			found_id = p.id
 			break
