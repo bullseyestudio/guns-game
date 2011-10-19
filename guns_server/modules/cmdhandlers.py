@@ -77,6 +77,7 @@ def forget_handler(str, cl):
 	# TODO: Should notify player of being kicked
 
 	print 'Forgetting player', p.name
+	network.to_ready( edicomm.encode( 'USD', p.id, 'Player kicked.' ) )
 	player.all.remove(p)
 
 def wp_handler(str, cl):
