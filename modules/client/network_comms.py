@@ -38,14 +38,13 @@ def read( ):
 
 		if len( socks[0] ) == 0:
 			break
-		
+
 		try:
 			data, addr = sock.recvfrom(1500)
 		except socket.error:
-			data = ''
-			# Gobbling error:
-			# socket.error: 10054 ( An existing connection was forcibly closed by the remote host )
-			
+			# Swallowing socket.error 10054 because UDP shouldn't fucking care!
+			continue
+
 		data = data.strip()
 		if data != '' and not data.startswith('USP'):
 			print 'Got', data, 'from', addr
