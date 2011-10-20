@@ -1,5 +1,5 @@
 import locals, waypoint, network
-import edicomm
+from modules import edicomm
 import pygame
 
 from math import degrees, atan2

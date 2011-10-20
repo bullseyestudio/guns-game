@@ -1,8 +1,8 @@
-
 import select, socket
 
+from .. import edicomm
+
 import constants
-import edicomm
 
 sock = None;
 

@@ -1,4 +1,5 @@
-import edicomm, constants
+from modules import edicomm
+from modules.server import constants
 from .. import waypoint, network
 
 def process(ediparts, p):

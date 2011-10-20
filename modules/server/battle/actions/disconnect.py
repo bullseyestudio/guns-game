@@ -1,7 +1,7 @@
-import edicomm
-from .. import network
-
 def process(ediparts, p):
+	from .... import edicomm
+	from .. import network
+
 	print 'Player', p.name, 'disconnects'
 
 	p.ready = False

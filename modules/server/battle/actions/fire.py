@@ -1,4 +1,4 @@
-import edicomm
+from modules import edicomm
 from .. import network, locals, player
 
 def process(ediparts, p):

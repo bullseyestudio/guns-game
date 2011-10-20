@@ -1,4 +1,4 @@
-import edicomm
+from modules import edicomm
 from .. import player
 
 def process(ediparts, addr):

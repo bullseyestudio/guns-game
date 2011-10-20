@@ -3,11 +3,12 @@ from pygame.locals import *
 
 import sys
 
+from .. import edicomm
+
 import battle
 import network_comms
 import constants
 import input_handler
-import edicomm
 import bullet, waypoint
 import player
 

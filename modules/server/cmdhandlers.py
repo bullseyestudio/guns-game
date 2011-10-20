@@ -3,7 +3,7 @@ from pygame.locals import *
 
 from battle import player, waypoint, network
 from battle.locals import PlayerAmbiguityError # can be raised by player name finder
-import edicomm
+from modules import edicomm
 
 def quit_handler(str, cl):
 	pygame.event.post(pygame.event.Event(QUIT))

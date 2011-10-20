@@ -1,17 +1,9 @@
 #!/usr/bin/env python
 
 import sys
-import socket, select
 
-sys.path.append('./modules')
-sys.path.append('../common/modules')
-
-import constants
-import edicomm
-import gui
-import network_comms
-import input_handler
-import battle
+from modules import edicomm
+from modules.client import constants, gui, network_comms, input_handler, battle
 
 if len(sys.argv) < 3:
 	sys.stderr.write('Usage: client.py username server\r\n')

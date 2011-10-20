@@ -1,9 +1,10 @@
 import pygame
 from pygame.locals import *
 
+from .. import edicomm
+
 import player
 import waypoint
-import edicomm
 import network_comms
 import constants
 import test_rot
@@ -102,7 +103,7 @@ def EDIDecoder( EDIargs ):
 			wpid = int(EDIargs[1])
 			wppos = [int(x) for x in EDIargs[2]]
 			wptitle = EDIargs[3]
-			
+
 			wp = waypoint.find_waypoint_by_id(wpid)
 
 			if wp:
@@ -112,7 +113,7 @@ def EDIDecoder( EDIargs ):
 			else:
 				wp = waypoint.Waypoint(wpid, wppos, wptitle)
 				waypoint.all.append(wp)
-			
+
 			if len(EDIargs) > 4 and int(EDIargs[4]) == cplr.id:
 				# This is ours!
 				cplr.waypoint = wp

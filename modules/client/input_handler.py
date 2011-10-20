@@ -1,9 +1,10 @@
 import pygame
 from pygame.locals import *
 
+from .. import edicomm
+
 import network_comms
 import constants
-import edicomm
 import waypoint
 import gui
 import battle
@@ -33,7 +34,7 @@ def mouse( event ):
 		network_comms.send( edicomm.encode( 'USF', gui.screen_to_map(event.pos) ) )
 	elif event.button == 3: # right click
 		pos = gui.screen_to_map(event.pos)
-		
+
 		if not battle.cplr.waypoint == None:
 			if battle.cplr.waypoint.contains(pos):
 				network_comms.send( edicomm.encode( 'WPT' ) )

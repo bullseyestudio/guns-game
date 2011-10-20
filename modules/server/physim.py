@@ -1,5 +1,4 @@
-
-"""Physics simulation module for Guns!, the tank game.
+""" Physics simulation module for Guns!, the tank game.
 
 Even more docstringy stuff goes here.
 

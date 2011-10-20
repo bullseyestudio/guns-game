@@ -1,6 +1,6 @@
-import edicomm
+from modules import edicomm
+from modules.server import constants
 import actions, player
-import constants
 
 import socket, select
 
