@@ -11,7 +11,7 @@ For most current documentation, there is a wiki article at
 Uses PGU (Phil's pyGame Utilities) -- see <http://code.google.com/p/pgu/>.
 
 For convenience, PGU is included in the repository (thanks to it being so
-tiny). PGU is released under the [GNU lesser GPL]<http://www.gnu.org/licenses/lgpl.html>.
+tiny). PGU is released under the [GNU lesser GPL][lgpl].
 
 License
 -------
@@ -25,7 +25,7 @@ Installing and running
 ----------------------
 
 As a series of Python scripts, installing mostly involves just unpacking the
-game into some place. You will also want to install [Python 2.7]<http://python.org/> and [pyGame]<http://pygame.org/>,
+game into some place. You will also want to install [Python 2.7][py] and [pyGame][pygame],
 if you wish to run a development version.
 
 In future, there will be prettier packages available... probably.
@@ -51,3 +51,6 @@ reports, feature requests, etc. at <https://github.com/narc0tiq/guns-game/issues
 
 
 [origin]: https://github.com/narc0tiq/guns-game/
+[py]: http://python.org/
+[pygame]: http://pygame.org/
+[lgpl]: http://www.gnu.org/licenses/lgpl.html
