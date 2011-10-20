@@ -38,13 +38,18 @@ def read( ):
 
 		if len( socks[0] ) == 0:
 			break
-
-		data, addr = sock.recvfrom( 1500 )
-
-		if not data.startswith('USP'):
+		
+		try:
+			data, addr = sock.recvfrom(1500)
+		except socket.error:
+			data = ''
+			# Gobbling error:
+			# socket.error: 10054 ( An existing connection was forcibly closed by the remote host )
+			
+		data = data.strip()
+		if data != '' and not data.startswith('USP'):
 			print 'Got', data, 'from', addr
-
-		lines.extend(data.split('\n'))
+			lines.extend(data.split('\n'))
 
 	return '\n'.join(lines)
 

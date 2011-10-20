@@ -13,15 +13,23 @@ def check_input():
 
 		if len(socks[0]) == 0:
 			return
-
-		data, addr = sock.recvfrom(1500)
-		data = data.strip()
-		print 'got data: ', data, 'from', addr
-
+		
 		try:
-			actions.dispatch(edicomm.decode(data), addr)
-		except edicomm.EDIException as e:
-			sock.sendto(edicomm.encode('ERR', str(e.id), e.msg), addr)
+			data, addr = sock.recvfrom(1500)
+		except socket.error:
+			data = ''
+			# Gobbling error:
+			# socket.error: 10054 ( An existing connection was forcibly closed by the remote host )
+			
+		data = data.strip()
+		if data != '':
+			print 'got data: ', data, 'from', addr
+		
+			try:
+				actions.dispatch(edicomm.decode(data), addr)
+			except edicomm.EDIException as e:
+				sock.sendto(edicomm.encode('ERR', str(e.id), e.msg), addr)
+			
 
 def to_ready(text):
 	""" Send text to all players who are ready """
