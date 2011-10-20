@@ -3,7 +3,7 @@ from pygame.locals import *
 
 import sys
 
-from .. import edicomm
+from modules import edicomm
 
 import battle
 import network_comms

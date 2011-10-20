@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 
-from .. import edicomm
+from modules import edicomm
 
 import network_comms
 import constants

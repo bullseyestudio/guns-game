@@ -1,6 +1,6 @@
 import select, socket
 
-from .. import edicomm
+from modules import edicomm
 
 import constants
 
