@@ -13,15 +13,19 @@ def check_input():
 
 		if len(socks[0]) == 0:
 			return
-
-		data, addr = sock.recvfrom(1500)
-		data = data.strip()
-		print 'got data: ', data, 'from', addr
-
+		
 		try:
-			actions.dispatch(edicomm.decode(data), addr)
-		except edicomm.EDIException as e:
-			sock.sendto(edicomm.encode('ERR', str(e.id), e.msg), addr)
+			data, addr = sock.recvfrom(2048)
+			data = data.strip()
+			print 'got data: ', data, 'from', addr
+	
+			try:
+				actions.dispatch(edicomm.decode(data), addr)
+			except edicomm.EDIException as e:
+				sock.sendto(edicomm.encode('ERR', str(e.id), e.msg), addr)
+		except:
+			pass
+			
 
 def to_ready(text):
 	""" Send text to all players who are ready """

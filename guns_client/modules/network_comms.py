@@ -38,13 +38,15 @@ def read( ):
 
 		if len( socks[0] ) == 0:
 			break
-
-		data, addr = sock.recvfrom( 1500 )
-
-		if not data.startswith('USP'):
-			print 'Got', data, 'from', addr
-
-		lines.extend(data.split('\n'))
+		try:
+			data, addr = sock.recvfrom( 1500 )
+	
+			if not data.startswith('USP'):
+				print 'Got', data, 'from', addr
+	
+			lines.extend(data.split('\n'))
+		except:
+			pass
 
 	return '\n'.join(lines)
 
