@@ -15,16 +15,20 @@ def check_input():
 			return
 		
 		try:
-			data, addr = sock.recvfrom(2048)
-			data = data.strip()
+			data, addr = sock.recvfrom(1500)
+		except socket.error:
+			data = ''
+			# Gobbling error:
+			# socket.error: 10054 ( An existing connection was forcibly closed by the remote host )
+			
+		data = data.strip()
+		if data != '':
 			print 'got data: ', data, 'from', addr
-	
+		
 			try:
 				actions.dispatch(edicomm.decode(data), addr)
 			except edicomm.EDIException as e:
 				sock.sendto(edicomm.encode('ERR', str(e.id), e.msg), addr)
-		except:
-			pass
 			
 
 def to_ready(text):
