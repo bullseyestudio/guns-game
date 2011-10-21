@@ -1,9 +1,10 @@
 import pygame
 from pygame.locals import *
 
+from modules import edicomm
+
 import player
 import waypoint
-import edicomm
 import network_comms
 import constants
 import test_rot
@@ -106,16 +107,24 @@ def EDIDecoder( EDIargs ):
 			wp = waypoint.find_waypoint_by_id(wpid)
 
 			if wp:
-				wp.name = wptitle
+				if not wptitle == wp.name:
+					wp.rerender_text( wptitle )
 				wp.position = wppos
 			else:
-				waypoint.all.append(waypoint.Waypoint(wpid, wppos, wptitle))
+				wp = waypoint.Waypoint(wpid, wppos, wptitle)
+				waypoint.all.append(wp)
+
+			if len(EDIargs) > 4 and int(EDIargs[4]) == cplr.id:
+				# This is ours!
+				cplr.waypoint = wp
 		elif len(EDIargs) == 2: # Removing a waypoint (WPT id)
 			wpid = int(EDIargs[1])
 			wp = waypoint.find_waypoint_by_id(wpid)
 
 			if wp:
 				waypoint.all.remove(wp)
+				if wp == cplr.waypoint:
+					cplr.waypoint = None
 		else:
 			print 'Weird shit happened and we got a malformed WPT: {0}'.format(edicomm.encode(EDIargs))
 

@@ -1,5 +1,5 @@
 from .. import player
-import edicomm
+from modules import edicomm
 
 def dispatch(ediparts, addr):
 	ediparts[0] = ediparts[0].upper() # for easier case-insensitive comparison

@@ -1,9 +1,10 @@
 import pygame
 from pygame.locals import *
 
+from modules import edicomm
+
 import network_comms
 import constants
-import edicomm
 import waypoint
 import gui
 import battle
@@ -34,15 +35,14 @@ def mouse( event ):
 	elif event.button == 3: # right click
 		pos = gui.screen_to_map(event.pos)
 
-		deleting = False
-		for wp in waypoint.all:
-			if wp.contains(event.pos):
-				deleting = True
-				break
-
-		if deleting:
-			network_comms.send( edicomm.encode( 'WPT' ) )
+		if not battle.cplr.waypoint == None:
+			if battle.cplr.waypoint.contains(pos):
+				network_comms.send( edicomm.encode( 'WPT' ) )
+			else:
+				print 'wp does not contain {0}'.format( pos )
+				network_comms.send( edicomm.encode( 'WPT', pos ) )
 		else:
+			print 'cplr.wp == None'
 			network_comms.send( edicomm.encode( 'WPT', pos ) )
 	elif(event.button == 4): # mouse wheel down
 		gui.zoom += gui.zoom_step

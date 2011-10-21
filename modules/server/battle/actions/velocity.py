@@ -1,4 +1,4 @@
-import edicomm
+from modules import edicomm
 
 def process(ediparts, p):
 	if len(ediparts) != 2:

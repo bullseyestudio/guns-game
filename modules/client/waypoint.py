@@ -70,14 +70,11 @@ class Waypoint:
 
 	def contains(self, pos):
 		global size
-		deltax = pos[0] - self.screen_pos[0]
-		deltay = pos[1] - self.screen_pos[1]
-
-		if( deltax > 0 and deltax < size[0]
-		and deltay > 0 and deltay < size[1]):
-			return True
-		else:
-			return False
+		boundBox = pygame.Rect( ( self.position[0] - ( size[0] / 2 ), self.position[1] - ( size[1] / 2 ) ), size)
+		return boundBox.collidepoint( pos )
+	def rerender_text( self, text ):
+		self.name = text
+		self.text = gui.font.render( self.name, 1, self.textcolor )
 
 def find_waypoint_by_id(id):
 	for wp in all:

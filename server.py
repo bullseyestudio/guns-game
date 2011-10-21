@@ -2,15 +2,8 @@
 
 import sys, os, signal
 
-sys.path.append('./modules')
-sys.path.append('../common/modules')
-
-import edicomm
-import physim
-
-import lobby
-import battle
-import auth
+from modules import edicomm
+from modules.server import battle, cmdline, cmdhandlers
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 
@@ -27,10 +20,8 @@ screen = pygame.display.set_mode((1,1))
 print 'Server init begins.'
 
 ## Command-line init stuff
-import cmdline
 cl = cmdline.cmdline()
 
-import cmdhandlers
 for k, h in cmdhandlers.handlers.iteritems():
 	cl.add_command(k, h)
 
@@ -47,7 +38,7 @@ def ctrlc_handler(*args):
 	global cl
 	cl.post_quit()
 
-	exit(0)
+	sys.exit(0)
 
 signal.signal(signal.SIGINT, ctrlc_handler)
 

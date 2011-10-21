@@ -1,8 +1,8 @@
-
 import select, socket
 
+from modules import edicomm
+
 import constants
-import edicomm
 
 sock = None;
 
@@ -39,12 +39,16 @@ def read( ):
 		if len( socks[0] ) == 0:
 			break
 
-		data, addr = sock.recvfrom( 1500 )
+		try:
+			data, addr = sock.recvfrom(1500)
+		except socket.error:
+			# Swallowing socket.error 10054 because UDP shouldn't fucking care!
+			continue
 
-		if not data.startswith('USP'):
+		data = data.strip()
+		if data != '' and not data.startswith('USP'):
 			print 'Got', data, 'from', addr
-
-		lines.extend(data.split('\n'))
+			lines.extend(data.split('\n'))
 
 	return '\n'.join(lines)
 

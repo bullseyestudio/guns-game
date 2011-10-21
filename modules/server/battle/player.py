@@ -1,5 +1,5 @@
 import locals, waypoint, network
-import edicomm
+from modules import edicomm
 import pygame
 
 from math import degrees, atan2
@@ -120,9 +120,9 @@ def by_partial_name(str):
 	found_p = None
 
 	for p in all:
-		if p.name.lower() == parts[1].lower(): #exact match!
+		if p.name.lower() == str.lower(): #exact match!
 			return p
-		elif p.name.lower().startswith(parts[1].lower()): # name starts with str
+		elif p.name.lower().startswith(str.lower()): # name starts with str
 			if found_p != None:
 				raise PlayerAmbiguityError(found_p, p)
 			else:

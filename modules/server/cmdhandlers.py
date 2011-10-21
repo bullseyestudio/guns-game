@@ -3,7 +3,7 @@ from pygame.locals import *
 
 from battle import player, waypoint, network
 from battle.locals import PlayerAmbiguityError # can be raised by player name finder
-import edicomm
+from modules import edicomm
 
 def quit_handler(str, cl):
 	pygame.event.post(pygame.event.Event(QUIT))
@@ -40,6 +40,15 @@ def help_handler(str, cl):
 		elif parts[1].lower() == 'quit':
 			print 'Usage: quit\n'
 			print 'Stops the server immediately.'
+		elif parts[1].lower() == 'listwp':
+			print 'Usage: listwp\n'
+			print 'Lists all waypoints in an ugly list.'
+		elif parts[1].lower() == 'addwp':
+			print 'Usage: addwp <title> <posx> <posy>\n'
+			print 'Adds a named waypoint to the list at position specified.'
+		elif parts[1].lower() == 'delwp':
+			print 'Usage: delwp <id>\n'
+			print 'Deletes waypoint with specified id (Player-owned waypoints are id 257 and above).'
 
 def list_handler(str, cl):
 	print 'ID\tusername\taddress info\ttoken'
@@ -68,6 +77,7 @@ def forget_handler(str, cl):
 	# TODO: Should notify player of being kicked
 
 	print 'Forgetting player', p.name
+	network.to_ready( edicomm.encode( 'USD', p.id, 'Player kicked.' ) )
 	player.all.remove(p)
 
 def wp_handler(str, cl):

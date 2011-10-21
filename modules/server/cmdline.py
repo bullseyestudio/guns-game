@@ -1,5 +1,4 @@
-
-"""Provides the server command line implementation for Guns!, the tank game.
+""" Provides the server command line implementation for Guns!, the tank game.
 
 Designed to work in its own thread.
 
