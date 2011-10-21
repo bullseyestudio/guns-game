@@ -38,11 +38,6 @@ def ctrlc_handler(*args):
 
 	pygame.event.post(pygame.event.Event(QUIT))
 
-	global cl
-	cl.post_quit()
-
-	sys.exit(0)
-
 signal.signal(signal.SIGINT, ctrlc_handler)
 
 
@@ -52,4 +47,5 @@ while True:
 			battle.timer_tick()
 			cl.handle_command()
 		elif (event.type == QUIT):
+			cl.post_quit()
 			sys.exit(0)
