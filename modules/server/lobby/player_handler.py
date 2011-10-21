@@ -3,17 +3,18 @@ connection to the dispatcher.
 
 """
 
-import edicomm
+from modules import edicomm
 
-import asynchat
+import asynchat, pygame
 
 class LobbyPlayerHandler(asynchat.async_chat):
-	def __init__(self, sock, addr, queue):
+	def __init__(self, sock, addr, dispatcher):
 		self.recv_buffer = []
-		self.queue = queue
+		self.dispatcher = dispatcher
+		self.username = ''
+
 		asynchat.async_chat.__init__(self, sock)
 		self.set_terminator('\n')
-		self.username = ''
 		return
 
 	def collect_incoming_data(self, data):
@@ -24,29 +25,28 @@ class LobbyPlayerHandler(asynchat.async_chat):
 
 	def process_command(self):
 		line = ''.join(self.recv_buffer)
+		line = line.strip()
+
 		ediparts = edicomm.decode(line)
 
-		if len(line_parts) == 1:
-			verb = line_parts[0].upper()
-			arg = ''
-		else:
-			verb = line_parts[0].upper()
-			arg = line_parts[1]
+		if isinstance(ediparts[0], basestring):
+			ediparts[0] = ediparts[0].upper()
 
-		if 'USER'.startswith(verb):
-			self.username = arg
-			self.push('+OK Your username set to: ' + self.username + '\r\n')
-		elif 'WHOAMI'.startswith(verb):
-			self.push('+OK You are: ' + self.username + '\r\n')
-		elif 'QUIT'.startswith(verb):
-			self.push('+OK Goodbye now.\r\n')
+		if ediparts[0] == 'USR':
+			self.username = ediparts[1]
+			self.push('+OK Your username set to: ' + self.username + '\n')
+		elif ediparts[0] == 'WHO':
+			self.push('+OK You are: ' + self.username + '\n')
+		elif ediparts[0] == 'BYE':
+			self.push('+OK Goodbye now.\n')
 			self.close_when_done()
-		elif 'SHUTDOWN'.startswith(verb):
+		elif ediparts[0] == 'DIE':
 			if self.username == 'narc':
-				global_shutdown()
+				pygame.event.post(pygame.event.Event(pygame.locals.QUIT))
+				self.push('+OK Going to die now.\n')
 			else:
-				self.push('-ERR You are not narc!\r\n')
+				self.push('-ERR You are not narc!\n')
 		else:
-			global_chat(self.username + ': ' + line.strip() + '\r\n')
+			self.dispatcher.global_chat(self.username, line)
 
 		self.recv_buffer = []

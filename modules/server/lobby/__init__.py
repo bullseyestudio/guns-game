@@ -1,4 +1,4 @@
-"""Lobby state handling for Guns!, the tank game.
+""" Lobby state handling for Guns!, the tank game.
 
 Runs in its own thread alongside the main thread.
 

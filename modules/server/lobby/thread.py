@@ -1,8 +1,8 @@
 """ Thread class to be spawned by the lobby server. """
 
-import threading
+import threading, asyncore
 
-from .. import constants
+from modules.server import constants
 import dispatcher
 
 class GunsLobbyServer(threading.Thread):
@@ -12,3 +12,7 @@ class GunsLobbyServer(threading.Thread):
 		self.finished = False
 
 		self.d = dispatcher.GunsLobbyDispatcher(constants.listen_addr, self.queue)
+
+	def run(self):
+		asyncore.loop()
+
