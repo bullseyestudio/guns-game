@@ -48,7 +48,8 @@ def read( ):
 		data = data.strip()
 		if data != '' and not data.startswith('USP'):
 			print 'Got', data, 'from', addr
-			lines.extend(data.split('\n'))
+
+		lines.extend(data.split('\n'))
 
 	return '\n'.join(lines)
 
