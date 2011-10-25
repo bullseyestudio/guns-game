@@ -31,31 +31,31 @@ def init_joy( joynum ):
 
 def mouse( event ):
 	if(event.button == 1): # left click
-		network_comms.send( edicomm.encode( 'USF', gui.screen_to_map(event.pos) ) )
+		network_comms.battle.send( edicomm.encode( 'USF', gui.screen_to_map(event.pos) ) )
 	elif event.button == 3: # right click
 		pos = gui.screen_to_map(event.pos)
 
 		if not battle.cplr.waypoint == None:
 			if battle.cplr.waypoint.contains(pos):
-				network_comms.send( edicomm.encode( 'WPT' ) )
+				network_comms.battle.send( edicomm.encode( 'WPT' ) )
 			else:
 				print 'wp does not contain {0}'.format( pos )
-				network_comms.send( edicomm.encode( 'WPT', pos ) )
+				network_comms.battle.send( edicomm.encode( 'WPT', pos ) )
 		else:
 			print 'cplr.wp == None'
-			network_comms.send( edicomm.encode( 'WPT', pos ) )
+			network_comms.battle.send( edicomm.encode( 'WPT', pos ) )
 	elif(event.button == 4): # mouse wheel down
 		gui.zoom += gui.zoom_step
 		if(gui.zoom > 1):
 			gui.zoom = 1
 		else:
-			network_comms.send( edicomm.encode( 'USZ', gui.zoom ) )
+			network_comms.battle.send( edicomm.encode( 'USZ', gui.zoom ) )
 	elif(event.button == 5): # mouse wheel up
 		gui.zoom -= gui.zoom_step
 		if(gui.zoom < constants.min_zoom):
 			gui.zoom = constants.min_zoom
 		else:
-			network_comms.send( edicomm.encode( 'USZ', gui.zoom ) )
+			network_comms.battle.send( edicomm.encode( 'USZ', gui.zoom ) )
 	else:
 		print 'Unhandled mouse button at ({event.pos[0]},{event.pos[1]}) btn:{event.button}'.format( event=event )
 
@@ -90,14 +90,14 @@ def keyboard( event ):
 			if(gui.zoom > 1):
 				gui.zoom = 1
 			else:
-				network_comms.send( edicomm.encode( 'USZ', gui.zoom ) )
+				network_comms.battle.send( edicomm.encode( 'USZ', gui.zoom ) )
 				return
 		elif event.key == K_KP_MINUS:
 			gui.zoom -= step
 			if(gui.zoom < step):
 				gui.zoom = step
 			else:
-				network_comms.send( edicomm.encode( 'USZ', gui.zoom ) )
+				network_comms.battle.send( edicomm.encode( 'USZ', gui.zoom ) )
 				return
 	elif event.type == KEYUP:
 		if event.key == K_s:
@@ -114,7 +114,7 @@ def keyboard( event ):
 			move = True
 
 	if(move == True):
-		network_comms.send( edicomm.encode( 'USV', velocity ) )
+		network_comms.battle.send( edicomm.encode( 'USV', velocity ) )
 
 def joystick( event ):
 	#print "Joy event :)"
@@ -124,4 +124,4 @@ def joystick( event ):
 
 		newrot = degrees( atan2( my_joystick.get_axis( 2 ), my_joystick.get_axis( 3 ) ) )
 
-		network_comms.send( edicomm.encode( 'USV', velocity ) )
+		network_comms.battle.send( edicomm.encode( 'USV', velocity ) )

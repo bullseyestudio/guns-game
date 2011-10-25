@@ -17,10 +17,22 @@ def init():
 	pass
 
 def tick():
-	get_player_updates()
+	get_battle_updates()
+	get_lobby_updates()
 
-def get_player_updates():
-	data = network_comms.read()
+def get_battle_updates():
+	data = network_comms.battle.read()
+
+	if len( data ) == 0:
+		return
+
+	dlines = data.split( "\n" )
+	for i in dlines:
+		EDIDecoder( edicomm.decode( i ) )
+	return
+
+def get_lobby_updates():
+	data = network_comms.lobby.read()
 
 	if len( data ) == 0:
 		return
@@ -69,7 +81,7 @@ def EDIDecoder( EDIargs ):
 			plr.id = int( EDIargs[ 1 ] )
 			player.all[ int( EDIargs[ 1 ] ) ] = plr
 
-		network_comms.send( edicomm.encode( 'USN', constants.username ) )
+		network_comms.battle.send( edicomm.encode( 'USN', constants.username ) )
 	elif EDIargs[0] == 'USN':
 		p = player.find_by_name( EDIargs[ 2 ] )
 		if not p == None:

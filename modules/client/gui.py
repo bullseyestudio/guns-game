@@ -97,7 +97,8 @@ def event_loop():
 			background = pygame.transform.scale( background, event.size)
 			network_comms.send( edicomm.encode( 'USR', event.size ) )
 		elif event.type == QUIT:
-			network_comms.close()
+			network_comms.battle.close()
+			network_comms.lobby.close()
 			pygame.time.set_timer( constants.PGE_GAMETICK, 0 )
 			done = True
 			close_display()
