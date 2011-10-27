@@ -33,12 +33,13 @@ In future, there will be prettier packages available... probably.
 Authors
 -------
 
-Guns is currently being developed by a small team scattered across two
-continents:
+Guns is being developed by a small team scattered across two continents:
 
 * narc0tiq (Octav Sandulescu) from Romania,
 * EzTargetUK (Steven Harrison) from the UK, and
 * Ethrel (Nathaniel Heintz) from Canada.
+
+We call ourselves Bull's Eye! Studio.
 
 We accept contributions from outside the team -- if you have a patch you'd like
 us to incorporate, just make a pull request on [the github project][origin].
@@ -47,10 +48,10 @@ Reporting Issues
 ----------------
 
 We are currently using Github for issue tracking. Feel free to add your bug
-reports, feature requests, etc. at <https://github.com/narc0tiq/guns-game/issues>.
+reports, feature requests, etc. at <https://github.com/bullseyestudio/guns-game/issues>.
 
 
-[origin]: https://github.com/narc0tiq/guns-game/
+[origin]: https://github.com/bullseyestudio/guns-game/
 [py]: http://python.org/
 [pygame]: http://pygame.org/
 [lgpl]: http://www.gnu.org/licenses/lgpl.html
