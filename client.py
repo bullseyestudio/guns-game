@@ -25,7 +25,7 @@ input_handler.init_joy( 0 )
 
 battle.init()
 
-network_comms.send( edicomm.encode( 'UST', 'token_{0}'.format( constants.username ) ) )
+network_comms.battle.send( edicomm.encode( 'UST', 'token_{0}'.format( constants.username ) ) )
 
 while not gui.done:
 	gui.event_loop()

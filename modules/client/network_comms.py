@@ -4,61 +4,77 @@ from modules import edicomm
 
 import constants
 
-sock = None;
+battle = None
+lobby = None
 
-def open():
-	global sock
-	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	sock.connect((constants.host, 45005))
-	if sock is None:
-		raise RuntimeError( "Unable to connect to the remote host" )
+class NetComm():
+	def __init__( self, socktype ):
+		self.sock = None
+		self.type = socktype
 
-def send( what ):
-	global sock
-	if not sock is None:
-		sent = sock.send( what )
 
-		if sent == 0:
-			raise RuntimeError( "Socket connection fail" )
-	else:
+		if self.type == constants.socket_udp:
+			protocol = socket.SOCK_DGRAM
+		else:
+			protocol = socket.SOCK_STREAM
+
+		self.sock = socket.socket(socket.AF_INET, protocol)
+		self.sock.connect((constants.host, 45005))
+		if self.sock is None:
+			raise RuntimeError( "Unable to connect to the remote host" )
+
+	def send(self, what):
+		if self.sock != None:
+			sent = self.sock.send( what )
+
+			if sent == 0:
+				raise RuntimeError( "Socket connection fail" )
+		else:
 			raise RuntimeError( "Network error in sending data" )
 
+	def read(self):
+		if self.sock == None:
+			raise RuntimeError( "Network error in reading data" )
 
-def read( ):
-	global sock
+		lines = []
+		addr = 0
 
-	if sock is None:
-		raise RuntimeError( "Network error in reading data" )
+		while True:
+			socks = select.select( [self.sock], [], [], 0 )
 
-	lines = []
-	addr = 0
+			if len( socks[0] ) == 0:
+				break
 
-	while True:
-		socks = select.select( [sock], [], [], 0 )
+			if self.type == constants.socket_udp:
+				try:
+					data, addr = self.sock.recvfrom(1500)
+				except socket.error:
+					# Swallowing socket.error 10054 because UDP shouldn't fucking care!
+					continue
+			else:
+				data, addr = self.sock.recvfrom(1500)
 
-		if len( socks[0] ) == 0:
-			break
+			data = data.strip()
+			if data != '' and not data.startswith('USP'):
+				print 'Got', data, 'from', addr
 
-		try:
-			data, addr = sock.recvfrom(1500)
-		except socket.error:
-			# Swallowing socket.error 10054 because UDP shouldn't fucking care!
-			continue
+			lines.extend(data.split('\n'))
 
-		data = data.strip()
-		if data != '' and not data.startswith('USP'):
-			print 'Got', data, 'from', addr
+		return '\n'.join(lines)
 
-		lines.extend(data.split('\n'))
+	def close(self):
+		if self.sock != None:
+			if self.type == constants.socket_udp:
+				self.send( edicomm.encode( "USD", "Client closed" ) )
+				self.sock.close()
+				self.sock = None
+			else:
+				self.sock.close()
+				self.sock = None
+		else:
+			raise RuntimeError( "Network error while closing sockets" )
 
-	return '\n'.join(lines)
-
-
-def close():
-	global sock
-	if not sock is None:
-		send( edicomm.encode( "USD", "Client closed" ) )
-		sock.close()
-		sock = None
-	else:
-		raise RuntimeError( "Network error while closing sockets" )
+def open():
+	global battle, lobby
+	battle = NetComm( constants.socket_udp )
+	lobby = NetComm( constants.socket_tcp )
