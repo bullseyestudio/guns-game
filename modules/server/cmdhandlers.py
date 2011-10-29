@@ -4,6 +4,7 @@ from pygame.locals import *
 from battle import player, waypoint, network
 from battle.locals import PlayerAmbiguityError # can be raised by player name finder
 from modules import edicomm
+from modules.server import lobby
 
 
 def quit_handler(str, cl):
@@ -15,6 +16,7 @@ def help_handler(str, cl):
 	parts = str.split(' ', 2)
 
 	if len(parts) == 1:
+		print 'say\t\tBroadcast a message to all players.'
 		print 'list\t\tList players known to the server.'
 		print 'forget\t\tMakes the server forget a player.'
 		print 'help\t\tThis help text.'
@@ -22,7 +24,10 @@ def help_handler(str, cl):
 		print 'quit\t\tStops the server.'
 		print 'Try "help command" for more info on "command".'
 	else:
-		if parts[1].lower() == 'list':
+		if parts[1].lower() == 'say':
+			print 'Usage: say <something>\n'
+			print 'Sends <something> to all players on the server.'
+		elif parts[1].lower() == 'list':
 			print 'Usage: list\n'
 			print 'Returns an ugly list of all the players on the server.'
 		elif parts[1].lower() == 'forget':
@@ -109,10 +114,21 @@ def wp_handler(str, cl):
 
 		network.to_ready(edicomm.encode('WPT', wpid, wppos, wptitle))
 
+def say_handler(str, cl):
+	parts = str.split(' ', 1)
+
+	if len(parts) == 1:
+		print 'Missing argument, try "help say" for usage info.'
+		return
+
+	# HACK: Need a better way to handle this, this is NOT thread-safe
+	lobby.server.d.global_chat('[CONSOLE]', parts[1])
+
 
 handlers = { 'help': help_handler,
 	'quit': quit_handler,
 	'list': list_handler,
 	'forget': forget_handler,
 	'wp': wp_handler,
+	'say': say_handler,
 }

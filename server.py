@@ -19,19 +19,12 @@ screen = pygame.display.set_mode((1,1))
 
 print 'Server init begins.'
 
-ls = lobby.lobbyserv()
-ls.start_listener()
+lobby.start_server()
 
-## Command-line init stuff
 cl = cmdline.cmdline()
-
 for k, h in cmdhandlers.handlers.iteritems():
 	cl.add_command(k, h)
-
-print 'Waiting for commands, type "quit" to stop the server.'
 cl.start_listener()
-
-pygame.time.set_timer(USEREVENT+1, 25)
 
 def ctrlc_handler(*args):
 	print 'Ctrl+C recognized.'
@@ -40,6 +33,8 @@ def ctrlc_handler(*args):
 
 signal.signal(signal.SIGINT, ctrlc_handler)
 
+# This guy makes sure everything ticks
+pygame.time.set_timer(USEREVENT+1, 25)
 
 while True:
 	for event in pygame.event.get():

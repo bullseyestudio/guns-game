@@ -45,6 +45,8 @@ class cmdline:
 
 		self.commands = {}
 
+		print 'Command-line handler initialized.'
+
 	def post_quit(self):
 		self.t.finished = True
 
@@ -53,6 +55,7 @@ class cmdline:
 
 	def start_listener(self):
 		self.t.start()
+		print 'Waiting for commands, type "quit" to stop the server.'
 
 	def handle_command(self):
 		if(self.q.empty()):

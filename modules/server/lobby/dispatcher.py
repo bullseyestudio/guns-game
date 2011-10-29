@@ -6,7 +6,7 @@ import socket
 from player_handler import LobbyPlayerHandler
 
 class GunsLobbyDispatcher(asyncore.dispatcher):
-	def __init__(self, address, queue):
+	def __init__(self, address):
 		asyncore.dispatcher.__init__(self)
 		self.players = []
 
