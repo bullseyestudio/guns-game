@@ -5,6 +5,7 @@ from battle import player, waypoint, network
 from battle.locals import PlayerAmbiguityError # can be raised by player name finder
 from modules import edicomm
 
+
 def quit_handler(str, cl):
 	pygame.event.post(pygame.event.Event(QUIT))
 
@@ -17,38 +18,29 @@ def help_handler(str, cl):
 		print 'list\t\tList players known to the server.'
 		print 'forget\t\tMakes the server forget a player.'
 		print 'help\t\tThis help text.'
-		print 'quit\t\tStops the server.'
 		print 'wp\t\tList/add/move/remove waypoints.'
+		print 'quit\t\tStops the server.'
 		print 'Try "help command" for more info on "command".'
 	else:
-		if parts[1].lower() == 'help':
+		if parts[1].lower() == 'list':
+			print 'Usage: list\n'
+			print 'Returns an ugly list of all the players on the server.'
+		elif parts[1].lower() == 'forget':
+			print 'Usage: forget <name>\n'
+			print 'Lets you tell the server to forget a player. Forgotten players need to re-authenticate if they want to talk to the server again.'
+			print 'Will match partial names (e.g. "na" will match "narc"), and refuse to do anything if name is ambiguous.'
+		elif parts[1].lower() == 'help':
 			print 'Usage: help [command]\n'
 			print 'Provides a list of commands, or help on a specific command.'
 			print 'The [command] argument is optional.'
-		elif parts[1].lower() == 'list':
-			print 'Usage: list\n'
-			print 'Returns an ugly list of all the players on the server.'
 		elif parts[1].lower() == 'wp':
 			print 'Usage: wp [id [x,y title]]\n'
 			print 'Without any parameters, gives you a list of all the waypoints known to the server.'
 			print 'If passed a waypoint ID, will attempt to delete that waypoint, if it exists.'
 			print 'If passed waypoint ID and a set of coordinates and a title, will attempt to create/move/rename a waypoint with that ID.'
-		elif parts[1].lower() == 'forget':
-			print 'Usage: forget <name>\n'
-			print 'Lets you tell the server to forget a player. Forgotten players need to re-authenticate if they want to talk to the server again.'
-			print 'Will match partial names (e.g. "na" will match "narc"), and refuse to do anything if name is ambiguous.'
 		elif parts[1].lower() == 'quit':
 			print 'Usage: quit\n'
 			print 'Stops the server immediately.'
-		elif parts[1].lower() == 'listwp':
-			print 'Usage: listwp\n'
-			print 'Lists all waypoints in an ugly list.'
-		elif parts[1].lower() == 'addwp':
-			print 'Usage: addwp <title> <posx> <posy>\n'
-			print 'Adds a named waypoint to the list at position specified.'
-		elif parts[1].lower() == 'delwp':
-			print 'Usage: delwp <id>\n'
-			print 'Deletes waypoint with specified id (Player-owned waypoints are id 257 and above).'
 
 def list_handler(str, cl):
 	print 'ID\tusername\taddress info\ttoken'
@@ -120,7 +112,6 @@ def wp_handler(str, cl):
 
 handlers = { 'help': help_handler,
 	'quit': quit_handler,
-	'stop': quit_handler,
 	'list': list_handler,
 	'forget': forget_handler,
 	'wp': wp_handler,
