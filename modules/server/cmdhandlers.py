@@ -53,7 +53,11 @@ def help_handler(str, cl):
 def list_handler(str, cl):
 	print 'ID\tusername\taddress info\ttoken'
 	for p in player.all:
-		print p.id, '\t', p.name, '\t', p.addr, '\t', p.token
+		display_name = p.name
+		if not p.ready:
+			display_name = p.name + ' (inactive)'
+
+		print p.id, '\t', display_name, '\t', p.addr, '\t', p.token
 
 	print 'Known tokens: ', ", ".join(player.tokens)
 
