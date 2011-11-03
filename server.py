@@ -11,7 +11,7 @@ try:
 	import pygame
 	from pygame.locals import *
 except ImportError:
-	sys.stderr.write("Sorry, you absolutely MUST have pygame.\nTry sudo apt-get install python-pygame, if you're on a deb-system.\n")
+	sys.stderr.write("Sorry, you absolutely MUST have pygame.\r\nTry sudo apt-get install python-pygame, if you're on a deb-system.\r\n")
 	sys.exit(1)
 
 pygame.display.init()
