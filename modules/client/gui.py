@@ -11,6 +11,7 @@ import constants
 import input_handler
 import bullet, waypoint
 import player
+import lobby
 
 width = 1024
 height = 576
@@ -85,6 +86,7 @@ def event_loop():
 	for event in pygame.event.get():
 		if event.type == constants.PGE_GAMETICK:
 			draw_things()
+			lobby.tick()
 		elif event.type in ( JOYAXISMOTION, JOYBALLMOTION, JOYHATMOTION, JOYBUTTONUP, JOYBUTTONDOWN ):
 			input_handler.joystick( event )
 		elif event.type in ( KEYDOWN, KEYUP ):
@@ -97,8 +99,8 @@ def event_loop():
 			background = pygame.transform.scale( background, event.size)
 			network_comms.send( edicomm.encode( 'USR', event.size ) )
 		elif event.type == QUIT:
-			network_comms.battle.close()
 			network_comms.lobby.close()
+			network_comms.battle.close()
 			pygame.time.set_timer( constants.PGE_GAMETICK, 0 )
 			done = True
 			close_display()

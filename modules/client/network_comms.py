@@ -64,8 +64,9 @@ class NetComm():
 
 	def close(self):
 		if self.sock != None:
-			if self.type == constants.socket_udp:
-				self.send( edicomm.encode( "USD", "Client closed" ) )
+			if self.type == constants.socket_tcp:
+				print 'Sending USD'
+				self.send( edicomm.encode( "USD", "Client closed" ) + '\n' )
 				self.sock.close()
 				self.sock = None
 			else:

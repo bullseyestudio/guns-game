@@ -1,5 +1,5 @@
 from modules import edicomm
-from .. import player
+from .. import player, waypoint, network
 
 def process(ediparts, addr):
 	if len(ediparts) != 2:
@@ -11,16 +11,20 @@ def process(ediparts, addr):
 	print 'Got new player with token', token
 
 	if token not in player.tokens:
-		player.tokens.append(token)
+		print 'token',token,'is not in player.tokens!'
+		raise edicomm.EDIException(100, 'Please re-authenticate!')
 
-	newid = player.tokens.index(token)
-
-	p = player.by_token(token)
+	p = player.by_token( token )
 
 	if not p:
-		p = player.new_player(newid + 1, token)
+		print 'player could not be found from token',token
+		raise edicomm.EDIException(100, 'Please re-authenticate!')
 
 	p.addr = addr
-	p.enqueue(edicomm.encode('UID', p.id))
+	p.ready = True
 
-	print 'Player (token:', token, ') got id', p.id
+	wpt_map = [edicomm.encode('WPT', wp.id, wp.position, wp.title, wp.owner) for wp in waypoint.all]
+
+	p.enqueue( '\n'.join(wpt_map) )
+
+	print 'Player (token:', token, ', username:', p.name, ', address: ', addr, ') joined!'

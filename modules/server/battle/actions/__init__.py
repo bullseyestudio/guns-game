@@ -6,6 +6,7 @@ def dispatch(ediparts, addr):
 	p = player.by_addr(addr)
 
 	if (not p) and (ediparts[0] != 'UST'):
+		print 'raising err 100 in battle.__init__.dispatch'
 		raise edicomm.EDIException(100, 'Please re-authenticate!')
 
 	if ediparts[0] == 'UST':

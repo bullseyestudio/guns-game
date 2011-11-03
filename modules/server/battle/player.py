@@ -103,6 +103,13 @@ def by_addr(addr):
 		if p.addr == addr:
 			return p
 
+def by_id(pid):
+	global all
+
+	for p in all:
+		if p.id == pid:
+			return p
+
 def by_token(token):
 	global all
 

@@ -4,6 +4,7 @@ import sys, os, signal
 
 from modules import edicomm
 from modules.server import battle, cmdline, cmdhandlers, lobby
+from modules.server.battle import queue
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 
@@ -40,6 +41,7 @@ while True:
 	for event in pygame.event.get():
 		if event.type == USEREVENT+1:
 			battle.timer_tick()
+			queue.tick()
 			cl.handle_command()
 		elif (event.type == QUIT):
 			cl.post_quit()

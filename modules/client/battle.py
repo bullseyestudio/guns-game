@@ -18,21 +18,9 @@ def init():
 
 def tick():
 	get_battle_updates()
-	get_lobby_updates()
 
 def get_battle_updates():
 	data = network_comms.battle.read()
-
-	if len( data ) == 0:
-		return
-
-	dlines = data.split( "\n" )
-	for i in dlines:
-		EDIDecoder( edicomm.decode( i ) )
-	return
-
-def get_lobby_updates():
-	data = network_comms.lobby.read()
 
 	if len( data ) == 0:
 		return
@@ -68,30 +56,6 @@ def EDIDecoder( EDIargs ):
 		bullet.all.append( b )
 		pass
 		# We be receving a fire pos update
-	elif EDIargs[0] == 'UID':
-		# print EDIargs
-		p = player.find_by_name( constants.username )
-		if not p == None:
-			print 'WTF, we got 2 ID\'s'
-			p.id = int( EDIargs[1] )
-		else:
-			plr = player.Player( constants.username )
-			plr.position[0] = 0
-			plr.position[1] = 0
-			plr.id = int( EDIargs[ 1 ] )
-			player.all[ int( EDIargs[ 1 ] ) ] = plr
-
-		network_comms.battle.send( edicomm.encode( 'USN', constants.username ) )
-	elif EDIargs[0] == 'USN':
-		p = player.find_by_name( EDIargs[ 2 ] )
-		if not p == None:
-			del player.all[ p.id ]
-		p = player.Player( EDIargs[ 2 ] )
-		p.position[0] = 0
-		p.position[1] = 0
-		p.rotation = 0
-		p.id = int( EDIargs[ 1 ] )
-		player.all[ int( EDIargs[1] ) ] = p
 	elif EDIargs[0] == 'USP':
 		try:
 			p = player.all[ int( EDIargs[1] ) ]
