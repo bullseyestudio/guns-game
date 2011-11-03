@@ -21,7 +21,10 @@ def init():
 	global key, pub
 
 	if not os.access(constants.private_key_path, os.R_OK):
-		sys.stderr.write('Unable to read private server key at {0}. Please verify a key exists and start the server again.\r\n')
+		sys.stderr.write(
+			'Unable to read private server key at {0}. Please verify a key exists and start the server again.\r\n'
+				.format(constants.private_key_path)
+		)
 		sys.exit(1)
 
 	fh = open(constants.private_key_path, 'rb')
