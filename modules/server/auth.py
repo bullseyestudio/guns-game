@@ -6,14 +6,9 @@ More docstringy stuff here.
 
 import sys, os, base64
 from modules.server import constants
+from modules import rsa
+import hashlib
 
-try:
-	from Crypto.Hash import MD5
-	from Crypto.PublicKey import RSA
-	import Crypto.Random
-except ImportError:
-	sys.stderr.write('Sorry, this application absolutely requires pycrypto >= v2.2.\r\nTry sudo apt-get python-crypto, if you\'re on a deb-system.\r\n')
-	sys.exit(1)
 
 key = None
 pub = None
@@ -32,13 +27,13 @@ def init():
 	s = ''.join(fh.readlines())
 	fh.close()
 
-	key = RSA.importKey(s)
-	pub = key.publickey()
+	key = rsa.PrivateKey.load_pkcs1(s)
+	pub = rsa.PublicKey(key.n, key.e)
 
 	print 'Imported server\'s private key.'
 
 def player_token(name):
-	hash = MD5.new(name)
-	return base64.encodestring(hash.digest()).rstrip()
+	hash = hashlib.md5(name).digest()
+	return base64.encodestring(hash).rstrip()
 
 pass
