@@ -30,7 +30,7 @@ class Player:
 			self.enqueue(edicomm.encode('TOK', tok))
 
 		self.nick = nick
-		self.handler.push(edicomm.encode('USN', nick))
+		self.enqueue(edicomm.encode('USN', nick))
 
 	def get_lost(self):
 		global all
