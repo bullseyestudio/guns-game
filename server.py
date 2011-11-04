@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os, signal
+import sys, os, signal, time
 
 from modules import edicomm
 from modules.server import battle, cmdline, cmdhandlers, lobby
@@ -38,6 +38,8 @@ signal.signal(signal.SIGINT, ctrlc_handler)
 pygame.time.set_timer(USEREVENT+1, 25)
 
 while True:
+	time.sleep(0.01)
+
 	for event in pygame.event.get():
 		if event.type == USEREVENT+1:
 			battle.timer_tick()
