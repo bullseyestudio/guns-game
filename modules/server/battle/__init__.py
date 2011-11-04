@@ -5,4 +5,3 @@ def timer_tick():
 	network.check_input()
 	player.move_all()
 	player.xmit_all()
-

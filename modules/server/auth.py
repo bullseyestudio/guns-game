@@ -4,10 +4,11 @@ More docstringy stuff here.
 
 """
 
-import sys, os
+import sys, os, base64
 from modules.server import constants
 
 try:
+	from Crypto.Hash import MD5
 	from Crypto.PublicKey import RSA
 	import Crypto.Random
 except ImportError:
@@ -35,5 +36,9 @@ def init():
 	pub = key.publickey()
 
 	print 'Imported server\'s private key.'
+
+def player_token(name):
+	hash = MD5.new(name)
+	return hash.digest()
 
 pass

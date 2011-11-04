@@ -43,6 +43,7 @@ while True:
 
 	for event in pygame.event.get():
 		if event.type == USEREVENT+1:
+			lobby.timer_tick()
 			battle.timer_tick()
 			cl.handle_command()
 		elif (event.type == QUIT):

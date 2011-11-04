@@ -4,25 +4,13 @@ Runs in its own thread alongside the main thread.
 
 """
 
-import threading, asyncore
-
 from modules.server import constants
-import dispatcher
-
-class GunsLobbyServer(threading.Thread):
-	def __init__(self):
-		threading.Thread.__init__(self)
-
-		self.d = dispatcher.GunsLobbyDispatcher(constants.listen_addr)
-
-	def run(self):
-		asyncore.loop()
-
-server = GunsLobbyServer()
-server.daemon = True
+import lobby_thread, player, messages
 
 def start_server():
-	global server
-	server.start()
+	lobby_thread.server.start()
 
 	print 'Lobby server thread started.'
+
+def timer_tick():
+	messages.process_queue()
