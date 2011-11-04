@@ -39,6 +39,6 @@ def init():
 
 def player_token(name):
 	hash = MD5.new(name)
-	return hash.digest()
+	return base64.encodestring(hash.digest())
 
 pass
