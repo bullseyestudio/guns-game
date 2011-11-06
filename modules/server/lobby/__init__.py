@@ -4,8 +4,7 @@ Runs in its own thread alongside the main thread.
 
 """
 
-from modules.server import constants
-import lobby_thread, player, messages
+import lobby_thread, messages
 
 def start_server():
 	lobby_thread.server.start()

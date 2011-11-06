@@ -5,7 +5,7 @@ Keep this as short as humanly possible (pick up data, queue it for handling).
 """
 
 from modules import edicomm
-from modules.server import constants
+from modules.server import config
 from modules.server.lobby import messages, player
 
 import threading, asyncore, asynchat, socket
@@ -66,7 +66,7 @@ class GunsLobbyServer(threading.Thread):
 	def __init__(self):
 		threading.Thread.__init__(self)
 
-		self.d = GunsLobbyDispatcher(constants.listen_addr)
+		self.d = GunsLobbyDispatcher(config.listen_addr)
 
 	def run(self):
 		asyncore.loop()
