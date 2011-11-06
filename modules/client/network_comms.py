@@ -45,14 +45,15 @@ class NetComm():
 			if len( socks[0] ) == 0:
 				break
 
-			if self.type == constants.socket_udp:
-				try:
-					data, addr = self.sock.recvfrom(1500)
-				except socket.error:
-					# Swallowing socket.error 10054 because UDP shouldn't fucking care!
-					continue
-			else:
+			try:
 				data, addr = self.sock.recvfrom(1500)
+			except socket.error:
+				if self.type == constants.socket_udp:
+					# UDP shouldn't respond to socket error 10054
+					continue
+				else:
+					# Re-raise
+					raise
 
 			data = data.strip()
 			if data != '' and not data.startswith('USP'):
