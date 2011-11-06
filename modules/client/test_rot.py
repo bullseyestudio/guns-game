@@ -1,10 +1,7 @@
 import pygame
 from pygame.locals import *
 
-import battle
-import network_comms
-import constants
-import input_handler
+from modules.client import battle, network_comms, constants, input_handler
 
 rang = 0
 

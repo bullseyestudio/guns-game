@@ -1,6 +1,4 @@
-import constants
-import battle
-import gui
+from modules.client import constants, battle, gui
 
 import pygame
 from pygame.locals import *

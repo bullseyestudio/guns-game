@@ -3,11 +3,7 @@ from pygame.locals import *
 
 from modules import edicomm
 
-import network_comms
-import constants
-import waypoint
-import gui
-import battle
+from modules.client import network_comms, constants, waypoint, gui, battle
 
 velocity = [0, 0]
 
