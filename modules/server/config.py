@@ -19,8 +19,13 @@ default_config = {
 		}
 	}
 
+print 'Set up default configuration.'
+
 cp = ConfigParser.RawConfigParser(default_config)
-cp.read(['data/server.cfg', os.path.expanduser('~/.guns/server.cfg')])
+read_configs = cp.read(['data/server.cfg', os.path.expanduser('~/.guns/server.cfg')])
+
+for f in read_configs:
+	print 'Read configuration from {0}'.format(f)
 
 listen_ip = cp.get('core', 'listen_ip')
 listen_port = cp.getint('core', 'listen_port')
