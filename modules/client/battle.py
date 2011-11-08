@@ -3,13 +3,8 @@ from pygame.locals import *
 
 from modules import edicomm
 
-import player
-import waypoint
-import network_comms
-import constants
-import test_rot
-import bullet
-import gui # A sign of: we do screen fuckery here!
+from modules.client import player, waypoint, network_comms, constants, bullet
+from modules.client import gui # A sign of: we do screen fuckery here!
 
 cplr = None
 

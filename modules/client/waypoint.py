@@ -1,9 +1,7 @@
 import pygame
 from pygame.locals import *
 
-import constants
-import battle
-import gui
+from modules.client import constants, battle, gui
 
 size = (16, 16)
 offset = (-8, -8) # Necessary offset to draw the waypoint centered at position,

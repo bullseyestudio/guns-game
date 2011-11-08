@@ -3,9 +3,7 @@ from pygame.locals import *
 
 import math
 
-import constants
-import gui
-import battle
+from modules.client import constants, gui, battle
 
 class Player:
 

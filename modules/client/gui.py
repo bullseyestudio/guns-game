@@ -5,12 +5,8 @@ import sys
 
 from modules import edicomm
 
-import battle
-import network_comms
-import constants
-import input_handler
-import bullet, waypoint
-import player
+from modules.client import battle, network_comms, constants, input_handler
+from modules.client import bullet, waypoint, player
 
 width = 1024
 height = 576

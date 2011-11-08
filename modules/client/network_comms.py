@@ -2,7 +2,7 @@ import select, socket
 
 from modules import edicomm
 
-import constants
+from modules.client import constants
 
 battle = None
 lobby = None
