@@ -23,7 +23,10 @@ def init_display():
 
 def resize_display(newsize):
 	common.screen = pygame.display.set_mode(newsize, pygame.RESIZABLE)
-	common.screen_rect = screen.get_rect()
+	common.viewport.width = screen.get_width()
+	common.viewport.height = screen.get_height()
+
+	redraw_background()
 
 def redraw_background():
 	common.tile_size = int(64 * common.zoom)
