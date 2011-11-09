@@ -3,6 +3,7 @@
 import sys
 
 from modules import edicomm
+from modules.client import config
 from modules.client import constants, gui, network_comms, input_handler, battle
 
 if len(sys.argv) < 3:
