@@ -32,9 +32,7 @@ height: 576
 """
 
 default_config = default_config.format(pgl=pgl)
-
 conf_path = os.path.expanduser('~/.guns/client.cfg')
-
 cp = ConfigParser.RawConfigParser()
 
 def read_config():
@@ -52,4 +50,3 @@ def write_config():
 
 	with open(conf_path, 'wb') as fh:
 		cp.write(fh)
-
