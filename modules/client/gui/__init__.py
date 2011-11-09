@@ -16,19 +16,17 @@ def init_display():
 
 	common.font = pygame.font.Font(None, 18)
 
-	redraw_background()
-
-	common.screen.blit(common.background, (0,0), common.viewport)
-	pygame.display.flip()
+	resize_background()
+	draw_background()
 
 def resize_display(newsize):
 	common.screen = pygame.display.set_mode(newsize, pygame.RESIZABLE)
 	common.viewport.width = screen.get_width()
 	common.viewport.height = screen.get_height()
 
-	redraw_background()
+	resize_background()
 
-def redraw_background():
+def resize_background():
 	common.tile_size = int(64 * common.zoom)
 
 	tile_size = common.tile_size
@@ -41,6 +39,8 @@ def redraw_background():
 	# Background is bigger than it needs to be to allow for scrolling it without
 	#rebuilding it every damn time -- just move the viewport and re-blit
 	bgsize = [x + (tile_size * 2) for x in common.screen.get_size()]
+	# NB: After scrolling more than tile_size in any direction, the scroll
+	#function should reset it.
 
 	common.background = pygame.Surface(bgsize).convert()
 
@@ -53,3 +53,22 @@ def redraw_background():
 	for row in range(0, rowcount):
 		for col in range(0, colcount):
 			common.background.blit(tile, (col * tile_size, row * tile_size))
+
+def draw_background():
+	common.screen.blit(common.background, (0,0), common.viewport)
+	pygame.display.flip()
+
+def scroll_background(xdist, ydist):
+	common.viewport.left += xdist
+	common.viewport.top += ydist
+
+	common.viewport.left = _bounds_check(common.viewport.left)
+	common.viewport.top = _bounds_check(common.viewport.top)
+
+def _bounds_check(value):
+	if value < 0:
+		value %= common.tile_size
+	elif value > (2 * common.tile_size):
+		value = common.tile_size + (value % common.tile_size)
+
+	return value

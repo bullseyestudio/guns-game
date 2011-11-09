@@ -18,13 +18,11 @@ config.read_config()
 gui.init_display()
 
 # Q'n'D demo code (delete me soonest)
-from modules.client.gui import common
-for i in range(0, 64):
-	gui.common.viewport.top = i
-	gui.common.viewport.left = i
+time.sleep(1)
 
-	common.screen.blit(common.background, (0,0), common.viewport)
-	pygame.display.flip()
+for i in range(0, 256):
+	gui.scroll_background(1, 2)
+	gui.draw_background()
 
 	time.sleep(0.01)
 # End Q'n'D demo code
