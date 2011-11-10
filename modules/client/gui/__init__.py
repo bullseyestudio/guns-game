@@ -14,6 +14,8 @@ def init_display():
 	common.viewport = common.screen.get_rect()
 	pygame.display.set_caption("Guns! the tank game v0.1 ALPHA")
 
+	common.logo = pygame.image.load('data/BullsEyeLogo.png')
+
 	common.font = pygame.font.Font(None, 18)
 
 	resize_background()
@@ -72,3 +74,15 @@ def _bounds_check(value):
 		value = common.tile_size + (value % common.tile_size)
 
 	return value
+
+def show_logo():
+	logo_rect = common.logo.get_rect()
+	logo_rect.center = common.screen.get_rect().center
+	common.screen.blit(common.logo, logo_rect)
+	pygame.display.flip()
+
+def hide_logo():
+	logo_rect = common.logo.get_rect()
+	logo_rect.center = common.screen.get_rect().center
+	common.screen.blit(common.background, logo_rect, logo_rect)
+	pygame.display.flip()

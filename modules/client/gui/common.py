@@ -12,3 +12,5 @@ tile_size = 64
 
 zoom = 1.0
 zoom_step = 0.0625
+
+theme = None

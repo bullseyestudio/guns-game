@@ -16,15 +16,17 @@ from modules.client import config, gui
 
 config.read_config()
 gui.init_display()
+gui.show_logo()
 
 # Q'n'D demo code (delete me soonest)
-time.sleep(1)
+from modules.client.gui import mainmenu
+from modules.pgu import gui as pgui
 
-for i in range(0, 256):
-	gui.scroll_background(1, 2)
-	gui.draw_background()
+a = pgui.App()
+a.connect(pgui.QUIT, a.quit, None)
+mainmenu.b.connect(pgui.CLICK,a.quit,None)
 
-	time.sleep(0.01)
+gui.hide_logo()
+
+a.run(mainmenu.t)
 # End Q'n'D demo code
-
-time.sleep(2)
