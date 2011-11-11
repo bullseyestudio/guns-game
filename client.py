@@ -20,13 +20,26 @@ gui.init_display()
 gui.show_logo()
 ms_atlogo = pygame.time.get_ticks()
 
-# Q'n'D demo code (delete me soonest)
-from modules.client.gui import mainmenu
+from modules.client.gui import mainmenu, optsmenu
 from modules.pgu import gui as pgui
 
 a = pgui.App()
 
 a.init(mainmenu.t, gui.common.screen)
+
+def show_opts():
+	global a
+
+	gui.init_display()
+	a.init(optsmenu.t, gui.common.screen)
+mainmenu.optsbtn.connect(pgui.CLICK, show_opts)
+
+def show_main():
+	global a
+
+	gui.init_display()
+	a.init(mainmenu.t, gui.common.screen)
+optsmenu.backbtn.connect(pgui.CLICK, show_main)
 
 ms_afterinit = pygame.time.get_ticks()
 ms_to_wait = 2000 - (ms_afterinit - ms_atlogo)
@@ -49,4 +62,3 @@ while not quitting:
 
 	rects = a.update(gui.common.screen)
 	pygame.display.update(rects)
-# End Q'n'D demo code

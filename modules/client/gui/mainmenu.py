@@ -20,7 +20,8 @@ t.tr()
 t.td(pgui.Button('Multiplayer', width=150, height=30))
 
 t.tr()
-t.td(pgui.Button('Options', width=150, height=30))
+optsbtn = pgui.Button('Options', width=150, height=30)
+t.td(optsbtn)
 
 t.tr()
 b = pgui.Button('Quit', width=150, height=30)
