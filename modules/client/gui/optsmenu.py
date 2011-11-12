@@ -17,6 +17,7 @@ t.td(pgui.Spacer(width=150, height=int(hgt/2) - (4 * 40)), colspan=2)
 
 t.tr()
 backbtn = pgui.Button('Back to Main Menu', width=150, height=30)
+backbtn.connect(pgui.CLICK, common.show_mainmenu)
 t.td(backbtn)
 savebtn = pgui.Button('Save Settings', width=150, height=30)
 t.td(savebtn)

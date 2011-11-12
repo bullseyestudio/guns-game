@@ -21,6 +21,7 @@ t.td(pgui.Button('Multiplayer', width=150, height=30))
 
 t.tr()
 optsbtn = pgui.Button('Options', width=150, height=30)
+optsbtn.connect(pgui.CLICK, common.show_optsmenu)
 t.td(optsbtn)
 
 t.tr()

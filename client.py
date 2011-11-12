@@ -20,33 +20,16 @@ gui.init_display()
 gui.show_logo()
 ms_atlogo = pygame.time.get_ticks()
 
-from modules.client.gui import mainmenu, optsmenu
-from modules.pgu import gui as pgui
-
-a = pgui.App()
-
-a.init(mainmenu.t, gui.common.screen)
-
-def show_opts():
-	global a
-
-	gui.init_display()
-	a.init(optsmenu.t, gui.common.screen)
-mainmenu.optsbtn.connect(pgui.CLICK, show_opts)
-
-def show_main():
-	global a
-
-	gui.init_display()
-	a.init(mainmenu.t, gui.common.screen)
-optsmenu.backbtn.connect(pgui.CLICK, show_main)
+# Any other init stuff that can go in here should do so.
+gui.init_app()
 
 ms_afterinit = pygame.time.get_ticks()
 ms_to_wait = 2000 - (ms_afterinit - ms_atlogo)
-pygame.time.wait(ms_to_wait)
+pygame.time.wait(ms_to_wait) # We do want people to see our nice logo :)
 
 gui.hide_logo()
-a.loop()
+gui.show_mainmenu()
+gui.tick_app_gfx()
 
 c = pygame.time.Clock()
 
@@ -58,7 +41,6 @@ while not quitting:
 		if ev.type == pygame.QUIT:
 			quitting = True
 
-		a.event(ev)
+		gui.pass_app_event(ev)
 
-	rects = a.update(gui.common.screen)
-	pygame.display.update(rects)
+	gui.tick_app_gfx()

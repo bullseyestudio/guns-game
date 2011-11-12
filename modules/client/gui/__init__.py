@@ -21,6 +21,9 @@ def init_display():
 	resize_background()
 	draw_background()
 
+def init_app():
+	pass
+
 def resize_display(newsize):
 	common.screen = pygame.display.set_mode(newsize, pygame.RESIZABLE)
 	common.viewport.width = screen.get_width()
@@ -56,9 +59,11 @@ def resize_background():
 		for col in range(0, colcount):
 			common.background.blit(tile, (col * tile_size, row * tile_size))
 
-def draw_background():
-	common.screen.blit(common.background, (0,0), common.viewport)
-	pygame.display.flip()
+draw_background = common.draw_background
+show_mainmenu = common.show_mainmenu
+show_optsmenu = common.show_optsmenu
+tick_app_gfx = common.tick_app_gfx
+pass_app_event = common.pass_app_event
 
 def scroll_background(xdist, ydist):
 	common.viewport.left += xdist
