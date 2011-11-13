@@ -47,11 +47,21 @@ def show_turrets():
 	""" Show the turrets demo """
 	from modules.client.gui import turrets
 	from modules.client import gui
-	global pguapp, screen, subscreen_update
+	global pguapp, screen
 
 	gui.subscreen_update = turrets.draw_turrets
 	draw_background()
 	pguapp.init(turrets.t, screen)
+
+def show_bgdemo():
+	""" Show the background demo """
+	from modules.client.gui import bgdemo
+	from modules.client import gui
+	global pguapp, screen
+
+	gui.subscreen_update = bgdemo.draw_bg
+	draw_background()
+	pguapp.init(bgdemo.t, screen)
 
 def tick_app_gfx():
 	global pguapp, screen
