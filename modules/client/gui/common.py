@@ -1,4 +1,5 @@
 import pygame
+from modules.pgu import gui as pgui
 
 width = 1024
 height = 576
@@ -16,7 +17,6 @@ zoom_step = 0.0625
 
 theme = None
 
-from modules.pgu import gui as pgui
 pguapp = pgui.App()
 
 def draw_background():
@@ -36,10 +36,22 @@ def show_optsmenu():
 def show_mainmenu():
 	""" Main screen turn on """
 	from modules.client.gui import mainmenu
+	from modules.client import gui
 	global pguapp, screen
 
+	gui.subscreen_update = None
 	draw_background()
 	pguapp.init(mainmenu.t, screen)
+
+def show_turrets():
+	""" Show the turrets demo """
+	from modules.client.gui import turrets
+	from modules.client import gui
+	global pguapp, screen, subscreen_update
+
+	gui.subscreen_update = turrets.draw_turrets
+	draw_background()
+	pguapp.init(turrets.t, screen)
 
 def tick_app_gfx():
 	global pguapp, screen

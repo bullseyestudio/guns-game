@@ -14,7 +14,9 @@ t.tr()
 t.td(pgui.Image('data/GunsLogo.png', valign=-1), height=int(hgt/2))
 
 t.tr()
-t.td(pgui.Button('Build a tank', width=150, height=30))
+turrbtn = pgui.Button('Demo: tracking turrets', width=150, height=30)
+turrbtn.connect(pgui.CLICK, common.show_turrets)
+t.td(turrbtn)
 
 t.tr()
 t.td(pgui.Button('Multiplayer', width=150, height=30))

@@ -61,9 +61,9 @@ def resize_background():
 
 draw_background = common.draw_background
 show_mainmenu = common.show_mainmenu
-show_optsmenu = common.show_optsmenu
 tick_app_gfx = common.tick_app_gfx
 pass_app_event = common.pass_app_event
+subscreen_update = None
 
 def scroll_background(xdist, ydist):
 	common.viewport.left += xdist

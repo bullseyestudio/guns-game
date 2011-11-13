@@ -41,6 +41,9 @@ while not quitting:
 		if ev.type == pygame.QUIT:
 			quitting = True
 
+		if gui.subscreen_update:
+			gui.subscreen_update(ev)
+
 		gui.pass_app_event(ev)
 
 	gui.tick_app_gfx()
