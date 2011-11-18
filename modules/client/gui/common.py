@@ -23,7 +23,6 @@ def draw_background():
 	global screen, background, viewport
 
 	screen.blit(background, (0,0), viewport)
-	pygame.display.flip()
 
 def show_optsmenu():
 	""" Show the options screen """
@@ -67,7 +66,7 @@ def tick_app_gfx():
 	global pguapp, screen
 
 	rects = pguapp.update(screen)
-	pygame.display.update(rects)
+	pygame.display.flip()
 
 def pass_app_event(evt):
 	global pguapp
