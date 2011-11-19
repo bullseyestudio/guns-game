@@ -7,6 +7,7 @@ class Turret(object):
 		self.surface = surface
 		self.pos = position
 		self.dot_pos = None
+		self.last_shot_time = 0
 
 		self.box = pygame.Surface((64, 64), 0, self.surface)
 		self.box.fill((200,0,200))
@@ -33,3 +34,12 @@ class Turret(object):
 		self.surface.blit(self.box, dest_pos)
 
 		return dest_pos
+
+	def fire(self):
+		now = pygame.time.get_ticks()
+
+		diff = abs(now - self.last_shot_time)
+
+		if(diff > 500):
+			print 'firing'
+			self.last_shot_time = now

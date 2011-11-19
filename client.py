@@ -37,6 +37,8 @@ quitting = False
 while not quitting:
 	elapsed = c.tick(60)
 
+	pygame.event.post(pygame.event.Event(config.TIMER_EVENT))
+
 	for ev in pygame.event.get():
 		if ev.type == pygame.QUIT:
 			quitting = True

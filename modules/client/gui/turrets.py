@@ -4,6 +4,7 @@ import pygame
 from modules.client.gui import common
 from modules.client.gui.shapes import turret
 from modules.pgu import gui as pgui
+from modules.client import config
 
 wid = common.screen.get_width()
 hgt = common.screen.get_height()
@@ -24,14 +25,24 @@ t.td(pgui.Spacer(width=150, height=80), colspan=2)
 turr = turret.Turret(common.screen, (128,128))
 turr2 = turret.Turret(common.screen, (530,255))
 
+
+shooting = False
 def draw_turrets(ev):
-	if(ev.type != pygame.MOUSEMOTION):
-		return
+	global shooting
 
-	turr.point_at(ev.pos)
-	rect = turr.paint()
-	pygame.display.update(rect)
+	if(ev.type == config.TIMER_EVENT):
+		if shooting:
+			turr.fire()
+			turr2.fire()
+	elif(ev.type == pygame.MOUSEMOTION):
+		turr.point_at(ev.pos)
+		rect = turr.paint()
+		turr2.point_at(ev.pos)
+		rect = turr2.paint()
+	elif(ev.type == pygame.MOUSEBUTTONDOWN):
+		if(backbtn.is_hovering()):
+			return
 
-	turr2.point_at(ev.pos)
-	rect = turr2.paint()
-	pygame.display.update(rect)
+		shooting = True
+	elif(ev.type == pygame.MOUSEBUTTONUP) and shooting:
+		shooting = False
