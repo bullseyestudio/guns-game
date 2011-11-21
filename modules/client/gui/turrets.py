@@ -2,7 +2,7 @@
 
 import pygame
 from modules.client.gui import common
-from modules.client.gui.shapes import turret
+from modules.client.gui.shapes import turret, bullet
 from modules.pgu import gui as pgui
 from modules.client import config
 
@@ -34,11 +34,16 @@ def draw_turrets(ev):
 		if shooting:
 			turr.fire()
 			turr2.fire()
+		for b in bullet.all:
+			b.unrender()
+		turr.paint()
+		turr2.paint()
+		for b in bullet.all:
+			b.think()
+			b.render()
 	elif(ev.type == pygame.MOUSEMOTION):
 		turr.point_at(ev.pos)
-		rect = turr.paint()
 		turr2.point_at(ev.pos)
-		rect = turr2.paint()
 	elif(ev.type == pygame.MOUSEBUTTONDOWN):
 		if(backbtn.is_hovering()):
 			return

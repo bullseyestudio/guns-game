@@ -1,4 +1,5 @@
 import pygame, math
+from modules.client.gui.shapes import bullet
 
 class Turret(object):
 	""" A turret is basically a circle with a triangle inside showing its front """
@@ -10,12 +11,16 @@ class Turret(object):
 		self.last_shot_time = 0
 
 		self.box = pygame.Surface((64, 64), 0, self.surface)
-		self.box.fill((200,0,200))
+		self.box.fill((255,0,255))
+		self.box.set_colorkey((255,0,255))
+		pygame.draw.circle(self.box, (255,255,255), (32,32), 30)
 		pygame.draw.circle(self.box, (0,0,0), (32,32), 30, 2)
 
 	def point_at(self, position):
+		self.target = position
+
 		if self.dot_pos:
-			pygame.draw.circle(self.box, (200,0,200), self.dot_pos, 2, 0)
+			pygame.draw.circle(self.box, (255,255,255), self.dot_pos, 2, 0)
 
 		rel_pos = [b - a for a, b in zip(self.pos, position)]
 		dist = math.hypot(*rel_pos)
@@ -40,6 +45,13 @@ class Turret(object):
 
 		diff = abs(now - self.last_shot_time)
 
-		if(diff > 500):
-			print 'firing'
+		if(diff > 50):
+			bpos = [a + (b - 32) for a,b in zip(self.pos, self.dot_pos)]
+			bspd = [int((a - 32) / 4) for a in self.dot_pos]
+
+			rel_pos = [b - a for a, b in zip(self.pos, self.target)]
+			dist = math.hypot(*rel_pos) - 28
+
+			bullet.new(bpos, bspd, dist, 0, 0)
+
 			self.last_shot_time = now

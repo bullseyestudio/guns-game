@@ -1,4 +1,5 @@
 import pygame, math
+from modules.client.gui import common
 
 # Flags for bullets:
 TRACKING = 1
@@ -18,6 +19,7 @@ class Bullet(object):
 		self.surface = pygame.Surface((16, 16))
 		self.surface.fill((255, 0, 255))
 		self.surface.set_colorkey((255, 0, 255))
+		pygame.draw.circle(self.surface, (0,0,0), (5,5), 3)
 
 		if self.flags & (LASER | TRACKING):
 			self.flags = self.flags & (~TRACKING)
@@ -51,18 +53,38 @@ class Bullet(object):
 			self.exploding = True
 
 	def think_explode(self):
-		pass # TODO: make boomies
+		all.remove(self)
 
 	def render(self):
 		if self.exploding:
-			pass # TODO: Make boomies (again)
+			return # TODO: Make boomies (again)
 
 		if self.flags & LASER:
 			pass # TODO: Make pretty line
 
-		# TODO: Render thine self!
+		common.screen.blit(self.surface, self._rect())
+
+	def unrender(self):
+		if self.exploding:
+			return # TODO: Make boomies (again)
+
+		if self.flags & LASER:
+			pass # TODO: Make pretty line
+
+		common.screen.blit(common.background, self._rect(), self._rect())
 
 	def _rect(self):
-		pass # TODO: Return a pygame.Rect() of the bullet's current position.
+		""" Returns a pygame.Rect for the bullet's onscreen position """
+		rect = pygame.Rect(0,0, 16,16)
+		rect.center = self.position
+
+		return rect
 
 all = []
+
+def new(position, speed, distance, inertia, flags):
+	bullet = Bullet(position, speed, distance, inertia, flags)
+
+	all.append(bullet)
+
+	return bullet
