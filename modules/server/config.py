@@ -1,38 +1,38 @@
 import ConfigParser
-import os
+import os, io
 
-default_config = {
-	'core':
-		{
-			'listen_ip': '0.0.0.0',
-			'listen_port': 45005
-		},
-	'waypoints':
-		{
-			'player_wp_fmtstring': 'wp_{p.name}',
-			'min_player_wpid': 256
-		},
-	'auth':
-		{
-			'server_name': 'hermes',
-			'private_key_path': 'data/server.key'
-		}
-	}
+default_config = """
+[core]
+listen_ip: 0.0.0.0
+listen_port: 45005
 
-print 'Set up default configuration.'
+[waypoints]
+player_wp_fmtstring: wp_{p.name}
+min_player_wpid: 256
 
-cp = ConfigParser.RawConfigParser(default_config)
-read_configs = cp.read(['data/server.cfg', os.path.expanduser('~/.guns/server.cfg')])
+[auth]
+server_name: noname
+private_key_path: data/server.key
+"""
 
-for f in read_configs:
-	print 'Read configuration from {0}'.format(f)
+cp = ConfigParser.RawConfigParser()
+conf_path = os.path.expanduser('~/.guns/server.cfg')
 
-listen_ip = cp.get('core', 'listen_ip')
-listen_port = cp.getint('core', 'listen_port')
-listen_addr = (listen_ip, listen_port)
+def read_config():
+	global default_config, cp, conf_path
 
-player_wp_fmtstring = cp.get('waypoints', 'player_wp_fmtstring')
-min_player_wpid = cp.getint('waypoints', 'min_player_wpid')
+	cp.readfp(io.BytesIO(default_config))
+	print 'Read default configuration.'
 
-server_name = cp.get('auth', 'server_name')
-private_key_path = cp.get('auth', 'private_key_path')
+	read_configs = cp.read(conf_path)
+	for f in read_configs:
+		print 'Read configuration from {0}'.format(f)
+
+def write_config():
+	global cp, conf_path
+
+	if not os.path.exists(os.path.expanduser('~/.guns')):
+		os.makedirs(os.path.expanduser('~/.guns'))
+
+	with open(conf_path, 'wb') as fh:
+		cp.write(fh)

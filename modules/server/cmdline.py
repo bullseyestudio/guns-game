@@ -55,7 +55,7 @@ class cmdline:
 
 	def start_listener(self):
 		self.t.start()
-		print 'Waiting for commands, type "quit" to stop the server.'
+		print 'Waiting for commands, enter "quit" to stop the server.'
 
 	def handle_command(self):
 		if(self.q.empty()):

@@ -66,7 +66,8 @@ class GunsLobbyServer(threading.Thread):
 	def __init__(self):
 		threading.Thread.__init__(self)
 
-		self.d = GunsLobbyDispatcher(config.listen_addr)
+		listen_addr = (config.cp.get('core', 'listen_ip'), config.cp.getint('core', 'listen_port'))
+		self.d = GunsLobbyDispatcher(listen_addr)
 
 	def run(self):
 		asyncore.loop()
