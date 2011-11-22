@@ -49,3 +49,6 @@ while not quitting:
 		gui.pass_app_event(ev)
 
 	gui.tick_app_gfx()
+
+# Any other exit stuff that can go in here should do so.
+config.write_config()
