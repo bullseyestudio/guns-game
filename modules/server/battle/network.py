@@ -1,11 +1,11 @@
 from modules import edicomm
-from modules.server import constants
+from modules.server import config
 import actions, player
 
 import socket, select
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(constants.listen_addr)
+sock.bind(config.listen_addr)
 
 def check_input():
 	while True:

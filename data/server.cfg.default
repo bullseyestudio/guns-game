@@ -1,0 +1,26 @@
+# Guns server configuration defaults
+# This file can be copied to server.cfg and edited to match your preferred setup.
+# The server configuration can also be overridden by ~/.guns/server.cfg
+
+[core]
+# Defines the IP (of the interface) and port number that Guns server listens on
+# Normally, you'll want to stick to 0.0.0.0 (aka "listen on all interfaces")
+# unless you have a specific reason not to do so.
+listen_addr: 0.0.0.0
+listen_port: 45005
+
+[waypoints]
+# This string defines how player waypoints are automatically named.
+player_wp_fmtstring: wp_{p.name}
+# Where the first player waypoint ID starts. Anything below this is always server-owned.
+min_player_wpid: 256
+
+[auth]
+# This is your server name, as you set it on the web interface (TODO: add link).
+# If this is set to anything other than the default (anonymous) and a key exists
+# at private_key_path (see below), the server will authenticate itself to
+# clients that connect to it.
+server_name: anonymous
+# The path to the server key file (see above) -- either an absolute path or
+# relative to the location of server.py
+private_key_path: data/server.key

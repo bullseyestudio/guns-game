@@ -8,10 +8,20 @@ the objective of obliterating the enemy.
 For most current documentation, there is a wiki article at
 <http://wiki.narc.ro/a/Guns>.
 
-Uses PGU (Phil's pyGame Utilities) -- see <http://code.google.com/p/pgu/>.
+Other People's Work
+-------------------
 
-For convenience, PGU is included in the repository (thanks to it being so
-tiny). PGU is released under the [GNU lesser GPL][lgpl].
+Uses PGU (Phil's pyGame Utilities) -- see <http://code.google.com/p/pgu/>. PGU
+is released under the [GNU lesser GPL][lgpl].
+
+Uses Python-RSA -- see <http://stuvel.eu/rsa>. Python-RSA is released under the
+[Apache License version 2.0][apachel].
+
+Uses PyASN1 -- see <http://pyasn1.sourceforge.net/>. PyASN1 is released under
+the [BSD 3-clause License][bsd3l]
+
+For convenience, these are included in the repository (thanks to it being so
+tiny).
 
 License
 -------
@@ -55,3 +65,5 @@ reports, feature requests, etc. at <https://github.com/bullseyestudio/guns-game/
 [py]: http://python.org/
 [pygame]: http://pygame.org/
 [lgpl]: http://www.gnu.org/licenses/lgpl.html
+[apachel]: http://www.apache.org/licenses/LICENSE-2.0
+[bsd3l]: http://www.opensource.org/licenses/BSD-3-Clause

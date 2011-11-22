@@ -3,7 +3,7 @@
 import sys, os, signal, time
 
 from modules import edicomm
-from modules.server import battle, cmdline, cmdhandlers, lobby
+from modules.server import auth, battle, cmdline, cmdhandlers, lobby
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 
@@ -18,6 +18,8 @@ pygame.display.init()
 screen = pygame.display.set_mode((1,1))
 
 print 'Server init begins.'
+
+auth.init()
 
 lobby.start_server()
 
@@ -41,6 +43,7 @@ while True:
 
 	for event in pygame.event.get():
 		if event.type == USEREVENT+1:
+			lobby.timer_tick()
 			battle.timer_tick()
 			cl.handle_command()
 		elif (event.type == QUIT):

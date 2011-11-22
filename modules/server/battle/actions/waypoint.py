@@ -1,12 +1,12 @@
 from modules import edicomm
-from modules.server import constants
+from modules.server import config
 from .. import waypoint, network
 
 def process(ediparts, p):
 	if len(ediparts) == 2: # Player wants waypoint set: WPT x,y
-		wpid = constants.min_player_wpid + p.id
+		wpid = config.min_player_wpid + p.id
 		wppos = [int(x) for x in ediparts[1]]
-		wptitle = constants.player_wp_fmtstring.format(p=p)
+		wptitle = config.player_wp_fmtstring.format(p=p)
 
 		wp = waypoint.by_id(wpid)
 		if not wp:
@@ -17,7 +17,7 @@ def process(ediparts, p):
 
 		network.to_ready(edicomm.encode('WPT', wpid, wppos, wptitle, p.id))
 	elif len(ediparts) == 1: # Player wants waypoint deleted
-		wpid = constants.min_player_wpid + p.id
+		wpid = config.min_player_wpid + p.id
 
 		wp = waypoint.by_id(wpid)
 		if wp:

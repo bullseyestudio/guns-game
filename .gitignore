@@ -1,5 +1,7 @@
 .*
 !.git*
 
-*.pyc
+*.py[co]
 thumbs.db
+
+data/server.cfg
