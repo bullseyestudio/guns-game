@@ -71,7 +71,7 @@ class Bullet(object):
 		if self.flags & LASER:
 			pass # TODO: Make pretty line
 
-		common.screen.blit(common.background, self._rect(), self._rect())
+		common.draw_background_rect(self._rect())
 
 	def _rect(self):
 		""" Returns a pygame.Rect for the bullet's onscreen position """

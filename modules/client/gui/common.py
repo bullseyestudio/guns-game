@@ -24,6 +24,15 @@ def draw_background():
 
 	screen.blit(background, (0,0), viewport)
 
+def draw_background_rect(rect):
+	global screen, background, viewport
+
+	tmp = rect.copy()
+	tmp.left += viewport.left
+	tmp.top += viewport.top
+
+	screen.blit(background, rect, tmp)
+
 def show_optsmenu():
 	""" Show the options screen """
 	from modules.client.gui import optsmenu
