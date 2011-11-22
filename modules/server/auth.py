@@ -16,14 +16,16 @@ pub = None
 def init():
 	global key, pub
 
-	if not os.access(config.private_key_path, os.R_OK):
+	pk_path = config.cp.get('auth', 'private_key_path')
+
+	if not os.access(pk_path, os.R_OK):
 		sys.stderr.write(
 			'Unable to read private server key at {0}. Please verify a key exists and start the server again.\r\n'
-				.format(config.private_key_path)
+				.format(pk_path)
 		)
 		sys.exit(1)
 
-	fh = open(config.private_key_path, 'rb')
+	fh = open(pk_path, 'rb')
 	s = ''.join(fh.readlines())
 	fh.close()
 

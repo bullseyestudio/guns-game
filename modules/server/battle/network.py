@@ -4,11 +4,20 @@ import actions, player
 
 import socket, select
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(config.listen_addr)
+sock = None
+
+def listen():
+	global sock
+
+	listen_addr = (config.cp.get('core', 'listen_ip'), config.cp.getint('core', 'listen_port'))
+
+	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	sock.bind(listen_addr)
 
 def check_input():
-	while True:
+	global sock
+
+	while True: # breakout by return a few lines below
 		socks = select.select([sock], [], [], 0)
 
 		if len(socks[0]) == 0:
