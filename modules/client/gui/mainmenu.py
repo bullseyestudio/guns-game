@@ -22,7 +22,9 @@ bgbtn.connect(pgui.CLICK, common.show_bgdemo)
 t.td(bgbtn)
 
 t.tr()
-t.td(pgui.Button('Multiplayer', width=150, height=30), colspan=2)
+mpbtn = pgui.Button('Multiplayer', width=150, height=30)
+mpbtn.connect(pgui.CLICK, common.show_mpmenu)
+t.td(mpbtn, colspan=2)
 
 t.tr()
 optsbtn = pgui.Button('Options', width=150, height=30)

@@ -41,6 +41,22 @@ def show_optsmenu():
 	draw_background()
 	pguapp.init(optsmenu.t, screen)
 
+def show_mpmenu():
+	""" Show the multiplayer screen """
+	from modules.client.gui import mpmenu
+	global pguapp, screen
+
+	draw_background()
+	pguapp.init(mpmenu.t, screen)
+
+def show_status():
+	""" Show the multiplayer screen """
+	from modules.client.gui import status
+	global pguapp, screen
+
+	draw_background()
+	pguapp.init(status.t, screen)
+
 def show_mainmenu():
 	""" Main screen turn on """
 	from modules.client.gui import mainmenu
