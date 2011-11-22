@@ -10,11 +10,11 @@ t.tr()
 t.td(pgui.Spacer(width=150, height=int(hgt/2) - (3*40)))
 
 t.tr()
-l1 = pgui.Label('')
+l1 = pgui.Label('One moment...')
 t.td(l1)
 
 t.tr()
-l2 = pgui.Label('')
+l2 = pgui.Label('(if you see this for longer than a second, something\'s probably gone wrong)')
 t.td(l2)
 
 t.tr()
