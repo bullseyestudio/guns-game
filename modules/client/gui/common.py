@@ -44,8 +44,10 @@ def show_optsmenu():
 def show_mpmenu():
 	""" Show the multiplayer screen """
 	from modules.client.gui import mpmenu
+	from modules.client import gui
 	global pguapp, screen
 
+	gui.subscreen_update = None
 	draw_background()
 	pguapp.init(mpmenu.t, screen)
 
@@ -56,6 +58,9 @@ def show_status():
 
 	draw_background()
 	pguapp.init(status.t, screen)
+
+	from modules.client import lobby
+	lobby.start()
 
 def show_mainmenu():
 	""" Main screen turn on """
@@ -86,6 +91,18 @@ def show_bgdemo():
 	gui.subscreen_update = bgdemo.draw_bg
 	draw_background()
 	pguapp.init(bgdemo.t, screen)
+
+def show_lobby():
+	""" Show the lobby screen """
+	from modules.client.gui import lobby
+	from modules.client import lobby as lobbyserv
+	from modules.client import gui
+	global pguapp, screen
+
+	gui.subscreen_update = lobbyserv.tick
+	draw_background()
+	pguapp.init(lobby.t, screen)
+
 
 def tick_app_gfx():
 	global pguapp, screen

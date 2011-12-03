@@ -46,7 +46,8 @@ while not quitting:
 		if gui.subscreen_update:
 			gui.subscreen_update(ev)
 
-		gui.pass_app_event(ev)
+		if ev.type != config.TIMER_EVENT:
+			gui.pass_app_event(ev)
 
 	gui.tick_app_gfx()
 
