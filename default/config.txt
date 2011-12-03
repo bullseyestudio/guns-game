@@ -1,6 +1,6 @@
 desktop background desktop.png
 
-input font Vera.ttf 16 
+input font Vera.ttf 16
 input background input.normal.png
 input color #000000
 input:focus background input.focus.png
@@ -243,7 +243,10 @@ scrollarea.content padding_right 1
 scrollarea.content padding_top 1
 scrollarea.content padding_bottom 1
 
-
+list padding 5
+list font Vera.ttf 14
+list color #ff0000
+list fot-weight bold
 list.item background list.item.normal.png
 list.item:hover background list.item.down.png
 list.item:down background list.item.down.png
@@ -253,8 +256,8 @@ list.item padding_top 2
 list.item padding_bottom 2
 list.item margin_bottom 1
 list.item align -1
-list.item.label font Vera.ttf 14
-list.item.label color #000000
+list.item font Vera.ttf 14
+list.item color #000000
 
 list background list.png
 list padding_left 1

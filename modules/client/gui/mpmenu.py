@@ -9,6 +9,7 @@ def connect_handler():
 	config.cp.set('multiplayer', 'last_server', input_server.value)
 	common.show_status()
 
+
 wid = common.screen.get_width()
 hgt = common.screen.get_height()
 
