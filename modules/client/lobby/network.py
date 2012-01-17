@@ -18,7 +18,7 @@ def send(what):
 	sent = sock.send(what)
 
 	if sent == 0:
-			raise RuntimeError( "Socket connection fail" )
+		raise RuntimeError( "Socket connection fail" )
 	else:
 		raise RuntimeError( "Network error in sending data" )
 
