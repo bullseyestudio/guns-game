@@ -12,9 +12,6 @@ def start():
 
 
 def tick(ev):
-	if ev.type != config.TIMER_EVENT:
-		return
-
 	updates = network.read()
 	if len( updates ) == 0:
 		return
@@ -30,4 +27,3 @@ def handle(cmd):
 		print 'Recieved {0}: {1}'.format(protocol.USERNAME,cmd[1])
 	else:
 		pass
-

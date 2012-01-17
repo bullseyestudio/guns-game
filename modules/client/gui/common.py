@@ -17,7 +17,11 @@ zoom_step = 0.0625
 
 theme = None
 
+subscreen_event_handler = None
+subscreen_timer_handler = None
+
 pguapp = pgui.App()
+
 
 def draw_background():
 	global screen, background, viewport
@@ -33,84 +37,46 @@ def draw_background_rect(rect):
 
 	screen.blit(background, rect, tmp)
 
-def show_optsmenu():
-	""" Show the options screen """
-	from modules.client.gui import optsmenu
-	global pguapp, screen
+def scroll_background(xdist, ydist):
+	global viewport
 
-	draw_background()
-	pguapp.init(optsmenu.t, screen)
+	viewport.left += xdist
+	viewport.top += ydist
 
-def show_mpmenu():
-	""" Show the multiplayer screen """
-	from modules.client.gui import mpmenu
-	from modules.client import gui
-	global pguapp, screen
+	viewport.left = _bounds_check(viewport.left)
+	viewport.top = _bounds_check(viewport.top)
 
-	gui.subscreen_update = None
-	draw_background()
-	pguapp.init(mpmenu.t, screen)
+def _bounds_check(value):
+	""" Helper for scroll_background, to keep it within wid/hgt + 2xtile size """
+	global tile_size
 
-def show_status():
-	""" Show the multiplayer screen """
-	from modules.client.gui import status
-	global pguapp, screen
+	if value < 0:
+		value %= tile_size
+	elif value > (2 * tile_size):
+		value = tile_size + (value % tile_size)
 
-	draw_background()
-	pguapp.init(status.t, screen)
-
-	from modules.client import lobby
-	lobby.start()
-
-def show_mainmenu():
-	""" Main screen turn on """
-	from modules.client.gui import mainmenu
-	from modules.client import gui
-	global pguapp, screen
-
-	gui.subscreen_update = None
-	draw_background()
-	pguapp.init(mainmenu.t, screen)
-
-def show_turrets():
-	""" Show the turrets demo """
-	from modules.client.gui import turrets
-	from modules.client import gui
-	global pguapp, screen
-
-	gui.subscreen_update = turrets.draw_turrets
-	draw_background()
-	pguapp.init(turrets.t, screen)
-
-def show_bgdemo():
-	""" Show the background demo """
-	from modules.client.gui import bgdemo
-	from modules.client import gui
-	global pguapp, screen
-
-	gui.subscreen_update = bgdemo.draw_bg
-	draw_background()
-	pguapp.init(bgdemo.t, screen)
-
-def show_lobby():
-	""" Show the lobby screen """
-	from modules.client.gui import lobby
-	from modules.client import lobby as lobbyserv
-	from modules.client import gui
-	global pguapp, screen
-
-	gui.subscreen_update = lobbyserv.tick
-	draw_background()
-	pguapp.init(lobby.t, screen)
+	return value
 
 
 def tick_app_gfx():
 	global pguapp, screen
 
-	rects = pguapp.update(screen)
+	pguapp.update(screen)
 	pygame.display.flip()
 
 def pass_app_event(evt):
 	global pguapp
 
 	pguapp.event(evt)
+
+def show_logo():
+	logo_rect = logo.get_rect()
+	logo_rect.center = screen.get_rect().center
+	screen.blit(logo, logo_rect)
+	pygame.display.flip()
+
+def hide_logo():
+	logo_rect = logo.get_rect()
+	logo_rect.center = screen.get_rect().center
+	screen.blit(background, logo_rect, logo_rect)
+	pygame.display.flip()

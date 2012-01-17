@@ -45,7 +45,7 @@ class Turret(object):
 
 		diff = abs(now - self.last_shot_time)
 
-		if(diff > 50):
+		if(diff > 100):
 			bpos = [a + (b - 32) for a,b in zip(self.pos, self.dot_pos)]
 			bspd = [int((a - 32) / 4) for a in self.dot_pos]
 

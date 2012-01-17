@@ -1,8 +1,6 @@
 import os, io, ConfigParser
 from pygame import locals as pgl
 
-TIMER_EVENT = pgl.USEREVENT + 1
-
 default_config = """
 [multiplayer]
 last_nick:

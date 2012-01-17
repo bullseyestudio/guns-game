@@ -45,7 +45,7 @@ def resize_background():
 	#rebuilding it every damn time -- just move the viewport and re-blit
 	bgsize = [x + (tile_size * 2) for x in common.screen.get_size()]
 	# NB: After scrolling more than tile_size in any direction, the scroll
-	#function should reset it.
+	#function should reset the scroll amount.
 
 	common.background = pygame.Surface(bgsize).convert()
 
@@ -60,34 +60,9 @@ def resize_background():
 			common.background.blit(tile, (col * tile_size, row * tile_size))
 
 draw_background = common.draw_background
-show_mainmenu = common.show_mainmenu
 tick_app_gfx = common.tick_app_gfx
 pass_app_event = common.pass_app_event
-subscreen_update = None
+scroll_background = common.scroll_background
 
-def scroll_background(xdist, ydist):
-	common.viewport.left += xdist
-	common.viewport.top += ydist
-
-	common.viewport.left = _bounds_check(common.viewport.left)
-	common.viewport.top = _bounds_check(common.viewport.top)
-
-def _bounds_check(value):
-	if value < 0:
-		value %= common.tile_size
-	elif value > (2 * common.tile_size):
-		value = common.tile_size + (value % common.tile_size)
-
-	return value
-
-def show_logo():
-	logo_rect = common.logo.get_rect()
-	logo_rect.center = common.screen.get_rect().center
-	common.screen.blit(common.logo, logo_rect)
-	pygame.display.flip()
-
-def hide_logo():
-	logo_rect = common.logo.get_rect()
-	logo_rect.center = common.screen.get_rect().center
-	common.screen.blit(common.background, logo_rect, logo_rect)
-	pygame.display.flip()
+show_logo = common.show_logo
+hide_logo = common.hide_logo
