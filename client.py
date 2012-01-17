@@ -1,31 +1,25 @@
 #!/usr/bin/env python
 
-import sys
-
-from modules import edicomm
-from modules.client import constants, gui, network_comms, input_handler, battle
-
-if len(sys.argv) < 3:
-	sys.stderr.write('Usage: client.py username server\r\n')
-	sys.exit(2)
-
-constants.username = sys.argv[1]
-constants.host = sys.argv[2]
+import sys, time
 
 try:
 	import pygame
+	import pygame._view # Py2exe needs this, else it won't include _view
 	from pygame.locals import *
-except ImportError, err:
+except ImportError:
 	sys.stderr.write('This application absolutely requires pygame. Sorry.\r\n')
 	sys.exit(1)
 
-gui.init_display()
-network_comms.open()
-input_handler.init_joy( 0 )
+pygame.init()
 
-battle.init()
+from modules import client
 
-network_comms.battle.send( edicomm.encode( 'UST', 'token_{0}'.format( constants.username ) ) )
+client.init()
 
-while not gui.done:
-	gui.event_loop()
+c = pygame.time.Clock()
+while not client.quitting:
+	elapsed = c.tick(60)
+
+	client.tick(elapsed)
+
+client.exit()
