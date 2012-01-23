@@ -19,11 +19,9 @@ def init():
 	pk_path = config.cp.get('auth', 'private_key_path')
 
 	if not os.access(pk_path, os.R_OK):
-		sys.stderr.write(
-			'Unable to read private server key at {0}. Please verify a key exists and start the server again.\r\n'
-				.format(pk_path)
-		)
-		sys.exit(1)
+		print 'Unable to read server private key at {0}. Running as anonymous server.'.format(pk_path)
+		config.cp.set('auth', 'server_name', 'noname')
+		return
 
 	fh = open(pk_path, 'rb')
 	s = ''.join(fh.readlines())

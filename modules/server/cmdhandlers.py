@@ -4,7 +4,9 @@ from pygame.locals import *
 from battle import player, waypoint, network
 from battle.locals import PlayerAmbiguityError # can be raised by player name finder
 from modules import edicomm
-from modules.server import lobby
+from modules.server import lobby, config
+
+import urllib
 
 
 def quit_handler(str, cl):
@@ -22,6 +24,7 @@ def help_handler(str, cl):
 		print 'help\t\tThis help text.'
 		print 'wp\t\tList/add/move/remove waypoints.'
 		print 'quit\t\tStops the server.'
+		print 'register\tRegister the server at guns-game.com.'
 		print 'Try "help command" for more info on "command".'
 	else:
 		if parts[1].lower() == 'say':
@@ -46,6 +49,10 @@ def help_handler(str, cl):
 		elif parts[1].lower() == 'quit':
 			print 'Usage: quit\n'
 			print 'Stops the server immediately.'
+		elif parts[1].lower() == 'register':
+			print 'Usage: register [secret]\n'
+			print 'Without any parameters, tells you if your server is registered at guns-game.com.'
+			print 'If passed a server secret (get one from meta.guns-game.com), it will update the server name and private key using data from the guns-game.com database.'
 
 def list_handler(str, cl):
 	print 'ID\tusername\taddress info\ttoken'
@@ -128,6 +135,50 @@ def say_handler(str, cl):
 	# HACK: Need a better way to handle this, this is NOT thread-safe
 	lobby.server.d.global_chat('[CONSOLE]', parts[1])
 
+def register_handler(str, cl):
+	from modules.server import auth
+
+	parts = str.split(' ', 1)
+
+	if len(parts) == 1:
+		if auth.key != None:
+			print 'Server registered with name "{0}"'.format(config.cp.get('auth', 'server_name'))
+		else:
+			print 'Server is anonymous (not registered at guns-game.com)'
+
+	else:
+		secret = urllib.quote(parts[1])
+		url = 'http://meta.guns-game.com/key/server/private/' + secret
+
+		try:
+			fh = urllib.urlopen(url)
+			headers = fh.info()
+			key = fh.read(4096)
+			fh.close()
+
+		except Exception, e:
+			print 'Whoops, that didn\'t work! Problem:', e
+			return
+
+		if(fh.getcode() != 200):
+			print 'Error fetching private key. Server said:', key
+			return
+
+		sname = headers['X-Your-Server-Name']
+		config.cp.set('auth', 'server_name', sname)
+
+		try:
+			fh = open(config.cp.get('auth', 'private_key_path'), 'wb')
+			fh.write(key)
+			fh.close()
+		except Exception, e:
+			print 'Error writing private key file:', e
+			return
+
+		auth.init()
+
+		print 'Server name is now "{0}" and private key is set.'.format(sname)
+
 
 handlers = { 'help': help_handler,
 	'quit': quit_handler,
@@ -135,4 +186,5 @@ handlers = { 'help': help_handler,
 	'forget': forget_handler,
 	'wp': wp_handler,
 	'say': say_handler,
+	'register': register_handler,
 }

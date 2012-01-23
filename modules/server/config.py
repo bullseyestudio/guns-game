@@ -7,13 +7,13 @@ listen_ip: 0.0.0.0
 listen_port: 45005
 
 [waypoints]
-player_wp_fmtstring: wp_{p.name}
+player_wp_fmtstring: wp_{{p.name}}
 min_player_wpid: 256
 
 [auth]
 server_name: noname
-private_key_path: data/server.key
-"""
+private_key_path: {dotpath}/server.key
+""".format(dotpath = os.path.expanduser('~/.guns'))
 
 cp = ConfigParser.RawConfigParser()
 conf_path = os.path.expanduser('~/.guns/server.cfg')
