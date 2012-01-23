@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os, signal, time
-
-from modules import edicomm
-
+import sys, os, signal
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 try:
@@ -13,46 +10,28 @@ except ImportError:
 	sys.stderr.write("Sorry, you absolutely MUST have pygame.\r\nTry sudo apt-get install python-pygame, if you're on a deb-system.\r\n")
 	sys.exit(1)
 
-pygame.display.init()
-screen = pygame.display.set_mode((1,1))
+from modules import server
 
-print 'Server init begins.'
+server.init()
 
-from modules.server import config
-config.read_config()
+def _ctrlc_handler(*args):
+	print 'Ctrl+C recognized. Stopping server...'
 
-from modules.server import auth
-auth.init()
-
-from modules.server import lobby, battle
-lobby.start_server()
-battle.start_server()
-
-from modules.server import cmdline, cmdhandlers
-cl = cmdline.cmdline()
-for k, h in cmdhandlers.handlers.iteritems():
-	cl.add_command(k, h)
-cl.start_listener()
-
-def ctrlc_handler(*args):
-	print 'Ctrl+C recognized.'
-
+	server.quitting = True
 	pygame.event.post(pygame.event.Event(QUIT))
 
-signal.signal(signal.SIGINT, ctrlc_handler)
+signal.signal(signal.SIGINT, _ctrlc_handler)
+print 'Ctrl+C catcher ready.'
 
-# This guy makes sure everything ticks
-pygame.time.set_timer(USEREVENT+1, 25)
+c = pygame.time.Clock()
+while not server.quitting:
+	elapsed = c.tick(60)
 
-while True:
-	time.sleep(0.01)
+	server.timer_tick(elapsed)
 
-	for event in pygame.event.get():
-		if event.type == USEREVENT+1:
-			lobby.timer_tick()
-			battle.timer_tick()
-			cl.handle_command()
-		elif (event.type == QUIT):
-			cl.post_quit()
-			config.write_config()
-			sys.exit(0)
+	if pygame.event.peek(pygame.QUIT):
+		server.quitting = True
+
+	pygame.event.clear()
+
+server.exit()
